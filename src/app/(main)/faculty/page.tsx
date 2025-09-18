@@ -7,53 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
-import type { Activity, Student } from '@/lib/types';
+import type { Activity } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
-
-function AttendanceChart({ students }: { students: Student[] }) {
-  const topStudents = students.sort((a, b) => b.attendance - a.attendance).slice(0, 2);
-  
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Top Student Attendance</CardTitle>
-        <CardDescription>Attendance of the top 2 students in your department.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex justify-around items-center h-[280px]">
-        {topStudents.map(student => (
-          <div key={student.id} className="flex flex-col items-center gap-2">
-            <div className="relative h-32 w-32">
-              <svg className="h-full w-full" viewBox="0 0 36 36">
-                <path
-                  className="text-muted/50"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                />
-                <path
-                  className="text-accent"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeDasharray={`${student.attendance}, 100`}
-                  strokeLinecap="round"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold">{student.attendance}%</span>
-              </div>
-            </div>
-            <p className="font-semibold text-center">{student.name}</p>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
-  );
-}
-
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
@@ -86,48 +42,45 @@ export default function FacultyDashboard() {
         <p className="text-muted-foreground italic text-sm mt-1">"A good teacher can inspire hope, ignite the imagination, and instill a love of learning."</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-         <AttendanceChart students={departmentStudents} />
-        <Card>
-          <CardHeader>
-            <CardTitle>Pending Activity Approvals</CardTitle>
-            <CardDescription>Review student-submitted activities for your approval.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Student</TableHead>
-                  <TableHead>Activity</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+      <Card>
+        <CardHeader>
+          <CardTitle>Pending Activity Approvals</CardTitle>
+          <CardDescription>Review student-submitted activities for your approval.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                <TableHead>Activity</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {pendingActivities.length > 0 ? pendingActivities.map(activity => (
+                <TableRow key={activity.id}>
+                  <TableCell>{getStudentName(activity.studentId)}</TableCell>
+                  <TableCell className="font-medium">{activity.name}</TableCell>
+                  <TableCell>{new Date(activity.date).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right flex gap-2 justify-end">
+                    <Button size="icon" variant="outline" className="h-8 w-8 text-green-600 hover:text-green-600" onClick={() => handleApproval(activity.id, 'approved')}>
+                      <Check className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="outline" className="h-8 w-8 text-red-600 hover:text-red-600" onClick={() => handleApproval(activity.id, 'rejected')}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pendingActivities.length > 0 ? pendingActivities.map(activity => (
-                  <TableRow key={activity.id}>
-                    <TableCell>{getStudentName(activity.studentId)}</TableCell>
-                    <TableCell className="font-medium">{activity.name}</TableCell>
-                    <TableCell>{new Date(activity.date).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right flex gap-2 justify-end">
-                      <Button size="icon" variant="outline" className="h-8 w-8 text-green-600 hover:text-green-600" onClick={() => handleApproval(activity.id, 'approved')}>
-                        <Check className="h-4 w-4" />
-                      </Button>
-                      <Button size="icon" variant="outline" className="h-8 w-8 text-red-600 hover:text-red-600" onClick={() => handleApproval(activity.id, 'rejected')}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+              )) : (
+                  <TableRow>
+                      <TableCell colSpan={4} className="h-24 text-center">No pending activities.</TableCell>
                   </TableRow>
-                )) : (
-                    <TableRow>
-                        <TableCell colSpan={4} className="h-24 text-center">No pending activities.</TableCell>
-                    </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,6 +1,7 @@
+
 'use client';
 
-import { PlusCircle, CheckCircle, Clock, Award } from 'lucide-react';
+import { PlusCircle, CheckCircle, Clock, Award, BarChart, Percent } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -32,7 +33,6 @@ export default function StudentDashboard() {
   
   const approvedCount = activities.filter(a => a.status === 'approved').length;
   const pendingCount = activities.filter(a => a.status === 'pending').length;
-  const totalSkills = student.skills.length;
 
   return (
     <div className="flex flex-col gap-6">
@@ -46,7 +46,27 @@ export default function StudentDashboard() {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current GPA</CardTitle>
+            <BarChart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{student.gpa.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">Cumulative Grade Point Average</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Attendance</CardTitle>
+            <Percent className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{student.attendance}%</div>
+            <p className="text-xs text-muted-foreground">Overall attendance percentage</p>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Approved Activities</CardTitle>
@@ -54,7 +74,7 @@ export default function StudentDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{approvedCount}</div>
-            <p className="text-xs text-muted-foreground">Activities recognized in your portfolio</p>
+            <p className="text-xs text-muted-foreground">Recognized in your portfolio</p>
           </CardContent>
         </Card>
         <Card>
@@ -64,17 +84,7 @@ export default function StudentDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{pendingCount}</div>
-            <p className="text-xs text-muted-foreground">Activities awaiting faculty review</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recognized Skills</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalSkills}</div>
-            <p className="text-xs text-muted-foreground">Total skills acquired from activities</p>
+            <p className="text-xs text-muted-foreground">Awaiting faculty review</p>
           </CardContent>
         </Card>
       </div>

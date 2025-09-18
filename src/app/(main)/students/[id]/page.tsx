@@ -2,9 +2,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Mail, Phone, GraduationCap, Award, Heart, Dna, Briefcase, Printer, FileBadge, Calendar, Activity as ActivityIcon, BarChart, Percent } from 'lucide-react';
+import { Mail, Phone, GraduationCap, Award, Dna, Briefcase, Printer, FileBadge, Calendar, Activity as ActivityIcon, BarChart, Percent } from 'lucide-react';
 import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student, Activity } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -64,12 +63,12 @@ const InfoItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label
 );
 
 
-export default function StudentPortfolioPage({ params }: { params: { id: string } }) {
+export default function StudentPortfolioPage({ params: { id } }: { params: { id: string } }) {
   const [student, setStudent] = useState<Student | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    const foundStudent = MOCK_STUDENTS.find(s => s.id === params.id);
+    const foundStudent = MOCK_STUDENTS.find(s => s.id === id);
     if (foundStudent) {
       setStudent(foundStudent);
       const studentActivities = MOCK_ACTIVITIES.filter(
@@ -77,7 +76,7 @@ export default function StudentPortfolioPage({ params }: { params: { id: string 
       );
       setActivities(studentActivities);
     }
-  }, [params.id]);
+  }, [id]);
 
   if (!student) {
     // You can return a loading skeleton here while waiting for the useEffect

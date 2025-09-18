@@ -1,11 +1,12 @@
+
 'use client';
 
-import { Users, Building, ClipboardList, Search, Calendar, FileBarChart } from 'lucide-react';
+import { Users, Building, ClipboardList, Search, Calendar, FileBarChart, Printer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, ACTIVITY_CATEGORIES } from '@/lib/data';
 import { EVENT_CATEGORIES as CALENDAR_EVENT_CATEGORIES } from '@/lib/calendar-data';
 import type { Student, AcademicEventV2, Activity } from '@/lib/types';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { isFuture, isToday, parseISO, startOfToday, compareAsc, format } from 'date-fns';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 
 function AdminStudentSearch() {
   const [query, setQuery] = useState('');
@@ -130,6 +131,7 @@ function UpcomingEventsWidget() {
 }
 
 function ComplianceReportModal() {
+  const reportRef = useRef<HTMLDivElement>(null);
   const approvedActivities = MOCK_ACTIVITIES.filter(a => a.status === 'approved');
 
   const reportData = useMemo(() => {
@@ -175,7 +177,7 @@ function ComplianceReportModal() {
   }, [approvedActivities]);
 
   const MetricCard = ({ title, value, description }: { title: string, value: string | number, description?: string }) => (
-    <Card className="flex-1">
+    <Card className="flex-1 print:border-none print:shadow-none">
       <CardHeader className="pb-2">
         <CardDescription>{title}</CardDescription>
         <CardTitle className="text-2xl">{value}</CardTitle>
@@ -183,6 +185,43 @@ function ComplianceReportModal() {
       {description && <CardContent><p className="text-xs text-muted-foreground">{description}</p></CardContent>}
     </Card>
   );
+
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    if (printWindow && reportRef.current) {
+        const reportHtml = reportRef.current.innerHTML;
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>NAAC/NIRF Compliance Report</title>
+                <link rel="stylesheet" href="/globals.css">
+                <script src="https://cdn.tailwindcss.com"></script>
+                <style>
+                    body { font-family: Inter, sans-serif; }
+                    @media print {
+                        body { -webkit-print-color-adjust: exact; }
+                        .print-container {
+                            padding: 2rem;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="print-container">
+                    ${reportHtml}
+                </div>
+                <script>
+                    setTimeout(() => {
+                        window.print();
+                        window.close();
+                    }, 250);
+                </script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+  };
 
   return (
     <Dialog>
@@ -192,64 +231,72 @@ function ComplianceReportModal() {
           Generate NAAC/NIRF Report
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl h-[90vh]">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader className="print:hidden">
           <DialogTitle>NAAC/NIRF Compliance Report (Simulated)</DialogTitle>
           <DialogDescription>
             Generated on: {format(new Date(), 'PPP')}
           </DialogDescription>
         </DialogHeader>
-        <div className="overflow-y-auto pr-6 space-y-6">
-          <section>
-            <h3 className="text-lg font-semibold mb-3">Overall Institutional Metrics</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <MetricCard title="Total Students" value={reportData.overall.totalStudents} />
-              <MetricCard title="Avg. GPA" value={reportData.overall.avgGpa} />
-              <MetricCard title="Avg. Attendance" value={`${reportData.overall.avgAttendance}%`} />
-              <MetricCard title="Verified Activities" value={reportData.overall.totalApprovedActivities} />
-              <MetricCard title="Internship Credits" value={reportData.overall.totalInternshipCredits} description="From approved internships" />
+        <div className="overflow-y-auto flex-1 pr-6" ref={reportRef}>
+            <div className="space-y-6">
+                <section>
+                    <h3 className="text-lg font-semibold mb-3">Overall Institutional Metrics</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <MetricCard title="Total Students" value={reportData.overall.totalStudents} />
+                    <MetricCard title="Avg. GPA" value={reportData.overall.avgGpa} />
+                    <MetricCard title="Avg. Attendance" value={`${reportData.overall.avgAttendance}%`} />
+                    <MetricCard title="Verified Activities" value={reportData.overall.totalApprovedActivities} />
+                    <MetricCard title="Internship Credits" value={reportData.overall.totalInternshipCredits} description="From approved internships" />
+                    </div>
+                </section>
+
+                <section>
+                    <h3 className="text-lg font-semibold mb-3">Department-wise Breakdown</h3>
+                    <Card className="print:border-none print:shadow-none">
+                    <CardContent className="pt-6">
+                        <ul className="divide-y">
+                        {reportData.departments.map(dept => (
+                            <li key={dept.name} className="py-3 flex justify-between items-center">
+                            <span className="font-medium">{dept.name}</span>
+                            <div className="flex gap-6 text-right">
+                                <span className="text-sm">
+                                {dept.studentCount} <span className="text-muted-foreground">Students</span>
+                                </span>
+                                <span className="text-sm">
+                                {dept.activityCount} <span className="text-muted-foreground">Activities</span>
+                                </span>
+                            </div>
+                            </li>
+                        ))}
+                        </ul>
+                    </CardContent>
+                    </Card>
+                </section>
+
+                <section>
+                    <h3 className="text-lg font-semibold mb-3">Verified Activities by Category</h3>
+                    <Card className="print:border-none print:shadow-none">
+                    <CardContent className="pt-6">
+                        <ul className="divide-y">
+                        {reportData.activityCategories.map(cat => (
+                            <li key={cat.name} className="py-3 flex justify-between items-center">
+                            <span className="font-medium">{cat.name}</span>
+                            <span className="text-sm font-bold">{cat.count}</span>
+                            </li>
+                        ))}
+                        </ul>
+                    </CardContent>
+                    </Card>
+                </section>
             </div>
-          </section>
-
-          <section>
-            <h3 className="text-lg font-semibold mb-3">Department-wise Breakdown</h3>
-            <Card>
-              <CardContent className="pt-6">
-                <ul className="divide-y">
-                  {reportData.departments.map(dept => (
-                    <li key={dept.name} className="py-3 flex justify-between items-center">
-                      <span className="font-medium">{dept.name}</span>
-                      <div className="flex gap-6 text-right">
-                        <span className="text-sm">
-                          {dept.studentCount} <span className="text-muted-foreground">Students</span>
-                        </span>
-                        <span className="text-sm">
-                          {dept.activityCount} <span className="text-muted-foreground">Activities</span>
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </section>
-
-          <section>
-            <h3 className="text-lg font-semibold mb-3">Verified Activities by Category</h3>
-            <Card>
-               <CardContent className="pt-6">
-                 <ul className="divide-y">
-                  {reportData.activityCategories.map(cat => (
-                    <li key={cat.name} className="py-3 flex justify-between items-center">
-                      <span className="font-medium">{cat.name}</span>
-                      <span className="text-sm font-bold">{cat.count}</span>
-                    </li>
-                  ))}
-                </ul>
-               </CardContent>
-            </Card>
-          </section>
         </div>
+         <DialogFooter className="print:hidden">
+          <Button onClick={handlePrint}>
+            <Printer className="mr-2 h-4 w-4" />
+            Download
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -336,3 +383,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+    

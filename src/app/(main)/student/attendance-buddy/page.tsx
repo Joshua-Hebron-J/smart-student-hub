@@ -69,7 +69,7 @@ export default function AttendanceBuddyPage() {
     } else {
         const leavesYouCanStillTake = maxLeavesAllowed - leavesTaken;
         setResult({
-            message: `You are safe! You can take ${leavesYouCanStillTake} more leave(s) and still maintain ${requiredPercentage}% attendance.`,
+            message: `You are safe! You can take ${leavesYouCanStillTake} more day(s) of leave and still maintain ${requiredPercentage}% attendance.`,
             type: 'safe'
         });
     }

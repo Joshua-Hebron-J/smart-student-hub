@@ -23,7 +23,6 @@ import {
 
 import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/use-app-context';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 type NavLink = {
@@ -42,7 +41,6 @@ type NavLinksConfig = {
 const navLinks: NavLinksConfig = {
   student: [
     { href: '/student', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/student/add-activity', label: 'Add Activity', icon: History },
     { href: '/student/timetable', label: 'Timetable', icon: Clock },
     {
       href: '#', label: 'Guidance', icon: BookUser,
@@ -83,22 +81,37 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
   if (!user) return null;
 
   const userNavLinks = navLinks[user.role] || [];
-  const allLinks = [...userNavLinks, ...commonLinks];
+  
+  // For students, some links are in the top header on desktop, so we hide them from the sidebar
+  const studentSidebarLinks = isMobile ? userNavLinks : [
+     {
+      href: '#', label: 'Guidance', icon: BookUser,
+      subLinks: [
+        { href: '/student/career-guidance', label: 'Career AI', icon: BotMessageSquare },
+        { href: '/student/resume', label: 'AI Resume', icon: FileText },
+        { href: '/student/attendance-buddy', label: 'Attendance Buddy', icon: Percent },
+      ]
+    },
+    { href: '/student/od-management', label: 'OD Management', icon: ClipboardList },
+  ];
+
+  const sidebarLinks = user.role === 'student' ? studentSidebarLinks : userNavLinks;
+
+  const allLinks = [...sidebarLinks, ...commonLinks];
 
   const renderLink = (link: NavLink, isSubLink = false) => {
-    const isActive = !isSubLink && (pathname === link.href || (link.href !== `/${user.role}` && pathname.startsWith(link.href) && link.href !== '/'));
-    const isParentActive = link.subLinks && link.subLinks.some(sub => pathname.startsWith(sub.href));
-    
+    const isActive = !link.subLinks && (pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href)));
+
     const linkContent = (
       <>
-        <link.icon className="h-5 w-5" />
+        <link.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary")} />
         <span className="truncate">{link.label}</span>
       </>
     );
 
     const linkClasses = cn(
-      'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-      (isActive || isParentActive) && 'text-primary bg-muted',
+      'group flex items-center gap-3 rounded-lg px-3 py-2 text-foreground font-medium transition-all hover:bg-muted',
+      isActive && 'bg-muted text-primary',
       isSubLink && 'ml-4'
     );
     
@@ -111,16 +124,16 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
   
   const renderAccordionLink = (link: NavLink) => (
      <AccordionItem value={link.label} className="border-b-0">
-      <AccordionTrigger className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:no-underline [&[data-state=open]>svg]:rotate-90">
-        <link.icon className="h-5 w-5" />
+      <AccordionTrigger className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground font-medium transition-all hover:bg-muted hover:no-underline [&[data-state=open]>svg]:rotate-90">
+         <link.icon className="h-5 w-5 text-muted-foreground" />
         <span className="truncate">{link.label}</span>
       </AccordionTrigger>
-      <AccordionContent className="pl-8 pb-0 pt-1">
+      <AccordionContent className="pl-4 pb-0 pt-1">
         <nav className="grid gap-1">
           {link.subLinks?.map((subLink) => (
              <Link key={subLink.href} href={subLink.href} className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-              pathname.startsWith(subLink.href) && 'text-primary bg-muted/50'
+              pathname.startsWith(subLink.href) && 'text-primary bg-muted'
             )}>
               <subLink.icon className="h-4 w-4" />
               {subLink.label}
@@ -133,17 +146,16 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
 
   return (
-    <div className="flex h-full max-h-screen flex-col gap-2">
-      <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+    <div className="flex h-full max-h-screen flex-col">
+       <div className="flex h-16 items-center border-b px-4 lg:px-6 shrink-0">
         <Link href="/" className="flex items-center gap-2 font-headline font-semibold">
           <GraduationCap className="h-6 w-6 text-primary" />
           <span>Smart Student Hub</span>
         </Link>
       </div>
-      <div className="flex-1">
-        <TooltipProvider>
-          <Accordion type="multiple" className="w-full">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+      <div className="flex-1 overflow-y-auto">
+          <Accordion type="multiple" className="w-full" defaultValue={['Guidance']}>
+            <nav className="grid items-start p-2 text-sm font-medium lg:p-4">
               {allLinks.map((link) =>
                 link.subLinks ? (
                   <div key={link.label}>
@@ -157,7 +169,6 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
               )}
             </nav>
           </Accordion>
-        </TooltipProvider>
       </div>
     </div>
   );

@@ -80,7 +80,7 @@ export interface TimetableEntry {
   startTime: string; // "HH:MM"
   endTime: string; // "HH:MM"
   location: string;
-  description?: string;
+  description?: string; // Professor's name for student, or other notes
   color: 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'pink';
 }
 

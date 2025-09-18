@@ -1,197 +1,182 @@
-
 'use client';
 
-import { PlusCircle, CheckCircle, Clock, Award, BarChart, Percent, FileBadge, Calendar, Activity as ActivityIcon, Dna, Phone, User, Briefcase } from 'lucide-react';
+import { PlusCircle, CheckCircle, Clock, Award, BarChart, Percent, FileBadge, Calendar, Activity as ActivityIcon, Briefcase, Filter, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useMemo } from 'react';
+import { startOfToday, isFuture, parseISO } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-
 import { useUser } from '@/hooks/use-app-context';
-import { MOCK_ACTIVITIES } from '@/lib/data';
+import { MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, MOCK_STUDENT_TIMETABLE } from '@/lib/data';
 import type { Activity, Student } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
-const InfoItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: React.ReactNode }) => (
-    <div className="flex items-start gap-3">
-        <Icon className="h-5 w-5 text-muted-foreground mt-1 flex-shrink-0" />
-        <div>
-            <p className="text-sm font-medium text-muted-foreground">{label}</p>
-            <p className="text-sm font-semibold">{value}</p>
-        </div>
-    </div>
+const MetricCard = ({ icon: Icon, title, value, trend, footer, color }: { icon: React.ElementType, title: string, value: string | number, trend?: string, footer: string, color: string }) => (
+    <Card className={cn("overflow-hidden", color)}>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{title}</CardTitle>
+            <Icon className="h-5 w-5 text-current" />
+        </CardHeader>
+        <CardContent>
+            <div className="text-4xl font-bold">{value}</div>
+            <p className="text-xs text-current/80">{footer}</p>
+        </CardContent>
+        {trend && (
+            <div className="text-xs font-medium bg-black/10 px-6 py-1 flex items-center gap-1">
+                <TrendingUp className="h-4 w-4"/>
+                {trend}
+            </div>
+        )}
+    </Card>
 );
-
-const getAge = (dob: string) => {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-}
 
 export default function StudentDashboard() {
   const { user } = useUser();
-  const [student, setStudent] = useState<Student | null>(null);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [filter, setFilter] = useState<'all' | 'approved' | 'pending'>('all');
+  
+  const student = user as Student;
 
-  useEffect(() => {
-    if (user && user.role === 'student') {
-      setStudent(user as Student);
-      const studentActivities = MOCK_ACTIVITIES.filter(act => act.studentId === user.id);
-      setActivities(studentActivities);
-    }
-  }, [user]);
+  const activities = useMemo(() => {
+    const studentActivities = MOCK_ACTIVITIES.filter(act => act.studentId === student.id);
+    if (filter === 'all') return studentActivities;
+    return studentActivities.filter(a => a.status === filter);
+  }, [student.id, filter]);
+  
+  const approvedCount = MOCK_ACTIVITIES.filter(a => a.studentId === student.id && a.status === 'approved').length;
+  const totalCredits = MOCK_ACTIVITIES
+    .filter(a => a.studentId === student.id && a.status === 'approved')
+    .reduce((sum, act) => sum + act.credits, 0);
+
+  const upcomingDeadlinesCount = useMemo(() => {
+    const today = startOfToday();
+    return Object.values(ACADEMIC_EVENTS_BY_SEMESTER).flat()
+      .filter(event => event.category === 'Deadline' && isFuture(parseISO(event.startDate)))
+      .length;
+  }, []);
+  
+  const todaySchedule = useMemo(() => {
+    const todayName = new Date().toLocaleDateString('en-us', { weekday: 'long' });
+    return MOCK_STUDENT_TIMETABLE
+        .filter(entry => entry.day === todayName)
+        .sort((a,b) => a.startTime.localeCompare(b.startTime));
+  }, []);
 
   if (!student) {
-    return <div>Loading student data...</div>;
+    return <div>Loading...</div>;
   }
-  
-  const approvedCount = activities.filter(a => a.status === 'approved').length;
-  const pendingCount = activities.filter(a => a.status === 'pending').length;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-headline font-semibold">Welcome, {student.name}!</h1>
-           <p className="text-muted-foreground italic text-sm mt-1">"Believe you can and you're halfway there."</p>
-        </div>
-        <div className="flex items-center gap-2">
-            <Button asChild variant="outline">
-                <Link href={`/students/${student.id}`}>
-                    <Briefcase className="mr-2 h-4 w-4"/>
-                    View My Portfolio
-                </Link>
-            </Button>
-            <Button asChild>
-                <Link href="/student/add-activity">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add New Activity
-                </Link>
-            </Button>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="p-6 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground">
+        <h1 className="text-3xl font-bold">Welcome back, {student.name.split(' ')[0]}!</h1>
+        <p className="opacity-80">Here's your academic snapshot for today. Keep up the great work!</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Current GPA</CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{student.gpa.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">Cumulative Grade Point Average</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Attendance</CardTitle>
-            <Percent className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{student.attendance}%</div>
-            <p className="text-xs text-muted-foreground">Overall attendance percentage</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approved Activities</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{approvedCount}</div>
-            <p className="text-xs text-muted-foreground">Recognized in your portfolio</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{pendingCount}</div>
-            <p className="text-xs text-muted-foreground">Awaiting faculty review</p>
-          </CardContent>
-        </Card>
+        <MetricCard 
+            icon={BarChart} 
+            title="Current GPA" 
+            value={student.gpa.toFixed(2)} 
+            footer="Cumulative Grade Point Average"
+            trend="+0.2 from last semester"
+            color="bg-blue-100 text-blue-800"
+        />
+        <MetricCard 
+            icon={Percent} 
+            title="Attendance" 
+            value={`${student.attendance}%`} 
+            footer="Overall Attendance"
+            color="bg-teal-100 text-teal-800"
+        />
+        <MetricCard 
+            icon={Award} 
+            title="Total Credits" 
+            value={totalCredits} 
+            footer="From approved activities"
+            color="bg-purple-100 text-purple-800"
+        />
+        <MetricCard 
+            icon={Calendar} 
+            title="Upcoming Deadlines" 
+            value={upcomingDeadlinesCount} 
+            footer="In this semester"
+            color="bg-orange-100 text-orange-800"
+        />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-          <Card className="md:col-span-1">
-              <CardHeader><CardTitle>My Bio</CardTitle></CardHeader>
-              <CardContent>
-                  <p className="text-sm text-muted-foreground">{student.bio}</p>
-              </CardContent>
-          </Card>
-          <Card className="md:col-span-1">
-              <CardHeader><CardTitle>Biographical Info</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                  <InfoItem icon={FileBadge} label="Register Number" value={student.registerNumber} />
-                  <InfoItem icon={Calendar} label="Date of Birth" value={new Date(student.dob).toLocaleDateString()} />
-                  <InfoItem icon={ActivityIcon} label="Age" value={`${getAge(student.dob)} years`} />
-                  <InfoItem icon={User} label="Passing Out Year" value={student.enrollmentYear + 4} />
-              </CardContent>
-          </Card>
-          <Card className="md:col-span-1">
-              <CardHeader><CardTitle>Medical Info</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                {student.medicalDetails ? (
-                    <>
-                        <InfoItem icon={Dna} label="Blood Group" value={student.medicalDetails.bloodGroup} />
-                        <InfoItem icon={ActivityIcon} label="Allergies" value={student.medicalDetails.allergies.join(', ')} />
-                        <InfoItem icon={Phone} label="Emergency Contact" value={`${student.medicalDetails.emergencyContact.name} (${student.medicalDetails.emergencyContact.phone})`} />
-                    </>
-                ) : (
-                    <p className="text-sm text-muted-foreground">No medical information provided.</p>
-                )}
-              </CardContent>
-          </Card>
-      </div>
-
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activities</CardTitle>
-          <CardDescription>A summary of your submitted activities and their status.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Activity</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Skills</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {activities.slice(0, 5).map(activity => (
-                <TableRow key={activity.id}>
-                  <TableCell className="font-medium">{activity.name}</TableCell>
-                  <TableCell>{new Date(activity.date).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Badge variant={activity.status === 'approved' ? 'default' : activity.status === 'pending' ? 'secondary' : 'destructive'} className='capitalize'>
-                      {activity.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {activity.skills.slice(0, 3).map(skill => (
-                        <Badge key={skill} variant="outline">{skill}</Badge>
-                      ))}
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>My Activities</CardTitle>
+                            <CardDescription>Your submitted co-curricular and extra-curricular activities.</CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button variant={filter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('all')}>All</Button>
+                            <Button variant={filter === 'approved' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('approved')}>Approved</Button>
+                            <Button variant={filter === 'pending' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('pending')}>Pending</Button>
+                        </div>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                     {activities.length > 0 ? activities.map(activity => (
+                        <div key={activity.id} className="flex items-center gap-4 p-3 rounded-lg bg-background hover:bg-muted transition-colors">
+                            <div className="p-3 bg-primary/10 rounded-lg">
+                                <ActivityIcon className="h-6 w-6 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-semibold">{activity.name}</p>
+                                <p className="text-sm text-muted-foreground">{activity.category} • {new Date(activity.date).toLocaleDateString()}</p>
+                            </div>
+                            <Badge variant={activity.status === 'approved' ? 'default' : activity.status === 'pending' ? 'secondary' : 'destructive'} className='capitalize'>
+                                {activity.status}
+                            </Badge>
+                        </div>
+                    )) : (
+                        <div className="text-center py-10 text-muted-foreground">
+                            <p>No activities found for this filter.</p>
+                            <Button variant="link" asChild><Link href="/student/add-activity">Add one now!</Link></Button>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+        <div className="lg:col-span-1">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Today's Schedule</CardTitle>
+                    <CardDescription>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {todaySchedule.length > 0 ? todaySchedule.map((item, index) => (
+                        <div key={item.id}>
+                            <div className="flex gap-4">
+                                <div className="flex flex-col items-center">
+                                    <div className="h-4 w-4 rounded-full bg-primary" />
+                                    <div className="flex-1 w-px bg-border" />
+                                </div>
+                                <div className="flex-1 -mt-1">
+                                    <p className="font-semibold">{item.title}</p>
+                                    <p className="text-sm text-muted-foreground">{item.startTime} - {item.endTime}</p>
+                                    <p className="text-sm text-muted-foreground">{item.location}</p>
+                                </div>
+                            </div>
+                            {index < todaySchedule.length - 1 && <Separator className="my-4" />}
+                        </div>
+                    )) : (
+                        <div className="text-center py-10 text-muted-foreground">
+                            <p>No classes scheduled for today. Enjoy your day!</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+      </div>
     </div>
   );
 }

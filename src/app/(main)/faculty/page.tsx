@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Check, X, Search, User } from 'lucide-react';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -98,88 +98,54 @@ function StudentSearch() {
 }
 
 function GpaChart({ students }: { students: Student[] }) {
-  const averageGpa = students.reduce((acc, s) => acc + s.gpa, 0) / (students.length || 1);
-  const chartData = [{ name: 'GPA', value: averageGpa, fill: 'hsl(var(--primary))' }];
-  
+  const chartData = students
+    .slice(0, 5)
+    .sort((a, b) => b.gpa - a.gpa)
+    .map(s => ({ name: s.name.split(' ')[0], gpa: s.gpa }));
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Average Student CGPA</CardTitle>
-        <CardDescription>The average CGPA of students in your department.</CardDescription>
+        <CardTitle>Top Student CGPA</CardTitle>
+        <CardDescription>CGPA of the top 5 students in your department.</CardDescription>
       </CardHeader>
-      <CardContent className="flex items-center justify-center">
-        <div className="relative h-48 w-48">
-            <ResponsiveContainer width="100%" height="100%">
-                <RadialBarChart 
-                    innerRadius="80%" 
-                    outerRadius="100%" 
-                    data={chartData} 
-                    startAngle={90} 
-                    endAngle={-270}
-                >
-                    <PolarAngleAxis
-                        type="number"
-                        domain={[0, 10]}
-                        angleAxisId={0}
-                        tick={false}
-                    />
-                    <RadialBar
-                        background
-                        dataKey='value'
-                        cornerRadius={10}
-                        className="fill-primary"
-                    />
-                </RadialBarChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-bold">{averageGpa.toFixed(2)}</span>
-                <span className="text-sm text-muted-foreground">CGPA</span>
-            </div>
-        </div>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis domain={[0, 10]} fontSize={12} tickLine={false} axisLine={false} />
+            <Tooltip cursor={{ fill: 'hsl(var(--primary) / 0.1)' }} />
+            <Bar dataKey="gpa" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );
 }
 
 function AttendanceChart({ students }: { students: Student[] }) {
-  const averageAttendance = students.reduce((acc, s) => acc + s.attendance, 0) / (students.length || 1);
-  const chartData = [{ name: 'Attendance', value: averageAttendance, fill: 'hsl(var(--accent))' }];
-
+  const chartData = students
+    .slice(0, 5)
+    .sort((a, b) => b.attendance - a.attendance)
+    .map(s => ({ name: s.name.split(' ')[0], attendance: s.attendance }));
+  
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Average Student Attendance</CardTitle>
-        <CardDescription>The average attendance percentage in your department.</CardDescription>
+        <CardTitle>Top Student Attendance</CardTitle>
+        <CardDescription>Attendance of the top 5 students in your department.</CardDescription>
       </CardHeader>
-      <CardContent className="flex items-center justify-center">
-        <div className="relative h-48 w-48">
-            <ResponsiveContainer width="100%" height="100%">
-                <RadialBarChart 
-                    innerRadius="80%" 
-                    outerRadius="100%" 
-                    data={chartData} 
-                    startAngle={90} 
-                    endAngle={-270}
-                >
-                    <PolarAngleAxis
-                        type="number"
-                        domain={[0, 100]}
-                        angleAxisId={0}
-                        tick={false}
-                    />
-                    <RadialBar
-                        background
-                        dataKey='value'
-                        cornerRadius={10}
-                        className="fill-accent"
-                    />
-                </RadialBarChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-bold">{averageAttendance.toFixed(0)}%</span>
-                <span className="text-sm text-muted-foreground">Attendance</span>
-            </div>
-        </div>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis domain={[0, 100]} fontSize={12} tickLine={false} axisLine={false} unit="%"/>
+                <Tooltip cursor={{fill: 'hsl(var(--accent) / 0.1)'}}/>
+                <Bar dataKey="attendance" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
+            </BarChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );

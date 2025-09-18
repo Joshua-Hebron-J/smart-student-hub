@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MOCK_ACTIVITIES, MOCK_STUDENTS } from '@/lib/data';
+import { MOCK_STUDENTS } from '@/lib/data';
 import type { Activity, Student } from '@/lib/types';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
 import { Input } from '@/components/ui/input';
@@ -98,54 +98,86 @@ function StudentSearch() {
 }
 
 function GpaChart({ students }: { students: Student[] }) {
-  const chartData = students
-    .slice(0, 5)
-    .sort((a, b) => b.gpa - a.gpa)
-    .map(s => ({ name: s.name.split(' ')[0], gpa: s.gpa }));
+  const topStudents = students.sort((a, b) => b.gpa - a.gpa).slice(0, 2);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Top Student CGPA</CardTitle>
-        <CardDescription>CGPA of the top 5 students in your department.</CardDescription>
+        <CardDescription>CGPA of the top 2 students in your department.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis domain={[0, 10]} fontSize={12} tickLine={false} axisLine={false} />
-            <Tooltip cursor={{ fill: 'hsl(var(--primary) / 0.1)' }} />
-            <Bar dataKey="gpa" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <CardContent className="flex justify-around items-center h-[280px]">
+        {topStudents.map(student => (
+          <div key={student.id} className="flex flex-col items-center gap-2">
+            <div className="relative h-32 w-32">
+              <svg className="h-full w-full" viewBox="0 0 36 36">
+                <path
+                  className="text-muted/50"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                />
+                <path
+                  className="text-primary"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeDasharray={`${(student.gpa / 10) * 100}, 100`}
+                  strokeLinecap="round"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-3xl font-bold">{student.gpa.toFixed(2)}</span>
+              </div>
+            </div>
+            <p className="font-semibold text-center">{student.name}</p>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );
 }
 
 function AttendanceChart({ students }: { students: Student[] }) {
-  const chartData = students
-    .slice(0, 5)
-    .sort((a, b) => b.attendance - a.attendance)
-    .map(s => ({ name: s.name.split(' ')[0], attendance: s.attendance }));
+  const topStudents = students.sort((a, b) => b.attendance - a.attendance).slice(0, 2);
   
   return (
     <Card>
       <CardHeader>
         <CardTitle>Top Student Attendance</CardTitle>
-        <CardDescription>Attendance of the top 5 students in your department.</CardDescription>
+        <CardDescription>Attendance of the top 2 students in your department.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis domain={[0, 100]} fontSize={12} tickLine={false} axisLine={false} unit="%"/>
-                <Tooltip cursor={{fill: 'hsl(var(--accent) / 0.1)'}}/>
-                <Bar dataKey="attendance" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
-            </BarChart>
-        </ResponsiveContainer>
+      <CardContent className="flex justify-around items-center h-[280px]">
+        {topStudents.map(student => (
+          <div key={student.id} className="flex flex-col items-center gap-2">
+            <div className="relative h-32 w-32">
+              <svg className="h-full w-full" viewBox="0 0 36 36">
+                <path
+                  className="text-muted/50"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                />
+                <path
+                  className="text-accent"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeDasharray={`${student.attendance}, 100`}
+                  strokeLinecap="round"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-3xl font-bold">{student.attendance}%</span>
+              </div>
+            </div>
+            <p className="font-semibold text-center">{student.name}</p>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );

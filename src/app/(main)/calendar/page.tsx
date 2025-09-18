@@ -22,9 +22,9 @@ export default function CalendarPage() {
   
   const eventsByDate = useMemo(() => {
     return MOCK_ACADEMIC_EVENTS.reduce((acc, event) => {
-      const eventDate = new Date(event.date);
-      // Adjust for timezone differences by using UTC dates
-      const dateKey = new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate()).toDateString();
+      const [year, month, day] = event.date.split('-').map(Number);
+      // Create date in UTC to avoid timezone issues with date strings.
+      const dateKey = new Date(Date.UTC(year, month - 1, day)).toDateString();
       if (!acc[dateKey]) {
         acc[dateKey] = [];
       }

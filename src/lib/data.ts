@@ -136,6 +136,24 @@ export const MOCK_FACULTY: Faculty[] = [
     department: 'Business Administration',
     title: 'Department Head',
   },
+  {
+    id: 'faculty-4',
+    name: 'Dr. Frank Miller',
+    email: 'frank@example.com',
+    role: 'faculty',
+    avatarUrl: 'https://picsum.photos/seed/frank/100/100',
+    department: 'Computer Science',
+    title: 'Assistant Professor',
+  },
+  {
+    id: 'faculty-5',
+    name: 'Dr. Grace Lee',
+    email: 'grace@example.com',
+    role: 'faculty',
+    avatarUrl: 'https://picsum.photos/seed/grace/100/100',
+    department: 'Mechanical Engineering',
+    title: 'Professor',
+  }
 ];
 
 export const MOCK_ADMINS: Admin[] = [

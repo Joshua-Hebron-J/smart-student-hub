@@ -11,7 +11,7 @@ import {
   Calendar,
   Briefcase
 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -36,21 +36,23 @@ import {
 } from '@/components/ui/tooltip'
 
 
-const NavLink = ({ href, children, label }: { href: string, children: React.ReactNode, label: string }) => {
-  const pathname = usePathname();
-  const isActive = pathname === href;
+type View = 'dashboard' | 'timetable' | 'portfolio';
+
+
+const NavLink = ({ activeView, view, onClick, children, label }: { activeView: View, view: View, onClick: (view: View) => void, children: React.ReactNode, label: string }) => {
+  const isActive = activeView === view;
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link href={href} className={cn(
+          <button onClick={() => onClick(view)} className={cn(
             "flex items-center justify-center h-10 w-10 rounded-lg text-muted-foreground transition-colors hover:text-foreground",
             isActive && "bg-muted text-foreground"
           )}>
             {children}
             <span className="sr-only">{label}</span>
-          </Link>
+          </button>
         </TooltipTrigger>
         <TooltipContent side="bottom">{label}</TooltipContent>
       </Tooltip>
@@ -60,13 +62,15 @@ const NavLink = ({ href, children, label }: { href: string, children: React.Reac
 
 export default function Header() {
   const { user, setUser } = useUser();
-  const pathname = usePathname();
+  const [currentView, setCurrentView] = useState<View>('dashboard');
 
   const handleLogout = () => {
     setUser(null);
   };
   
-  const breadcrumbSegments = pathname.split('/').filter(Boolean);
+  const handleViewChange = (view: View) => {
+    setCurrentView(view);
+  };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur-sm sm:px-6">
@@ -85,19 +89,21 @@ export default function Header() {
       {/* Central Navigation for Student */}
       {user?.role === 'student' && (
         <nav className="hidden md:flex md:items-center md:gap-4 md:mx-auto">
-          <NavLink href="/student" label="Dashboard"><LayoutDashboard/></NavLink>
-          <NavLink href="/student/timetable" label="Timetable"><Calendar /></NavLink>
-          <NavLink href={`/students/${user.id}`} label="Portfolio"><Briefcase /></NavLink>
+          <NavLink activeView={currentView} view="dashboard" onClick={handleViewChange} label="Dashboard"><LayoutDashboard/></NavLink>
+          <NavLink activeView={currentView} view="timetable" onClick={handleViewChange} label="Timetable"><Calendar /></NavLink>
+          <NavLink activeView={currentView} view="portfolio" onClick={handleViewChange} label="Portfolio"><Briefcase /></NavLink>
         </nav>
       )}
 
       <div className="relative ml-auto flex items-center gap-2">
-        <Button asChild className="hidden sm:flex bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90">
-            <Link href="/student/add-activity">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Activity
-            </Link>
-        </Button>
+        {user?.role === 'student' && (
+            <Button asChild className="hidden sm:flex bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90">
+                <Link href="/student/add-activity">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Activity
+                </Link>
+            </Button>
+        )}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>

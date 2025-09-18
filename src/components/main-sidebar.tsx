@@ -19,6 +19,7 @@ import {
   CheckSquare,
   Clock,
   Percent,
+  Briefcase
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -42,6 +43,7 @@ const navLinks: NavLinksConfig = {
   student: [
     { href: '/student', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/student/timetable', label: 'Timetable', icon: Clock },
+    { href: '/student/portfolio', label: 'Portfolio', icon: Briefcase },
     {
       href: '#', label: 'Guidance', icon: BookUser,
       subLinks: [
@@ -95,9 +97,16 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
     { href: '/student/od-management', label: 'OD Management', icon: ClipboardList },
   ];
 
-  const sidebarLinks = user.role === 'student' ? studentSidebarLinks : userNavLinks;
+  // In mobile view for students, all links should be visible in the sidebar.
+  const getLinksForRole = () => {
+    if (user.role === 'student' && !isMobile) {
+      return studentSidebarLinks;
+    }
+    return userNavLinks;
+  }
 
-  const allLinks = [...sidebarLinks, ...commonLinks];
+  const allLinks = [...getLinksForRole(), ...commonLinks];
+
 
   const renderLink = (link: NavLink, isSubLink = false) => {
     const isActive = !link.subLinks && (pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href)));

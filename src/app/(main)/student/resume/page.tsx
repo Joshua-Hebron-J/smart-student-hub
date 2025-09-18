@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Wand2, Printer, Download, Clipboard } from 'lucide-react';
+import { Wand2, Printer, Clipboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/hooks/use-app-context';

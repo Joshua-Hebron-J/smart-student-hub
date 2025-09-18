@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Users, Building, ClipboardList, Search } from 'lucide-react';
@@ -22,8 +23,17 @@ function AdminStudentSearch() {
 
     setIsLoading(true);
     try {
-      // Admin search has no department filter
-      const response = await naturalLanguageStudentSearch({ query });
+      const studentDataForAI = MOCK_STUDENTS.map(student => ({
+        name: student.name,
+        skills: student.skills,
+        interests: student.interests,
+        areaOfInterest: student.areaOfInterest,
+      }));
+
+      const response = await naturalLanguageStudentSearch({ 
+        query,
+        students: studentDataForAI
+      });
       const foundStudents = MOCK_STUDENTS.filter(student => response.studentNames.includes(student.name));
       setResults(foundStudents);
     } catch (error) {

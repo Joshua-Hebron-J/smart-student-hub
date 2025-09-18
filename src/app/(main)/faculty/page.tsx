@@ -23,6 +23,8 @@ function StudentSearch() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<Student[]>([]);
   const { user } = useUser();
+  const departmentStudents = MOCK_STUDENTS.filter(s => s.department === (user as any).department);
+
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,13 +32,20 @@ function StudentSearch() {
 
     setIsLoading(true);
     try {
+      const studentDataForAI = departmentStudents.map(student => ({
+        name: student.name,
+        skills: student.skills,
+        interests: student.interests,
+        areaOfInterest: student.areaOfInterest,
+      }));
+
       const response = await naturalLanguageStudentSearch({ 
         query,
-        // The AI can now use the areaOfInterest from the query itself
+        students: studentDataForAI
       });
-      const foundStudents = MOCK_STUDENTS.filter(student => 
-        response.studentNames.includes(student.name) && 
-        student.department === (user as any).department
+
+      const foundStudents = departmentStudents.filter(student => 
+        response.studentNames.includes(student.name)
       );
       setResults(foundStudents);
     } catch (error) {

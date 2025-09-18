@@ -11,8 +11,16 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const StudentDataSchema = z.object({
+  name: z.string(),
+  skills: z.array(z.string()),
+  interests: z.array(z.string()),
+  areaOfInterest: z.string(),
+});
+
 const NaturalLanguageStudentSearchInputSchema = z.object({
   query: z.string().describe('The natural language query to search for students.'),
+  students: z.array(StudentDataSchema).describe('A list of all students to search through.'),
 });
 export type NaturalLanguageStudentSearchInput = z.infer<typeof NaturalLanguageStudentSearchInputSchema>;
 
@@ -29,13 +37,18 @@ const prompt = ai.definePrompt({
   name: 'naturalLanguageStudentSearchPrompt',
   input: {schema: NaturalLanguageStudentSearchInputSchema},
   output: {schema: NaturalLanguageStudentSearchOutputSchema},
-  prompt: `You are an AI assistant helping faculty members find students.
+  prompt: `You are an AI assistant helping faculty members find students from a provided list.
 
-  The faculty member is searching for students using the following query: {{{query}}}
+  The faculty member is searching for students using the following query: "{{{query}}}"
 
-  Filter students based on their skills, interests, or their specified 'areaOfInterest'.
+  You have been given the following list of students and their details:
+  {{#each students}}
+  - Name: {{{this.name}}}, Skills: {{#each this.skills}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}, Interests: {{#each this.interests}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}, Area of Interest: {{{this.areaOfInterest}}}
+  {{/each}}
 
-  Return a list of student names that match the query. Only return student names. Do not include any other information.
+  Your task is to filter this list based on the query. Match the query against student skills, interests, or their specified 'areaOfInterest'.
+
+  Return a list of only the names of the students that match the query. Do not include any other information.
   If no students match the query, return an empty array.
 
   Example Output:

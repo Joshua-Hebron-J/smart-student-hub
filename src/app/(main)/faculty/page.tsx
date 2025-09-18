@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MOCK_STUDENTS } from '@/lib/data';
+import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Activity, Student } from '@/lib/types';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
 import { Input } from '@/components/ui/input';

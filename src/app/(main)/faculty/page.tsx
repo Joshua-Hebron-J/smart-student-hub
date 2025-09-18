@@ -1,10 +1,9 @@
-
 // src/app/(main)/faculty/page.tsx
 'use client';
 
 import { useState } from 'react';
 import { Check, X, Search, User } from 'lucide-react';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Defs, LinearGradient, Stop } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -89,6 +88,34 @@ function StudentSearch() {
   );
 }
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-lg border bg-background p-2 shadow-sm">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col space-y-1">
+            <span className="text-[0.70rem] uppercase text-muted-foreground">
+              Student
+            </span>
+            <span className="font-bold text-muted-foreground">{label}</span>
+          </div>
+          <div className="flex flex-col space-y-1">
+            <span className="text-[0.70rem] uppercase text-muted-foreground">
+              {payload[0].name}
+            </span>
+            <span className="font-bold">
+              {payload[0].value}
+              {payload[0].name === 'attendance' && '%'}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
+
 function GpaChart({ students }: { students: Student[] }) {
   const chartData = students.map(s => ({ name: s.name.split(' ')[0], gpa: s.gpa }));
 
@@ -100,12 +127,18 @@ function GpaChart({ students }: { students: Student[] }) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <Defs>
+              <LinearGradient id="gpaGradient" x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                <Stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+              </LinearGradient>
+            </Defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
             <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]}/>
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="gpa" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--primary) / 0.1)' }}/>
+            <Bar dataKey="gpa" fill="url(#gpaGradient)" radius={[4, 4, 0, 0]} background={{ fill: 'hsl(var(--primary) / 0.05)', radius: 4 }} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -124,12 +157,18 @@ function AttendanceChart({ students }: { students: Student[] }) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+             <Defs>
+              <LinearGradient id="attendanceGradient" x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.8}/>
+                <Stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0.2}/>
+              </LinearGradient>
+            </Defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
             <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[50, 100]} unit="%"/>
-            <Tooltip formatter={(value) => `${value}%`}/>
-            <Legend />
-            <Bar dataKey="attendance" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent) / 0.1)' }}/>
+            <Bar dataKey="attendance" fill="url(#attendanceGradient)" radius={[4, 4, 0, 0]} background={{ fill: 'hsl(var(--accent) / 0.05)', radius: 4 }} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

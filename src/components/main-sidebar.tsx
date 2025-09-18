@@ -56,6 +56,7 @@ const navLinks: NavLinksConfig = {
   ],
   faculty: [
     { href: '/faculty', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/faculty/manage-students', label: 'Manage Students', icon: Users },
     { href: '/faculty/od-approvals', label: 'OD Approvals', icon: CheckSquare },
     { href: '/faculty/timetable', label: 'Timetable', icon: Clock },
   ],

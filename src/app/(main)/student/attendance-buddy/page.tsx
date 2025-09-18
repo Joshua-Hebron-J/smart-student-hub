@@ -48,22 +48,30 @@ export default function AttendanceBuddyPage() {
   const onSubmit = (data: AttendanceFormValues) => {
     const { totalDays, daysAttended, requiredPercentage } = data;
 
-    const requiredAttendance = Math.ceil((requiredPercentage / 100) * totalDays);
-    const leavesTaken = totalDays - daysAttended;
-    const maxLeavesAllowed = totalDays - requiredAttendance;
+    if (daysAttended > totalDays) {
+        setResult({
+            message: 'Days attended cannot be greater than total working days.',
+            type: 'danger'
+        });
+        return;
+    }
 
-    if (daysAttended < requiredAttendance) {
-      const daysShort = requiredAttendance - daysAttended;
-      setResult({
-        message: `You need to attend ${daysShort} more class(es) to meet the ${requiredPercentage}% requirement.`,
-        type: 'danger',
-      });
+    const requiredDaysAttended = Math.ceil((requiredPercentage / 100) * totalDays);
+    const leavesTaken = totalDays - daysAttended;
+    const maxLeavesAllowed = totalDays - requiredDaysAttended;
+    
+    if (leavesTaken > maxLeavesAllowed) {
+        const daysShort = requiredDaysAttended - daysAttended;
+        setResult({
+            message: `You are short on attendance. You need to attend ${daysShort} more class(es) to reach the ${requiredPercentage}% requirement.`,
+            type: 'danger'
+        });
     } else {
-      const leavesYouCanTake = daysAttended - requiredAttendance;
-       setResult({
-        message: `You are safe! You can still miss ${leavesYouCanTake} more class(es) and maintain ${requiredPercentage}% attendance.`,
-        type: 'safe',
-      });
+        const leavesYouCanStillTake = maxLeavesAllowed - leavesTaken;
+        setResult({
+            message: `You are safe! You can take ${leavesYouCanStillTake} more leave(s) and still maintain ${requiredPercentage}% attendance.`,
+            type: 'safe'
+        });
     }
   };
 
@@ -194,4 +202,3 @@ export default function AttendanceBuddyPage() {
     </div>
   );
 }
-

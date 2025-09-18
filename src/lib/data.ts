@@ -1,3 +1,4 @@
+
 import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser } from './types';
 
 export const MOCK_STUDENTS: Student[] = [

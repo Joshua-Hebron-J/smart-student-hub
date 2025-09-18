@@ -29,9 +29,11 @@ const prompt = ai.definePrompt({
   name: 'naturalLanguageStudentSearchPrompt',
   input: {schema: NaturalLanguageStudentSearchInputSchema},
   output: {schema: NaturalLanguageStudentSearchOutputSchema},
-  prompt: `You are an AI assistant helping faculty members find students based on their skills, interests, area of interest, or activities.
+  prompt: `You are an AI assistant helping faculty members find students.
 
   The faculty member is searching for students using the following query: {{{query}}}
+
+  Filter students based on their skills, interests, or their specified 'areaOfInterest'.
 
   Return a list of student names that match the query. Only return student names. Do not include any other information.
   If no students match the query, return an empty array.

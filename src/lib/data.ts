@@ -45,6 +45,67 @@ export const MOCK_STUDENTS: Student[] = [
     interests: ['Formula SAE', 'Drone Racing', 'Sustainable Design'],
     bio: 'Mechanical engineering student with a focus on robotics and automation. Captain of the university\'s Formula SAE team.',
   },
+  {
+    id: 'student-3',
+    name: 'Charlie Brown',
+    email: 'charlie@example.com',
+    role: 'student',
+    avatarUrl: 'https://picsum.photos/seed/charlie/100/100',
+    department: 'Business Administration',
+    major: 'Marketing',
+    enrollmentYear: 2022,
+    registerNumber: 'BA2022042',
+    dob: '2004-02-14',
+    gpa: 9.1,
+    attendance: 98,
+    activities: [],
+    skills: ['Market Research', 'SEO', 'Content Creation', 'Social Media Marketing'],
+    interests: ['Entrepreneurship', 'Digital Art', 'Public Speaking'],
+    bio: 'A creative and driven marketing student with a passion for building brands and connecting with audiences. Eager to apply my skills in a real-world setting.',
+    medicalDetails: {
+      condition: 'None',
+      notes: '',
+      bloodGroup: 'O+',
+      allergies: ['Peanuts'],
+      emergencyContact: { name: 'Sally Brown', phone: '555-0103' }
+    }
+  },
+  {
+    id: 'student-4',
+    name: 'Diana Prince',
+    email: 'diana@example.com',
+    role: 'student',
+    avatarUrl: 'https://picsum.photos/seed/diana/100/100',
+    department: 'Computer Science',
+    major: 'Cybersecurity',
+    enrollmentYear: 2021,
+    registerNumber: 'CS2021088',
+    dob: '2003-08-30',
+    gpa: 8.5,
+    attendance: 90,
+    activities: [],
+    skills: ['Network Security', 'Ethical Hacking', 'Cryptography', 'Linux'],
+    interests: ['Ancient History', 'Archery', 'Diplomacy'],
+    bio: 'Dedicated cybersecurity student focused on protecting digital infrastructure. My goal is to work in national security or for a major tech firm to combat cyber threats.',
+  },
+  {
+    id: 'student-5',
+    name: 'Ethan Hunt',
+    email: 'ethan@example.com',
+    role: 'student',
+    avatarUrl: 'https://picsum.photos/seed/ethan/100/100',
+    department: 'Mechanical Engineering',
+    major: 'Automotive',
+    enrollmentYear: 2020,
+    registerNumber: 'ME2020031',
+    dob: '2002-01-18',
+    gpa: 7.9,
+    attendance: 81,
+    activities: ['activity-3'],
+    skills: ['Engine Dynamics', 'Vehicle Design', 'AutoCAD', 'Problem Solving'],
+    interests: ['Rock Climbing', 'Motorcycle Restoration', 'Travel'],
+    bio: 'Hands-on automotive engineering student with a knack for solving impossible problems. I thrive under pressure and enjoy working on complex mechanical systems.',
+  }
 ];
 
 export const MOCK_FACULTY: Faculty[] = [
@@ -65,6 +126,15 @@ export const MOCK_FACULTY: Faculty[] = [
     avatarUrl: 'https://picsum.photos/seed/david/100/100',
     department: 'Mechanical Engineering',
     title: 'Associate Professor',
+  },
+   {
+    id: 'faculty-3',
+    name: 'Dr. Evelyn Reed',
+    email: 'evelyn@example.com',
+    role: 'faculty',
+    avatarUrl: 'https://picsum.photos/seed/evelyn/100/100',
+    department: 'Business Administration',
+    title: 'Department Head',
   },
 ];
 
@@ -109,6 +179,24 @@ export const MOCK_ACTIVITIES: Activity[] = [
     status: 'approved',
     skills: ['CAD', 'Aerodynamics', 'Project Management'],
   },
+  {
+    id: 'activity-4',
+    studentId: 'student-5',
+    name: 'Engine Overhaul Workshop',
+    description: 'Participated in a 3-day workshop on completely disassembling and reassembling a V8 engine. Diagnosed and fixed three simulated faults.',
+    date: '2024-02-20',
+    status: 'approved',
+    skills: ['Engine Dynamics', 'Fault Diagnosis', 'Teamwork'],
+  },
+  {
+    id: 'activity-5',
+    studentId: 'student-3',
+    name: 'National Business Plan Competition',
+    description: 'Reached the semi-finals with an innovative business plan for a sustainable packaging startup. Developed the marketing and go-to-market strategy.',
+    date: '2024-04-10',
+    status: 'pending',
+    skills: ['Market Research', 'Business Strategy', 'Financial Projections'],
+  },
 ];
 
 
@@ -131,4 +219,5 @@ export const MOCK_OD_APPLICATIONS: ODApplication[] = [
     { id: 'od-1', studentId: 'student-1', date: '2024-08-15', reason: 'Attending National AI Conference', status: 'approved' },
     { id: 'od-2', studentId: 'student-2', date: '2024-09-01', reason: 'Formula SAE Regional Meet', status: 'pending' },
     { id: 'od-3', studentId: 'student-1', date: '2024-09-05', reason: 'Inter-University Debate Competition', status: 'rejected' },
+    { id: 'od-4', studentId: 'student-4', date: '2024-09-12', reason: 'DefCon Hacking Conference', status: 'pending' },
 ];

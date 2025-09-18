@@ -74,14 +74,16 @@ export default function CalendarPage() {
             onSelect={setDate}
             className="rounded-md border p-0"
             components={{
-              DayContent: ({ date }) => {
-                const events = eventsByDate[date.toDateString()];
+              DayContent: ({ date, ...props }) => {
+                const dayEvents = eventsByDate[date.toDateString()];
+                const dayNumber = date.getDate();
+                
                 return (
-                  <div className="relative h-full w-full">
-                    <span className="relative z-10">{date.getDate()}</span>
-                    {events && (
-                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
-                        {events.slice(0, 3).map((event, i) => (
+                  <div className="relative h-full w-full flex items-center justify-center">
+                    {props.children}
+                    {dayEvents && (
+                      <div className="absolute bottom-1 flex gap-0.5">
+                        {dayEvents.slice(0, 3).map((event, i) => (
                            <div key={i} className={`h-1.5 w-1.5 rounded-full ${event.color}`} />
                         ))}
                       </div>

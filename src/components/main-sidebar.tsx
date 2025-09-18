@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   CheckSquare,
   Clock,
+  Percent,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -48,6 +49,7 @@ const navLinks: NavLinksConfig = {
       subLinks: [
         { href: '/student/career-guidance', label: 'Career AI', icon: BotMessageSquare },
         { href: '/student/resume', label: 'AI Resume', icon: FileText },
+        { href: '/student/attendance-buddy', label: 'Attendance Buddy', icon: Percent },
       ]
     },
     { href: '/student/od-management', label: 'OD Management', icon: ClipboardList },

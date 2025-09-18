@@ -269,8 +269,11 @@ export const MOCK_STUDENT_TIMETABLE: TimetableEntry[] = [
 
 export const MOCK_FACULTY_TIMETABLE: TimetableEntry[] = [
   { id: 'tt-f1', title: 'CS401: Adv. Algorithms', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Room 301', color: 'blue' },
+  { id: 'tt-f8', title: 'Office Hours', day: 'Monday', startTime: '13:00', endTime: '14:00', location: 'Office 22B', color: 'green' },
   { id: 'tt-f2', title: 'CS405: AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple' },
   { id: 'tt-f3', title: 'Office Hours', day: 'Tuesday', startTime: '15:00', endTime: '17:00', location: 'Office 22B', color: 'green' },
+  { id: 'tt-f6', title: 'CS305: Operating Systems', day: 'Wednesday', startTime: '10:00', endTime: '12:00', location: 'Room 205', color: 'orange' },
+  { id: 'tt-f7', title: 'CS401L: Adv. Algorithms Lab', day: 'Wednesday', startTime: '14:00', endTime: '16:00', location: 'Lab 7', color: 'pink' },
   { id: 'tt-f4', title: 'CS201: Data Structures', day: 'Thursday', startTime: '10:00', endTime: '12:00', location: 'Room 101', color: 'blue' },
   { id: 'tt-f5', title: 'Department Meeting', day: 'Friday', startTime: '15:00', endTime: '16:00', location: 'Conf Room 3', color: 'red' },
 ];

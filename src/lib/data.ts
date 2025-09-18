@@ -226,18 +226,21 @@ export const MOCK_ACTIVITIES: Activity[] = [
 
 
 export const MOCK_STUDENT_TIMETABLE: TimetableEntry[] = [
-    { day: 'Monday', time: '09:00 - 11:00', course: 'CS401: Advanced Algorithms', location: 'Room 301' },
-    { day: 'Tuesday', time: '13:00 - 15:00', course: 'CS405: AI & Ethics', location: 'Room 405' },
-    { day: 'Wednesday', time: '10:00 - 12:00', course: 'CS401: Advanced Algorithms Lab', location: 'Lab 5' },
-    { day: 'Thursday', time: '14:00 - 16:00', course: 'ME302: Thermodynamics', location: 'Room 210' },
-    { day: 'Friday', time: '11:00 - 13:00', course: 'HUM201: Creative Writing', location: 'Room 115' },
+  { id: 'tt-s1', title: 'Advanced Algorithms', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Room 301', color: 'blue' },
+  { id: 'tt-s2', title: 'AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple' },
+  { id: 'tt-s3', title: 'Advanced Algorithms Lab', day: 'Wednesday', startTime: '10:00', endTime: '12:00', location: 'Lab 5', color: 'blue' },
+  { id: 'tt-s4', title: 'Thermodynamics', day: 'Thursday', startTime: '14:00', endTime: '16:00', location: 'Room 210', color: 'orange' },
+  { id: 'tt-s5', title: 'Creative Writing', day: 'Friday', startTime: '11:00', endTime: '13:00', location: 'Room 115', color: 'pink' },
+  { id: 'tt-s6', title: 'Robotics Club Meeting', day: 'Monday', startTime: '17:00', endTime: '18:30', location: 'Mech Hall', color: 'green' },
+  { id: 'tt-s7', title: 'Study Group', day: 'Wednesday', startTime: '16:00', endTime: '18:00', location: 'Library', color: 'red' },
 ];
 
 export const MOCK_FACULTY_TIMETABLE: TimetableEntry[] = [
-    { day: 'Monday', time: '09:00 - 11:00', course: 'CS401: Advanced Algorithms', location: 'Room 301' },
-    { day: 'Tuesday', time: '13:00 - 15:00', course: 'CS405: AI & Ethics', location: 'Room 405' },
-    { day: 'Tuesday', time: '15:00 - 17:00', course: 'Office Hours', location: 'Office 22B' },
-    { day: 'Thursday', time: '10:00 - 12:00', course: 'CS201: Data Structures', location: 'Room 101' },
+  { id: 'tt-f1', title: 'CS401: Adv. Algorithms', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Room 301', color: 'blue' },
+  { id: 'tt-f2', title: 'CS405: AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple' },
+  { id: 'tt-f3', title: 'Office Hours', day: 'Tuesday', startTime: '15:00', endTime: '17:00', location: 'Office 22B', color: 'green' },
+  { id: 'tt-f4', title: 'CS201: Data Structures', day: 'Thursday', startTime: '10:00', endTime: '12:00', location: 'Room 101', color: 'blue' },
+  { id: 'tt-f5', title: 'Department Meeting', day: 'Friday', startTime: '15:00', endTime: '16:00', location: 'Conf Room 3', color: 'red' },
 ];
 
 export const MOCK_OD_APPLICATIONS: ODApplication[] = [

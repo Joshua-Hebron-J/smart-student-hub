@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface Activity {
-  id: string;
+  id:string;
   studentId: string;
   name: string;
   description: string;
@@ -61,10 +61,14 @@ export interface Admin extends User {
 export type AppUser = Student | Faculty | Admin;
 
 export interface TimetableEntry {
-  day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday';
-  time: string;
-  course: string;
+  id: string;
+  title: string;
+  day: 'Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
+  startTime: string; // "HH:MM"
+  endTime: string; // "HH:MM"
   location: string;
+  description?: string;
+  color: 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'pink';
 }
 
 export interface ODApplication {

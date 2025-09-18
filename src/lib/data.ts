@@ -226,13 +226,40 @@ export const MOCK_ACTIVITIES: Activity[] = [
 
 
 export const MOCK_STUDENT_TIMETABLE: TimetableEntry[] = [
-  { id: 'tt-s1', title: 'Advanced Algorithms', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Room 301', color: 'blue' },
-  { id: 'tt-s2', title: 'AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple' },
-  { id: 'tt-s3', title: 'Advanced Algorithms Lab', day: 'Wednesday', startTime: '10:00', endTime: '12:00', location: 'Lab 5', color: 'blue' },
-  { id: 'tt-s4', title: 'Thermodynamics', day: 'Thursday', startTime: '14:00', endTime: '16:00', location: 'Room 210', color: 'orange' },
-  { id: 'tt-s5', title: 'Creative Writing', day: 'Friday', startTime: '11:00', endTime: '13:00', location: 'Room 115', color: 'pink' },
-  { id: 'tt-s6', title: 'Robotics Club Meeting', day: 'Monday', startTime: '17:00', endTime: '18:30', location: 'Mech Hall', color: 'green' },
-  { id: 'tt-s7', title: 'Study Group', day: 'Wednesday', startTime: '16:00', endTime: '18:00', location: 'Library', color: 'red' },
+  // Monday
+  { id: 'tt-m1', title: 'Calculus II', day: 'Monday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue' },
+  { id: 'tt-m2', title: 'Intro to Python', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Lab 3', color: 'green' },
+  { id: 'tt-m3', title: 'Lunch Break', day: 'Monday', startTime: '12:00', endTime: '13:00', location: 'Cafeteria', color: 'orange' },
+  { id: 'tt-m4', title: 'Physics I', day: 'Monday', startTime: '14:00', endTime: '15:30', location: 'Sci-201', color: 'purple' },
+  { id: 'tt-m5', title: 'Robotics Club', day: 'Monday', startTime: '17:00', endTime: '18:30', location: 'Mech Hall', color: 'red' },
+
+  // Tuesday
+  { id: 'tt-t1', title: 'Data Structures', day: 'Tuesday', startTime: '10:00', endTime: '12:00', location: 'CS-101', color: 'blue' },
+  { id: 'tt-t2', title: 'English Composition', day: 'Tuesday', startTime: '12:00', endTime: '13:00', location: 'Arts-50', color: 'pink' },
+  { id: 'tt-t3', title: 'AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple' },
+  { id: 'tt-t4', title: 'Library Study Session', day: 'Tuesday', startTime: '15:00', endTime: '17:00', location: 'Library', color: 'red' },
+  { id: 'tt-t5', title: 'Gym Time', day: 'Tuesday', startTime: '18:00', endTime: '19:00', location: 'Campus Gym', color: 'orange' },
+
+  // Wednesday
+  { id: 'tt-w1', title: 'Calculus II', day: 'Wednesday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue' },
+  { id: 'tt-w2', title: 'Intro to Python Lab', day: 'Wednesday', startTime: '10:00', endTime: '12:00', location: 'Lab 5', color: 'green' },
+  { id: 'tt-w3', title: 'Lunch', day: 'Wednesday', startTime: '12:00', endTime: '13:00', location: 'Cafeteria', color: 'orange' },
+  { id: 'tt-w4', title: 'Physics I Lab', day: 'Wednesday', startTime: '14:00', endTime: '16:00', location: 'Physics Lab B', color: 'purple' },
+  { id: 'tt-w5', title: 'Study Group for DS', day: 'Wednesday', startTime: '16:00', endTime: '18:00', location: 'Library', color: 'red' },
+
+  // Thursday
+  { id: 'tt-th1', title: 'Data Structures', day: 'Thursday', startTime: '10:00', endTime: '12:00', location: 'CS-101', color: 'blue' },
+  { id: 'tt-th2', title: 'Thermodynamics', day: 'Thursday', startTime: '14:00', endTime: '16:00', location: 'Room 210', color: 'orange' },
+  { id: 'tt-th3', title: 'Presentation Skills Workshop', day: 'Thursday', startTime: '16:00', endTime: '17:30', location: 'Auditorium', color: 'pink' },
+  { id: 'tt-th4', title: 'Part-time Job', day: 'Thursday', startTime: '18:00', endTime: '21:00', location: 'Campus Cafe', color: 'green' },
+  { id: 'tt-th5', title: 'Meet with Advisor', day: 'Thursday', startTime: '12:30', endTime: '13:00', location: 'Office 22B', color: 'purple' },
+  
+  // Friday
+  { id: 'tt-f1', title: 'Calculus II', day: 'Friday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue' },
+  { id: 'tt-f2', title: 'Creative Writing', day: 'Friday', startTime: '11:00', endTime: '13:00', location: 'Room 115', color: 'pink' },
+  { id: 'tt-f3', title: 'Team Project Meeting', day: 'Friday', startTime: '14:00', endTime: '16:00', location: 'Project Room 3', color: 'green' },
+  { id: 'tt-f4', title: 'Weekly Quiz - Physics', day: 'Friday', startTime: '16:00', endTime: '17:00', location: 'Sci-201', color: 'purple' },
+  { id: 'tt-f5', title: 'Movie Night', day: 'Friday', startTime: '19:00', endTime: '21:00', location: 'Common Room', color: 'red' }
 ];
 
 export const MOCK_FACULTY_TIMETABLE: TimetableEntry[] = [

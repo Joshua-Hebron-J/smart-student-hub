@@ -15,17 +15,17 @@ import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 
 const MetricCard = ({ icon: Icon, title, value, trend, footer, color }: { icon: React.ElementType, title: string, value: string | number, trend?: string, footer: string, color: string }) => (
-    <Card className={cn("overflow-hidden", color)}>
+    <Card className={cn("overflow-hidden text-white", color)}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{title}</CardTitle>
-            <Icon className="h-5 w-5 text-current" />
+            <Icon className="h-5 w-5 text-current/80" />
         </CardHeader>
         <CardContent>
             <div className="text-4xl font-bold">{value}</div>
-            <p className="text-xs text-current/80">{footer}</p>
+            <p className="text-xs opacity-80">{footer}</p>
         </CardContent>
         {trend && (
-            <div className="text-xs font-medium bg-black/10 px-6 py-1 flex items-center gap-1">
+            <div className="text-xs font-medium bg-black/20 px-6 py-1 flex items-center gap-1">
                 <TrendingUp className="h-4 w-4"/>
                 {trend}
             </div>
@@ -69,7 +69,7 @@ export default function StudentDashboardHome() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="p-6 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground">
+      <div className="p-6 rounded-xl bg-gradient-to-r from-blue-500 to-teal-400 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Welcome back, {student.name.split(' ')[0]}!</h1>
         <p className="opacity-80">Here's your academic snapshot for today. Keep up the great work!</p>
       </div>
@@ -81,28 +81,28 @@ export default function StudentDashboardHome() {
             value={student.gpa.toFixed(2)} 
             footer="Cumulative Grade Point Average"
             trend="+0.2 from last semester"
-            color="bg-blue-100 text-blue-800"
+            color="bg-gradient-to-br from-indigo-500 to-blue-500"
         />
         <MetricCard 
             icon={Percent} 
             title="Attendance" 
             value={`${student.attendance}%`} 
             footer="Overall Attendance"
-            color="bg-teal-100 text-teal-800"
+            color="bg-gradient-to-br from-teal-500 to-green-500"
         />
         <MetricCard 
             icon={Award} 
             title="Total Credits" 
             value={totalCredits} 
             footer="From approved activities"
-            color="bg-purple-100 text-purple-800"
+            color="bg-gradient-to-br from-purple-500 to-violet-500"
         />
         <MetricCard 
             icon={Calendar} 
             title="Upcoming Deadlines" 
             value={upcomingDeadlinesCount} 
             footer="In this semester"
-            color="bg-orange-100 text-orange-800"
+            color="bg-gradient-to-br from-orange-500 to-amber-500"
         />
       </div>
 

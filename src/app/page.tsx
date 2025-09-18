@@ -105,14 +105,14 @@ export default function LoginPage() {
         </header>
 
         <main className="w-full max-w-sm space-y-6">
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-2xl">
+          <div className="bg-white/10 glassmorphism rounded-xl p-8 shadow-2xl border border-white/20">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-center text-foreground">Welcome Back</h2>
+              <h2 className="text-2xl font-bold text-center text-white">Welcome Back</h2>
             </div>
             
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1">
-                <Label htmlFor="email" className="font-semibold text-foreground/80">Email</Label>
+                <Label htmlFor="email" className="font-semibold text-white/80">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -120,11 +120,11 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-white border-border h-11 text-base placeholder:text-muted-foreground/60"
+                  className="bg-white/10 border-white/20 h-11 text-base placeholder:text-white/60 text-white"
                 />
               </div>
               <div className="space-y-1">
-                 <Label htmlFor="password" className="font-semibold text-foreground/80">Password</Label>
+                 <Label htmlFor="password" className="font-semibold text-white/80">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -132,7 +132,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white border-border h-11 text-base placeholder:text-muted-foreground/60"
+                   className="bg-white/10 border-white/20 h-11 text-base placeholder:text-white/60 text-white"
                 />
               </div>
               <Button 
@@ -147,15 +147,15 @@ export default function LoginPage() {
                 )}
               </Button>
               <div className="text-center pt-2">
-                 <a href="#" className="text-sm font-medium text-blue-600 hover:underline">Forgot password?</a>
+                 <a href="#" className="text-sm font-medium text-blue-400 hover:underline">Forgot password?</a>
               </div>
             </form>
           </div>
           
            {quote.quote && (
-              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 text-center shadow-2xl">
-                <p className="text-sm text-foreground italic">"{quote.quote}"</p>
-                <p className="text-xs text-foreground/60 mt-2">- {quote.author}</p>
+              <div className="bg-white/10 glassmorphism border border-white/20 rounded-xl p-4 text-center shadow-2xl">
+                <p className="text-sm text-white italic">"{quote.quote}"</p>
+                <p className="text-xs text-white/60 mt-2">- {quote.author}</p>
               </div>
             )}
         </main>

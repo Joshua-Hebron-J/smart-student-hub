@@ -19,12 +19,12 @@ const timeSlots = Array.from({ length: 11 }, (_, i) => `${(i + 8).toString().pad
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const eventColorClasses: Record<string, string> = {
-  blue: 'from-blue-500 to-blue-400 text-white',
-  green: 'from-green-500 to-green-400 text-white',
-  purple: 'from-purple-500 to-purple-400 text-white',
-  orange: 'from-orange-500 to-orange-400 text-white',
-  red: 'from-red-500 to-red-400 text-white',
-  pink: 'from-pink-500 to-pink-400 text-white',
+  blue: 'from-blue-500 to-cyan-400 text-white',
+  green: 'from-green-500 to-emerald-400 text-white',
+  purple: 'from-purple-500 to-violet-400 text-white',
+  orange: 'from-orange-500 to-amber-400 text-white',
+  red: 'from-red-500 to-rose-400 text-white',
+  pink: 'from-pink-500 to-fuchsia-400 text-white',
 };
 
 const ClassCard = ({ event }: { event: TimetableEntry }) => (

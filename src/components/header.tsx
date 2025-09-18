@@ -97,7 +97,7 @@ export default function Header() {
 
       <div className="relative ml-auto flex items-center gap-2">
         {user?.role === 'student' && (
-            <Button asChild className="hidden sm:flex bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90">
+            <Button asChild className="hidden sm:flex bg-gradient-to-r from-blue-500 to-teal-400 text-white hover:opacity-90">
                 <Link href="/student/add-activity">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Add Activity
@@ -110,8 +110,8 @@ export default function Header() {
               <Button variant="ghost" size="icon" className="relative rounded-full h-10 w-10">
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-2 right-2 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
                 <span className="sr-only">Toggle notifications</span>
               </Button>

@@ -2,18 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { GraduationCap, Building, ShieldCheck } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
 import { MOCK_USERS } from '@/lib/data';
-import type { UserRole } from '@/lib/types';
+import type { AppUser } from '@/lib/types';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,120 +18,108 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const user = MOCK_USERS.find(
-      (u) => u.email === email && u.role === role // Simplified auth
-    );
+    setIsLoading(true);
 
-    if (user && password) { // In a real app, you'd check the password
-      setUser(user);
-      toast({
-        title: 'Login Successful',
-        description: `Welcome back, ${user.name}!`,
-      });
-      router.push(`/${user.role}`);
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Invalid credentials or role. Please try again.',
-      });
-    }
+    // Simulate network delay
+    setTimeout(() => {
+      const user = MOCK_USERS.find((u) => u.email === email);
+
+      if (user && password) { // In a real app, you'd check the hashed password
+        setUser(user as AppUser);
+        toast({
+          title: 'Login Successful',
+          description: `Welcome back, ${user.name}!`,
+        });
+        router.push(`/${user.role}`);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: 'Invalid credentials. Please try again.',
+        });
+      }
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
-    <div className="w-full min-h-screen lg:grid lg:grid-cols-2">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[380px] gap-6">
-          <div className="grid gap-2 text-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-headline font-bold">Smart Student Hub</h1>
+    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-gray-800 via-gray-900 to-black text-white">
+      {/* Decorative blur elements */}
+      <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob"></div>
+      <div className="absolute top-0 -right-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-4000"></div>
+      
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+        
+        <header className="text-center mb-10">
+            <div className="inline-flex items-center justify-center bg-blue-500/10 p-3 rounded-2xl mb-4">
+                <GraduationCap className="h-10 w-10 text-blue-400" />
             </div>
-            <p className="text-balance text-muted-foreground">
-              Enter your credentials to access your dashboard
+            <h1 className="text-4xl md:text-5xl font-bold font-headline text-white">
+                Smart Student Hub
+            </h1>
+            <p className="text-md text-gray-400 mt-3 italic">
+                "The future belongs to those who believe in the beauty of their dreams."
             </p>
-             <p className="text-sm text-muted-foreground italic mt-2">
-              "The future belongs to those who believe in the beauty of their dreams."
-            </p>
-          </div>
-          <form onSubmit={handleLogin} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+        </header>
+
+        <main className="w-full max-w-md">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+            <div className="mb-6 text-center">
+              <h2 className="text-3xl font-bold text-white">Login to Your Account</h2>
+              <p className="text-gray-300 mt-1">Welcome back! Please enter your details</p>
             </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+            
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-semibold text-gray-300">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@university.edu"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/5 border-white/20 text-white font-semibold placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500 h-12 text-base"
+                />
               </div>
-              <Input 
-                id="password" 
-                type="password" 
-                required 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label>Login as</Label>
-              <RadioGroup defaultValue="student" className="grid grid-cols-3 gap-4" onValueChange={(value: string) => setRole(value as UserRole)}>
-                <div>
-                  <RadioGroupItem value="student" id="student" className="peer sr-only" />
-                  <Label
-                    htmlFor="student"
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                  >
-                    <GraduationCap className="mb-3 h-6 w-6" />
-                    Student
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem value="faculty" id="faculty" className="peer sr-only" />
-                  <Label
-                    htmlFor="faculty"
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                  >
-                    <Building className="mb-3 h-6 w-6" />
-                    Faculty
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem value="admin" id="admin" className="peer sr-only" />
-                  <Label
-                    htmlFor="admin"
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                  >
-                    <ShieldCheck className="mb-3 h-6 w-6" />
-                    Admin
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-            <Button type="submit" className="w-full font-bold">
-              Login
-            </Button>
-          </form>
-        </div>
-      </div>
-      <div className="hidden bg-muted lg:block">
-        <Image
-          src="https://picsum.photos/seed/studenthub/1200/1800"
-          alt="Abstract image representing education and technology"
-          data-ai-hint="education technology"
-          width="1200"
-          height="1800"
-          className="h-full w-full object-cover dark:brightness-[0.3]"
-        />
+              <div className="space-y-2">
+                 <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="text-sm font-semibold text-gray-300">Password</Label>
+                    <a href="#" className="text-sm font-medium text-blue-400 hover:text-blue-300">Forgot Password?</a>
+                 </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-white/5 border-white/20 text-white font-semibold placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500 h-12 text-base"
+                />
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full font-bold h-12 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+            </form>
+          </div>
+        </main>
+
+         <footer className="absolute bottom-6 text-center text-gray-500 text-sm">
+            <p>© 2024 Smart Student Hub. Empowering education through technology</p>
+        </footer>
       </div>
     </div>
   );

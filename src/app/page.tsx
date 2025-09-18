@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Sparkles } from 'lucide-react';
+import { BookOpen, HelpCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,14 +11,33 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
 import { MOCK_USERS } from '@/lib/data';
 import type { AppUser } from '@/lib/types';
-import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const motivationalQuotes = [
-    "The beautiful thing about learning is that no one can take it away from you.",
-    "The expert in anything was once a beginner.",
-    "The future belongs to those who believe in the beauty of their dreams.",
-    "Education is the most powerful weapon which you can use to change the world.",
-    "Believe you can and you're halfway there."
+  {
+    quote: "Success is not the key to happiness. Happiness is the key to success.",
+    author: "Albert Schweitzer"
+  },
+  {
+    quote: "The beautiful thing about learning is that no one can take it away from you.",
+    author: "B.B. King"
+  },
+  {
+    quote: "The expert in anything was once a beginner.",
+    author: "Helen Hayes"
+  },
+  {
+    quote: "The future belongs to those who believe in the beauty of their dreams.",
+    author: "Eleanor Roosevelt"
+  },
+  {
+    quote: "Education is the most powerful weapon which you can use to change the world.",
+    author: "Nelson Mandela"
+  },
+  {
+    quote: "Believe you can and you're halfway there.",
+    author: "Theodore Roosevelt"
+  }
 ];
 
 export default function LoginPage() {
@@ -28,12 +47,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [quote, setQuote] = useState('');
+  const [quote, setQuote] = useState({ quote: '', author: '' });
 
   useEffect(() => {
     setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
   }, []);
-
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,75 +79,64 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-background">
-      <div className="absolute inset-0 z-0">
-          <Image 
-            src="https://picsum.photos/seed/loginbg/1800/1200" 
-            alt="Abstract background"
-            layout="fill"
-            objectFit="cover"
-            quality={80}
-            className="opacity-20"
-            data-ai-hint="abstract gradient"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-      </div>
+    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-black">
+      <div 
+        className="absolute top-[-20%] left-[-20%] h-[50%] w-[70%] rounded-full bg-gradient-to-r from-blue-600 to-teal-400 opacity-15 blur-[100px] animate-blob"
+        style={{ animationDelay: '2s'}}
+      ></div>
+      <div 
+        className="absolute bottom-[-20%] right-[-20%] h-[50%] w-[70%] rounded-full bg-gradient-to-r from-teal-400 to-blue-600 opacity-15 blur-[100px] animate-blob"
+        style={{ animationDelay: '4s'}}
+      ></div>
       
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
         
         <header className="text-center mb-10 max-w-2xl">
-            <div className="inline-flex items-center justify-center bg-primary/10 p-4 rounded-2xl mb-4 border border-primary/20">
-                <GraduationCap className="h-10 w-10 text-primary" />
+            <div className="inline-flex items-center justify-center bg-gradient-to-br from-blue-500 to-teal-400 p-3 rounded-xl mb-4">
+                <BookOpen className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold font-headline">
+            <h1 className="text-4xl md:text-5xl font-bold font-headline text-white">
                 Smart Student Hub
             </h1>
-            {quote && (
-              <p className="text-md text-muted-foreground mt-4 italic flex justify-center items-center gap-2">
-                <Sparkles className="h-4 w-4 text-accent" />
-                {quote}
-              </p>
-            )}
+            <p className="text-md text-white/70 mt-2">
+                Your gateway to academic excellence
+            </p>
         </header>
 
-        <main className="w-full max-w-md">
-          <div className="bg-card/60 glassmorphism rounded-2xl p-8 shadow-2xl border border-white/10">
-            <div className="mb-6 text-center">
-              <h2 className="text-3xl font-bold">Login</h2>
-              <p className="text-muted-foreground mt-1">Welcome back! Please enter your details.</p>
+        <main className="w-full max-w-sm space-y-6">
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-2xl">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-center text-foreground">Welcome Back</h2>
             </div>
             
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="font-semibold">Email Address</Label>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="email" className="font-semibold text-foreground/80">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@university.edu"
+                  placeholder="Enter your email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-background/70 border-border h-12 text-base"
+                  className="bg-white border-border h-11 text-base placeholder:text-muted-foreground/60"
                 />
               </div>
-              <div className="space-y-2">
-                 <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="font-semibold">Password</Label>
-                    <a href="#" className="text-sm font-medium text-primary hover:underline">Forgot Password?</a>
-                 </div>
+              <div className="space-y-1">
+                 <Label htmlFor="password" className="font-semibold text-foreground/80">Password</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-background/70 border-border h-12 text-base"
+                  className="bg-white border-border h-11 text-base placeholder:text-muted-foreground/60"
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full font-bold h-12 text-lg bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-opacity duration-300"
+                className="w-full font-bold h-11 text-base bg-gradient-to-r from-blue-500 to-teal-400 text-white hover:opacity-90 transition-opacity duration-300"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -138,12 +145,22 @@ export default function LoginPage() {
                   'Sign In'
                 )}
               </Button>
+              <div className="text-center pt-2">
+                 <a href="#" className="text-sm font-medium text-blue-600 hover:underline">Forgot password?</a>
+              </div>
             </form>
           </div>
+          
+           {quote.quote && (
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 text-center shadow-2xl">
+                <p className="text-sm text-foreground italic">"{quote.quote}"</p>
+                <p className="text-xs text-foreground/60 mt-2">- {quote.author}</p>
+              </div>
+            )}
         </main>
 
-         <footer className="absolute bottom-6 text-center text-muted-foreground text-sm">
-            <p>© 2024 Smart Student Hub. Empowering education through technology.</p>
+         <footer className="absolute bottom-4 right-4 text-white/50">
+           <HelpCircle className="h-6 w-6"/>
         </footer>
       </div>
     </div>

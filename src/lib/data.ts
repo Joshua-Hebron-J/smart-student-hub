@@ -156,6 +156,10 @@ export const MOCK_FACULTY: Faculty[] = [
     avatarUrl: 'https://picsum.photos/seed/evelyn/100/100',
     department: 'Business Administration',
     title: 'Department Head',
+    publications: [
+        { title: 'Consumer Behavior in Digital Markets', journal: 'Journal of Marketing Research', year: 2024 },
+        { title: 'The Impact of AI on Modern Marketing Strategies', journal: 'Harvard Business Review', year: 2023 },
+    ],
   },
   {
     id: 'faculty-4',
@@ -165,6 +169,9 @@ export const MOCK_FACULTY: Faculty[] = [
     avatarUrl: 'https://picsum.photos/seed/frank/100/100',
     department: 'Computer Science',
     title: 'Assistant Professor',
+    publications: [
+        { title: 'A Novel Approach to Network Intrusion Detection', journal: 'Computers & Security', year: 2024 },
+    ],
   },
   {
     id: 'faculty-5',
@@ -176,6 +183,7 @@ export const MOCK_FACULTY: Faculty[] = [
     title: 'Professor',
     publications: [
         { title: 'Fatigue Analysis in Composite Materials', journal: 'International Journal of Fatigue', year: 2024 },
+        { title: 'Robotic Arm Dynamics for High-Precision Manufacturing', journal: 'Robotics and Computer-Integrated Manufacturing', year: 2023 },
     ],
   }
 ];

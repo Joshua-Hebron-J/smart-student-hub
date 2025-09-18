@@ -1,4 +1,4 @@
-import type { EVENT_CATEGORIES } from "./calendar-data";
+import type { EVENT_CATEGORIES, ACADEMIC_EVENTS_BY_SEMESTER } from "./calendar-data";
 
 export type UserRole = 'student' | 'faculty' | 'admin';
 
@@ -81,16 +81,10 @@ export interface ODApplication {
   status: 'pending' | 'approved' | 'rejected';
 }
 
-// Deprecated: Will be removed in a future update
-export interface AcademicEvent {
-  date: string;
-  title: string;
-  color: 'green' | 'orange' | 'red' | 'blue' | 'purple' | 'pink' | 'yellow';
-}
-
 
 // New Calendar Types
 export type EventCategoryKey = keyof typeof EVENT_CATEGORIES;
+export type SemesterKey = keyof typeof ACADEMIC_EVENTS_BY_SEMESTER;
 
 export interface AcademicEventV2 {
   id: string;
@@ -100,4 +94,8 @@ export interface AcademicEventV2 {
   endDate: string; // ISO 8601 format
   description: string;
   scope: 'University' | 'Department' | 'Personal';
+}
+
+export type AcademicEventsBySemester = {
+  [semester: string]: AcademicEventV2[];
 }

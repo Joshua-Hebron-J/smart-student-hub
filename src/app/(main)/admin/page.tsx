@@ -2,7 +2,7 @@
 
 import { Users, Building, ClipboardList, Search, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS } from '@/lib/data';
+import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER } from '@/lib/data';
 import { EVENT_CATEGORIES } from '@/lib/calendar-data';
 import type { Student, AcademicEventV2 } from '@/lib/types';
 import { useState } from 'react';
@@ -90,7 +90,9 @@ function AdminStudentSearch() {
 
 function UpcomingEventsWidget() {
   const today = startOfToday();
-  const upcomingEvents = ACADEMIC_EVENTS
+  const allEvents = Object.values(ACADEMIC_EVENTS_BY_SEMESTER).flat();
+
+  const upcomingEvents = allEvents
     .map(event => ({ ...event, date: parseISO(event.startDate) }))
     .filter(event => isToday(event.date) || isFuture(event.date))
     .sort((a, b) => compareAsc(a.date, b.date))

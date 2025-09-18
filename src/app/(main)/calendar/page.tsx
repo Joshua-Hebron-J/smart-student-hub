@@ -1,26 +1,38 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { addMonths, subMonths, format } from 'date-fns';
+import { addMonths, subMonths, format, parseISO } from 'date-fns';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { ACADEMIC_EVENTS, EVENT_CATEGORIES } from '@/lib/calendar-data';
-import type { AcademicEventV2, EventCategoryKey } from '@/lib/types';
+import { ACADEMIC_EVENTS_BY_SEMESTER, EVENT_CATEGORIES } from '@/lib/calendar-data';
+import type { AcademicEventV2, EventCategoryKey, SemesterKey } from '@/lib/types';
 
 import CalendarGridView from '@/components/calendar-grid-view';
 import EventDetailsModal from '@/components/event-details-modal';
 
+const semesterNames = Object.keys(ACADEMIC_EVENTS_BY_SEMESTER) as SemesterKey[];
+
 export default function AcademicCalendarPage() {
+  const [selectedSemester, setSelectedSemester] = useState<SemesterKey>(semesterNames[0]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<AcademicEventV2 | null>(null);
   const [activeFilters, setActiveFilters] = useState<EventCategoryKey[]>(
     Object.keys(EVENT_CATEGORIES) as EventCategoryKey[]
   );
+  
+  useEffect(() => {
+    // When semester changes, set the month to the first event of that semester
+    const firstEvent = ACADEMIC_EVENTS_BY_SEMESTER[selectedSemester]?.[0];
+    if (firstEvent) {
+      setCurrentMonth(parseISO(firstEvent.startDate));
+    }
+  }, [selectedSemester]);
 
   const handleFilterChange = (category: EventCategoryKey) => {
     setActiveFilters(prev =>
@@ -35,28 +47,41 @@ export default function AcademicCalendarPage() {
   };
 
   const filteredEvents = useMemo(() => {
-    return ACADEMIC_EVENTS.filter(event => activeFilters.includes(event.category));
-  }, [activeFilters]);
+    const semesterEvents = ACADEMIC_EVENTS_BY_SEMESTER[selectedSemester] || [];
+    return semesterEvents.filter(event => activeFilters.includes(event.category));
+  }, [activeFilters, selectedSemester]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-4">
       <div className="lg:col-span-3">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>{format(currentMonth, 'MMMM yyyy')}</CardTitle>
-              <CardDescription>Your comprehensive academic schedule.</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" onClick={() => setCurrentMonth(new Date())}>
-                Today
-              </Button>
-              <Button variant="outline" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+          <CardHeader>
+             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+               <div>
+                <CardTitle>{format(currentMonth, 'MMMM yyyy')}</CardTitle>
+                <CardDescription>Your comprehensive academic schedule.</CardDescription>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Select value={selectedSemester} onValueChange={(value) => setSelectedSemester(value as SemesterKey)}>
+                    <SelectTrigger className="w-[220px]">
+                        <SelectValue placeholder="Select Semester" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {semesterNames.map(name => (
+                            <SelectItem key={name} value={name}>{name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                 </Select>
+                 <Button variant="outline" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+                   <ChevronLeft className="h-4 w-4" />
+                 </Button>
+                 <Button variant="outline" onClick={() => setCurrentMonth(new Date())}>
+                   Today
+                 </Button>
+                 <Button variant="outline" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+                   <ChevronRight className="h-4 w-4" />
+                 </Button>
+               </div>
             </div>
           </CardHeader>
           <CardContent>

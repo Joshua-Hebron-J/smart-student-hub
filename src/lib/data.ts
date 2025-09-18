@@ -1,5 +1,5 @@
-import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEvent } from './types';
-import { ACADEMIC_EVENTS as CALENDAR_EVENTS } from './calendar-data';
+import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEventV2 } from './types';
+import { ACADEMIC_EVENTS_BY_SEMESTER as CALENDAR_EVENTS_BY_SEMESTER } from './calendar-data';
 
 export const MOCK_STUDENTS: Student[] = [
   {
@@ -285,10 +285,6 @@ export const MOCK_OD_APPLICATIONS: ODApplication[] = [
     { id: 'od-4', studentId: 'student-4', date: '2024-09-12', reason: 'DefCon Hacking Conference', status: 'pending' },
 ];
 
-export const MOCK_ACADEMIC_EVENTS: AcademicEvent[] = [
-  { date: '2025-09-15', title: 'Internal Assessment I', color: 'blue' },
-  { date: '2025-10-02', title: 'Gandhi Jayanti', color: 'red' },
-];
-
-// This is the new source of truth for the enhanced calendar
-export const ACADEMIC_EVENTS = CALENDAR_EVENTS;
+export const ACADEMIC_EVENTS_BY_SEMESTER = CALENDAR_EVENTS_BY_SEMESTER;
+// The ACADEMIC_EVENTS constant is now derived from the semester-based data for backward compatibility if needed.
+export const ACADEMIC_EVENTS: AcademicEventV2[] = Object.values(CALENDAR_EVENTS_BY_SEMESTER).flat();

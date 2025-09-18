@@ -1,9 +1,10 @@
+
 // src/app/(main)/faculty/page.tsx
 'use client';
 
 import { useState } from 'react';
 import { Check, X, Search, User } from 'lucide-react';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Defs, LinearGradient, Stop } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -128,17 +129,11 @@ function GpaChart({ students }: { students: Student[] }) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <Defs>
-              <LinearGradient id="gpaGradient" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                <Stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
-              </LinearGradient>
-            </Defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
             <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]}/>
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--primary) / 0.1)' }}/>
-            <Bar dataKey="gpa" fill="url(#gpaGradient)" radius={[4, 4, 0, 0]} background={{ fill: 'hsl(var(--primary) / 0.05)', radius: 4 }} />
+            <Bar dataKey="gpa" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -158,17 +153,11 @@ function AttendanceChart({ students }: { students: Student[] }) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-             <Defs>
-              <LinearGradient id="attendanceGradient" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.8}/>
-                <Stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0.2}/>
-              </LinearGradient>
-            </Defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
             <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[50, 100]} unit="%"/>
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent) / 0.1)' }}/>
-            <Bar dataKey="attendance" fill="url(#attendanceGradient)" radius={[4, 4, 0, 0]} background={{ fill: 'hsl(var(--accent) / 0.05)', radius: 4 }} />
+            <Bar dataKey="attendance" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

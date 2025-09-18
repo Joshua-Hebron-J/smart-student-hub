@@ -1,18 +1,19 @@
 'use client';
 
-import { Users, Building, ClipboardList, Search, Calendar } from 'lucide-react';
+import { Users, Building, ClipboardList, Search, Calendar, FileBarChart } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER } from '@/lib/data';
-import { EVENT_CATEGORIES } from '@/lib/calendar-data';
-import type { Student, AcademicEventV2 } from '@/lib/types';
-import { useState } from 'react';
+import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, ACTIVITY_CATEGORIES } from '@/lib/data';
+import { EVENT_CATEGORIES as CALENDAR_EVENT_CATEGORIES } from '@/lib/calendar-data';
+import type { Student, AcademicEventV2, Activity } from '@/lib/types';
+import { useState, useMemo } from 'react';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { isFuture, isToday, parseISO, startOfToday, compareAsc } from 'date-fns';
+import { isFuture, isToday, parseISO, startOfToday, compareAsc, format } from 'date-fns';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 
 function AdminStudentSearch() {
   const [query, setQuery] = useState('');
@@ -111,7 +112,7 @@ function UpcomingEventsWidget() {
               <div className="flex flex-col items-center">
                  <div 
                   className="h-3 w-3 mt-1.5 rounded-full" 
-                  style={{ backgroundColor: EVENT_CATEGORIES[event.category].color }}
+                  style={{ backgroundColor: CALENDAR_EVENT_CATEGORIES[event.category].color }}
                 />
               </div>
               <div className="flex-1">
@@ -125,6 +126,132 @@ function UpcomingEventsWidget() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function ComplianceReportModal() {
+  const approvedActivities = MOCK_ACTIVITIES.filter(a => a.status === 'approved');
+
+  const reportData = useMemo(() => {
+    // Overall Metrics
+    const totalStudents = MOCK_STUDENTS.length;
+    const totalApprovedActivities = approvedActivities.length;
+    const avgGpa = MOCK_STUDENTS.reduce((sum, s) => sum + s.gpa, 0) / totalStudents;
+    const avgAttendance = MOCK_STUDENTS.reduce((sum, s) => sum + s.attendance, 0) / totalStudents;
+    const totalInternshipCredits = approvedActivities
+      .filter(a => a.category === 'Internship')
+      .reduce((sum, a) => sum + a.credits, 0);
+
+    // Department-wise
+    const departments = [...new Set(MOCK_STUDENTS.map(s => s.department))];
+    const departmentMetrics = departments.map(dept => {
+      const studentsInDept = MOCK_STUDENTS.filter(s => s.department === dept);
+      const studentIdsInDept = studentsInDept.map(s => s.id);
+      const activitiesInDept = approvedActivities.filter(a => studentIdsInDept.includes(a.studentId));
+      return {
+        name: dept,
+        studentCount: studentsInDept.length,
+        activityCount: activitiesInDept.length,
+      };
+    });
+
+    // Activity Categories
+    const activityCategoryCounts = ACTIVITY_CATEGORIES.map(category => ({
+      name: category,
+      count: approvedActivities.filter(a => a.category === category).length,
+    }));
+
+    return {
+      overall: {
+        totalStudents,
+        totalApprovedActivities,
+        avgGpa: avgGpa.toFixed(2),
+        avgAttendance: avgAttendance.toFixed(1),
+        totalInternshipCredits,
+      },
+      departments: departmentMetrics,
+      activityCategories: activityCategoryCounts,
+    };
+  }, [approvedActivities]);
+
+  const MetricCard = ({ title, value, description }: { title: string, value: string | number, description?: string }) => (
+    <Card className="flex-1">
+      <CardHeader className="pb-2">
+        <CardDescription>{title}</CardDescription>
+        <CardTitle className="text-2xl">{value}</CardTitle>
+      </CardHeader>
+      {description && <CardContent><p className="text-xs text-muted-foreground">{description}</p></CardContent>}
+    </Card>
+  );
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>
+          <FileBarChart className="mr-2"/>
+          Generate NAAC/NIRF Report
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl h-[90vh]">
+        <DialogHeader>
+          <DialogTitle>NAAC/NIRF Compliance Report (Simulated)</DialogTitle>
+          <DialogDescription>
+            Generated on: {format(new Date(), 'PPP')}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="overflow-y-auto pr-6 space-y-6">
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Overall Institutional Metrics</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <MetricCard title="Total Students" value={reportData.overall.totalStudents} />
+              <MetricCard title="Avg. GPA" value={reportData.overall.avgGpa} />
+              <MetricCard title="Avg. Attendance" value={`${reportData.overall.avgAttendance}%`} />
+              <MetricCard title="Verified Activities" value={reportData.overall.totalApprovedActivities} />
+              <MetricCard title="Internship Credits" value={reportData.overall.totalInternshipCredits} description="From approved internships" />
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Department-wise Breakdown</h3>
+            <Card>
+              <CardContent className="pt-6">
+                <ul className="divide-y">
+                  {reportData.departments.map(dept => (
+                    <li key={dept.name} className="py-3 flex justify-between items-center">
+                      <span className="font-medium">{dept.name}</span>
+                      <div className="flex gap-6 text-right">
+                        <span className="text-sm">
+                          {dept.studentCount} <span className="text-muted-foreground">Students</span>
+                        </span>
+                        <span className="text-sm">
+                          {dept.activityCount} <span className="text-muted-foreground">Activities</span>
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Verified Activities by Category</h3>
+            <Card>
+               <CardContent className="pt-6">
+                 <ul className="divide-y">
+                  {reportData.activityCategories.map(cat => (
+                    <li key={cat.name} className="py-3 flex justify-between items-center">
+                      <span className="font-medium">{cat.name}</span>
+                      <span className="text-sm font-bold">{cat.count}</span>
+                    </li>
+                  ))}
+                </ul>
+               </CardContent>
+            </Card>
+          </section>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -143,9 +270,12 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-headline font-semibold">Admin Dashboard</h1>
-        <p className="text-muted-foreground italic text-sm mt-1">"The best way to predict the future is to create it."</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-headline font-semibold">Admin Dashboard</h1>
+          <p className="text-muted-foreground italic text-sm mt-1">"The best way to predict the future is to create it."</p>
+        </div>
+        <ComplianceReportModal />
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">

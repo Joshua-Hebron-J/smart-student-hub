@@ -181,6 +181,8 @@ export const MOCK_ADMINS: Admin[] = [
 
 export const MOCK_USERS: AppUser[] = [...MOCK_STUDENTS, ...MOCK_FACULTY, ...MOCK_ADMINS];
 
+export const ACTIVITY_CATEGORIES: Activity['category'][] = ['Internship', 'Competition', 'Workshop', 'Social Service', 'Research'];
+
 export const MOCK_ACTIVITIES: Activity[] = [
   {
     id: 'activity-1',
@@ -190,6 +192,8 @@ export const MOCK_ACTIVITIES: Activity[] = [
     date: '2023-10-15',
     status: 'approved',
     skills: ['Python', 'NLP', 'Team Leadership'],
+    category: 'Competition',
+    credits: 15,
   },
   {
     id: 'activity-2',
@@ -199,6 +203,8 @@ export const MOCK_ACTIVITIES: Activity[] = [
     date: '2023-07-20',
     status: 'pending',
     skills: ['Teaching', 'JavaScript', 'Public Speaking'],
+    category: 'Social Service',
+    credits: 5,
   },
   {
     id: 'activity-3',
@@ -208,6 +214,8 @@ export const MOCK_ACTIVITIES: Activity[] = [
     date: '2023-06-05',
     status: 'approved',
     skills: ['CAD', 'Aerodynamics', 'Project Management'],
+    category: 'Competition',
+    credits: 20,
   },
   {
     id: 'activity-4',
@@ -217,6 +225,8 @@ export const MOCK_ACTIVITIES: Activity[] = [
     date: '2024-02-20',
     status: 'approved',
     skills: ['Engine Dynamics', 'Fault Diagnosis', 'Teamwork'],
+    category: 'Workshop',
+    credits: 10,
   },
   {
     id: 'activity-5',
@@ -226,6 +236,30 @@ export const MOCK_ACTIVITIES: Activity[] = [
     date: '2024-04-10',
     status: 'pending',
     skills: ['Market Research', 'Business Strategy', 'Financial Projections'],
+    category: 'Competition',
+    credits: 15,
+  },
+   {
+    id: 'activity-6',
+    studentId: 'student-4',
+    name: 'Summer Internship at CyberCorp',
+    description: 'Worked as a security analyst intern, identifying and patching vulnerabilities in web applications.',
+    date: '2024-08-01',
+    status: 'approved',
+    skills: ['Penetration Testing', 'OWASP Top 10', 'Python'],
+    category: 'Internship',
+    credits: 40,
+  },
+   {
+    id: 'activity-7',
+    studentId: 'student-1',
+    name: 'Research Paper on LLM Bias',
+    description: 'Co-authored a research paper on identifying and mitigating bias in large language models, published in a university journal.',
+    date: '2024-05-15',
+    status: 'approved',
+    skills: ['Research', 'AI Ethics', 'Python'],
+    category: 'Research',
+    credits: 25,
   },
 ];
 

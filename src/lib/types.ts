@@ -10,6 +10,8 @@ export interface User {
   avatarUrl: string;
 }
 
+export type ActivityCategory = 'Internship' | 'Competition' | 'Workshop' | 'Social Service' | 'Research';
+
 export interface Activity {
   id:string;
   studentId: string;
@@ -19,6 +21,8 @@ export interface Activity {
   status: 'pending' | 'approved' | 'rejected';
   skills: string[];
   aiSummary?: string;
+  category: ActivityCategory;
+  credits: number;
 }
 
 export interface MedicalRecord {

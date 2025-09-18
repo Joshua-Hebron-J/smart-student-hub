@@ -1,62 +1,37 @@
 
 'use client';
 
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { useState, useMemo } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { MOCK_ACADEMIC_EVENTS } from '@/lib/data';
+import type { AcademicEvent } from '@/lib/types';
 
-const academicEvents = [
-  // Fall Semester 2024
-  { date: '2024-08-19', title: 'Fall Semester Begins', color: 'bg-green-500' },
-  { date: '2024-08-26', title: 'Last Day for Course Registration', color: 'bg-orange-500' },
-  { date: '2024-09-02', title: 'Labor Day - No Classes', color: 'bg-red-500' },
-  { date: '2024-09-16', title: 'Internal Assessment I Begins', color: 'bg-blue-500' },
-  { date: '2024-09-20', title: 'Internal Assessment I Ends', color: 'bg-blue-500' },
-  { date: '2024-10-11', title: 'Professional Development Day - No Classes', color: 'bg-orange-500' },
-  { date: '2024-10-14', title: 'Mid-term Exams Start', color: 'bg-purple-500' },
-  { date: '2024-10-18', title: 'Mid-term Exams End', color: 'bg-purple-500' },
-  { date: '2024-11-04', title: 'Internal Assessment II Begins', color: 'bg-blue-500' },
-  { date: '2024-11-08', title: 'Internal Assessment II Ends', color: 'bg-blue-500' },
-  { date: '2024-11-11', title: 'Diwali - Holiday', color: 'bg-red-500' },
-  { date: '2024-11-27', title: 'Thanksgiving Break Begins', color: 'bg-orange-500' },
-  { date: '2024-12-02', title: 'Classes Resume', color: 'bg-green-500' },
-  { date: '2024-12-09', title: 'Final Exams Start', color: 'bg-purple-500' },
-  { date: '2024-12-20', title: 'Fall Semester Ends', color: 'bg-red-500' },
-  { date: '2024-12-23', title: 'Winter Break Begins', color: 'bg-orange-500' },
-  
-  // Spring Semester 2025
-  { date: '2025-01-06', title: 'Winter Break Ends', color: 'bg-green-500' },
-  { date: '2025-01-13', title: 'Spring Semester Begins', color: 'bg-green-500' },
-  { date: '2025-01-20', title: 'Martin Luther King Jr. Day - No Classes', color: 'bg-red-500' },
-  { date: '2025-01-26', title: 'Republic Day', color: 'bg-red-500' },
-  { date: '2025-02-17', title: 'Internal Assessment III Begins', color: 'bg-blue-500' },
-  { date: '2025-02-21', title: 'Internal Assessment III Ends', color: 'bg-blue-500' },
-  { date: '2025-03-03', title: 'Mid-term Exams Start', color: 'bg-purple-500' },
-  { date: '2025-03-07', title: 'Mid-term Exams End', color: 'bg-purple-500' },
-  { date: '2025-03-10', title: 'Spring Break Begins', color: 'bg-orange-500' },
-  { date: '2025-03-17', title: 'Classes Resume', color: 'bg-green-500' },
-  { date: '2025-04-07', title: 'Internal Assessment IV Begins', color: 'bg-blue-500' },
-  { date: '2025-04-11', title: 'Internal Assessment IV Ends', color: 'bg-blue-500' },
-  { date: '2025-04-18', title: 'University Fest "SYNERGY 2025"', color: 'bg-pink-500' },
-  { date: '2025-04-28', title: 'Final Exams Start', color: 'bg-purple-500' },
-  { date: '2025-05-09', title: 'Spring Semester Ends', color: 'bg-red-500' },
-  { date: '2025-05-10', title: 'Commencement Ceremony', color: 'bg-yellow-500' },
-];
+const colorClasses = {
+  green: 'bg-green-500',
+  orange: 'bg-orange-500',
+  red: 'bg-red-500',
+  blue: 'bg-blue-500',
+  purple: 'bg-purple-500',
+  pink: 'bg-pink-500',
+  yellow: 'bg-yellow-500',
+}
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   
-  const eventsByDate = academicEvents.reduce((acc, event) => {
-    const eventDate = new Date(event.date);
-    // Adjust for timezone differences by using UTC dates
-    const dateKey = new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate()).toDateString();
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
-    }
-    acc[dateKey].push(event);
-    return acc;
-  }, {} as Record<string, typeof academicEvents>);
+  const eventsByDate = useMemo(() => {
+    return MOCK_ACADEMIC_EVENTS.reduce((acc, event) => {
+      const eventDate = new Date(event.date);
+      // Adjust for timezone differences by using UTC dates
+      const dateKey = new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate()).toDateString();
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(event);
+      return acc;
+    }, {} as Record<string, AcademicEvent[]>);
+  }, []);
 
   const selectedDayEvents = date ? eventsByDate[date.toDateString()] || [] : [];
 
@@ -76,15 +51,16 @@ export default function CalendarPage() {
             components={{
               DayContent: ({ date, ...props }) => {
                 const dayEvents = eventsByDate[date.toDateString()];
-                const dayNumber = date.getDate();
                 
                 return (
                   <div className="relative h-full w-full flex items-center justify-center">
+                    {/* Default day number from react-day-picker */}
                     {props.children}
+                    
                     {dayEvents && (
                       <div className="absolute bottom-1 flex gap-0.5">
                         {dayEvents.slice(0, 3).map((event, i) => (
-                           <div key={i} className={`h-1.5 w-1.5 rounded-full ${event.color}`} />
+                           <div key={i} className={`h-1.5 w-1.5 rounded-full ${colorClasses[event.color]}`} />
                         ))}
                       </div>
                     )}
@@ -104,7 +80,7 @@ export default function CalendarPage() {
             <ul className="space-y-3">
               {selectedDayEvents.map((event, index) => (
                 <li key={index} className="flex items-start gap-3">
-                   <div className={`mt-1.5 h-3 w-3 flex-shrink-0 rounded-full ${event.color}`} />
+                   <div className={`mt-1.5 h-3 w-3 flex-shrink-0 rounded-full ${colorClasses[event.color]}`} />
                    <span>{event.title}</span>
                 </li>
               ))}

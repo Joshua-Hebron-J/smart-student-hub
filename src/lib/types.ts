@@ -1,4 +1,5 @@
 
+
 export type UserRole = 'student' | 'faculty' | 'admin';
 
 export interface User {
@@ -78,4 +79,10 @@ export interface ODApplication {
   date: string;
   reason: string;
   status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface AcademicEvent {
+  date: string;
+  title: string;
+  color: 'green' | 'orange' | 'red' | 'blue' | 'purple' | 'pink' | 'yellow';
 }

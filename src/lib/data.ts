@@ -1,5 +1,6 @@
 
-import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser } from './types';
+
+import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEvent } from './types';
 
 export const MOCK_STUDENTS: Student[] = [
   {
@@ -283,4 +284,42 @@ export const MOCK_OD_APPLICATIONS: ODApplication[] = [
     { id: 'od-2', studentId: 'student-2', date: '2024-09-01', reason: 'Formula SAE Regional Meet', status: 'pending' },
     { id: 'od-3', studentId: 'student-1', date: '2024-09-05', reason: 'Inter-University Debate Competition', status: 'rejected' },
     { id: 'od-4', studentId: 'student-4', date: '2024-09-12', reason: 'DefCon Hacking Conference', status: 'pending' },
+];
+
+export const MOCK_ACADEMIC_EVENTS: AcademicEvent[] = [
+  // Fall Semester 2024
+  { date: '2024-08-19', title: 'Fall Semester Begins', color: 'green' },
+  { date: '2024-08-26', title: 'Last Day for Course Registration', color: 'orange' },
+  { date: '2024-09-02', title: 'Labor Day - No Classes', color: 'red' },
+  { date: '2024-09-16', title: 'Internal Assessment I Begins', color: 'blue' },
+  { date: '2024-09-20', title: 'Internal Assessment I Ends', color: 'blue' },
+  { date: '2024-10-11', title: 'Professional Development Day - No Classes', color: 'orange' },
+  { date: '2024-10-14', title: 'Mid-term Exams Start', color: 'purple' },
+  { date: '2024-10-18', title: 'Mid-term Exams End', color: 'purple' },
+  { date: '2024-11-04', title: 'Internal Assessment II Begins', color: 'blue' },
+  { date: '2024-11-08', title: 'Internal Assessment II Ends', color: 'blue' },
+  { date: '2024-11-11', title: 'Diwali - Holiday', color: 'red' },
+  { date: '2024-11-27', title: 'Thanksgiving Break Begins', color: 'orange' },
+  { date: '2024-12-02', title: 'Classes Resume', color: 'green' },
+  { date: '2024-12-09', title: 'Final Exams Start', color: 'purple' },
+  { date: '2024-12-20', title: 'Fall Semester Ends', color: 'red' },
+  { date: '2024-12-23', title: 'Winter Break Begins', color: 'orange' },
+  
+  // Spring Semester 2025
+  { date: '2025-01-06', title: 'Winter Break Ends', color: 'green' },
+  { date: '2025-01-13', title: 'Spring Semester Begins', color: 'green' },
+  { date: '2025-01-20', title: 'Martin Luther King Jr. Day - No Classes', color: 'red' },
+  { date: '2025-01-26', title: 'Republic Day', color: 'red' },
+  { date: '2025-02-17', title: 'Internal Assessment III Begins', color: 'blue' },
+  { date: '2025-02-21', title: 'Internal Assessment III Ends', color: 'blue' },
+  { date: '2025-03-03', title: 'Mid-term Exams Start', color: 'purple' },
+  { date: '2025-03-07', title: 'Mid-term Exams End', color: 'purple' },
+  { date: '2025-03-10', title: 'Spring Break Begins', color: 'orange' },
+  { date: '2025-03-17', title: 'Classes Resume', color: 'green' },
+  { date: '2025-04-07', title: 'Internal Assessment IV Begins', color: 'blue' },
+  { date: '2025-04-11', title: 'Internal Assessment IV Ends', color: 'blue' },
+  { date: '2025-04-18', title: 'University Fest "SYNERGY 2025"', color: 'pink' },
+  { date: '2025-04-28', title: 'Final Exams Start', color: 'purple' },
+  { date: '2025-05-09', title: 'Spring Semester Ends', color: 'red' },
+  { date: '2025-05-10', title: 'Commencement Ceremony', color: 'yellow' },
 ];

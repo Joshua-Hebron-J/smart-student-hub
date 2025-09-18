@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Users, Building, ClipboardList, Search } from 'lucide-react';
+import { Users, Building, ClipboardList, Search, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student } from '@/lib/types';
@@ -30,29 +30,29 @@ function AdminStudentSearch() {
         areaOfInterest: student.areaOfInterest,
       }));
 
-      const response = await naturalLanguageStudentSearch({ 
+      const response = await naturalLanguageStudentSearch({
         query,
-        students: studentDataForAI
+        students: studentDataForAI,
       });
       const foundStudents = MOCK_STUDENTS.filter(student => response.studentNames.includes(student.name));
       setResults(foundStudents);
     } catch (error) {
-      console.error('AI Search Error:', error);
+        console.error('AI Search Error:', error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
   };
 
   return (
-    <Card>
+     <Card>
       <CardHeader>
-        <CardTitle>Global Student Search</CardTitle>
-        <CardDescription>Find any student across all departments using natural language.</CardDescription>
+        <CardTitle>Student Search</CardTitle>
+        <CardDescription>Use natural language to find any student in the university.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSearch} className="flex items-center gap-2 mb-4">
           <Input 
-            placeholder="e.g., 'Show me all mechanical engineering students from 2020'"
+            placeholder="e.g., 'Find students good at Python'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -70,7 +70,7 @@ function AdminStudentSearch() {
                 </Avatar>
                 <div>
                   <p className="font-semibold">{student.name}</p>
-                  <p className="text-sm text-muted-foreground">{student.major}, {student.department}</p>
+                  <p className="text-sm text-muted-foreground">{student.department}</p>
                 </div>
               </div>
               <Button variant="outline" size="sm" asChild>
@@ -83,31 +83,37 @@ function AdminStudentSearch() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
+
 export default function AdminDashboard() {
-  const totalStudents = MOCK_STUDENTS.length;
-  const totalFaculty = MOCK_FACULTY.length;
-  const totalActivities = MOCK_ACTIVITIES.length;
+  const studentsCount = MOCK_STUDENTS.length;
+  const facultyCount = MOCK_FACULTY.length;
+  const activitiesCount = MOCK_ACTIVITIES.length;
+  
+  const departmentData = MOCK_STUDENTS.reduce((acc, student) => {
+    acc[student.department] = (acc[student.department] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const chartData = Object.entries(departmentData).map(([name, value]) => ({ name, students: value }));
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-headline font-semibold">Administrator Dashboard</h1>
-        <p className="text-muted-foreground italic text-sm mt-1">"Leadership is the capacity to translate vision into reality."</p>
+        <h1 className="text-2xl font-headline font-semibold">Admin Dashboard</h1>
+        <p className="text-muted-foreground italic text-sm mt-1">"The best way to predict the future is to create it."</p>
       </div>
 
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Students</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalStudents}</div>
-            <p className="text-xs text-muted-foreground">Currently enrolled</p>
+            <div className="text-2xl font-bold">{studentsCount}</div>
           </CardContent>
         </Card>
         <Card>
@@ -116,8 +122,7 @@ export default function AdminDashboard() {
             <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalFaculty}</div>
-            <p className="text-xs text-muted-foreground">Across all departments</p>
+            <div className="text-2xl font-bold">{facultyCount}</div>
           </CardContent>
         </Card>
         <Card>
@@ -126,13 +131,31 @@ export default function AdminDashboard() {
             <ClipboardList className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalActivities}</div>
-            <p className="text-xs text-muted-foreground">Submitted by all students</p>
+            <div className="text-2xl font-bold">{activitiesCount}</div>
           </CardContent>
         </Card>
       </div>
-
-      <AdminStudentSearch />
+      
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+            <CardHeader>
+                <CardTitle>Student Distribution by Department</CardTitle>
+                <CardDescription>A breakdown of students across different departments.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                        <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis fontSize={12} tickLine={false} axisLine={false}/>
+                        <Tooltip cursor={{fill: 'hsl(var(--primary) / 0.1)'}}/>
+                        <Bar dataKey="students" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                </ResponsiveContainer>
+            </CardContent>
+        </Card>
+        <AdminStudentSearch />
+      </div>
     </div>
   );
 }

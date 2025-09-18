@@ -1,5 +1,4 @@
 
-// src/app/(main)/faculty/page.tsx
 'use client';
 
 import { useState } from 'react';

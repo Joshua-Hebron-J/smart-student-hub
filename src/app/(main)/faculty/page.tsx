@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Check, X, Search, User } from 'lucide-react';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -38,12 +38,12 @@ function StudentSearch() {
         areaOfInterest: student.areaOfInterest,
       }));
 
-      const response = await naturalLanguageStudentSearch({ 
+      const response = await naturalLanguageStudentSearch({
         query,
         students: studentDataForAI
       });
 
-      const foundStudents = departmentStudents.filter(student => 
+      const foundStudents = departmentStudents.filter(student =>
         response.studentNames.includes(student.name)
       );
       setResults(foundStudents);
@@ -62,7 +62,7 @@ function StudentSearch() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSearch} className="flex items-center gap-2 mb-4">
-          <Input 
+          <Input
             placeholder="e.g., 'Find students interested in Machine Learning'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -97,81 +97,94 @@ function StudentSearch() {
   );
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="rounded-lg border bg-background p-2 shadow-sm">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col space-y-1">
-            <span className="text-[0.70rem] uppercase text-muted-foreground">
-              Student
-            </span>
-            <span className="font-bold text-muted-foreground">{label}</span>
-          </div>
-          <div className="flex flex-col space-y-1">
-            <span className="text-[0.70rem] uppercase text-muted-foreground">
-              {payload[0].name}
-            </span>
-            <span className="font-bold">
-              {payload[0].value}
-              {payload[0].name === 'attendance' && '%'}
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-
 function GpaChart({ students }: { students: Student[] }) {
-  const chartData = students.map(s => ({ name: s.name.split(' ')[0], gpa: s.gpa }));
-
+  const averageGpa = students.reduce((acc, s) => acc + s.gpa, 0) / (students.length || 1);
+  const chartData = [{ name: 'GPA', value: averageGpa, fill: 'hsl(var(--primary))' }];
+  
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Student CGPA Overview</CardTitle>
-        <CardDescription>A look at the current CGPA of students in your department.</CardDescription>
+        <CardTitle>Average Student CGPA</CardTitle>
+        <CardDescription>The average CGPA of students in your department.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]}/>
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--primary) / 0.1)' }}/>
-            <Bar dataKey="gpa" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <CardContent className="flex items-center justify-center">
+        <div className="relative h-48 w-48">
+            <ResponsiveContainer width="100%" height="100%">
+                <RadialBarChart 
+                    innerRadius="80%" 
+                    outerRadius="100%" 
+                    data={chartData} 
+                    startAngle={90} 
+                    endAngle={-270}
+                >
+                    <PolarAngleAxis
+                        type="number"
+                        domain={[0, 10]}
+                        angleAxisId={0}
+                        tick={false}
+                    />
+                    <RadialBar
+                        background
+                        dataKey='value'
+                        cornerRadius={10}
+                        className="fill-primary"
+                    />
+                </RadialBarChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-4xl font-bold">{averageGpa.toFixed(2)}</span>
+                <span className="text-sm text-muted-foreground">CGPA</span>
+            </div>
+        </div>
       </CardContent>
     </Card>
   );
 }
 
 function AttendanceChart({ students }: { students: Student[] }) {
-  const chartData = students.map(s => ({ name: s.name.split(' ')[0], attendance: s.attendance }));
+  const averageAttendance = students.reduce((acc, s) => acc + s.attendance, 0) / (students.length || 1);
+  const chartData = [{ name: 'Attendance', value: averageAttendance, fill: 'hsl(var(--accent))' }];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Student Attendance</CardTitle>
-        <CardDescription>Current attendance percentage for students in your department.</CardDescription>
+        <CardTitle>Average Student Attendance</CardTitle>
+        <CardDescription>The average attendance percentage in your department.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[50, 100]} unit="%"/>
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent) / 0.1)' }}/>
-            <Bar dataKey="attendance" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <CardContent className="flex items-center justify-center">
+        <div className="relative h-48 w-48">
+            <ResponsiveContainer width="100%" height="100%">
+                <RadialBarChart 
+                    innerRadius="80%" 
+                    outerRadius="100%" 
+                    data={chartData} 
+                    startAngle={90} 
+                    endAngle={-270}
+                >
+                    <PolarAngleAxis
+                        type="number"
+                        domain={[0, 100]}
+                        angleAxisId={0}
+                        tick={false}
+                    />
+                    <RadialBar
+                        background
+                        dataKey='value'
+                        cornerRadius={10}
+                        className="fill-accent"
+                    />
+                </RadialBarChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-4xl font-bold">{averageAttendance.toFixed(0)}%</span>
+                <span className="text-sm text-muted-foreground">Attendance</span>
+            </div>
+        </div>
       </CardContent>
     </Card>
   );
 }
+
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
@@ -180,7 +193,7 @@ export default function FacultyDashboard() {
   // Filter students and activities based on the faculty's department
   const departmentStudents = MOCK_STUDENTS.filter(s => s.department === (user as any).department);
   const departmentStudentIds = departmentStudents.map(s => s.id);
-  
+
   const [pendingActivities, setPendingActivities] = useState<Activity[]>(
     MOCK_ACTIVITIES.filter(a => a.status === 'pending' && departmentStudentIds.includes(a.studentId))
   );

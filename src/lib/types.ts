@@ -40,6 +40,7 @@ export interface Student extends User {
   dob: string;
   gpa: number;
   attendance: number;
+  areaOfInterest: string;
   activities: string[]; // array of activity IDs
   skills: string[];
   interests: string[];

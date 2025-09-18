@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Implements the AI-powered natural language student search flow.
@@ -12,7 +13,6 @@ import {z} from 'genkit';
 
 const NaturalLanguageStudentSearchInputSchema = z.object({
   query: z.string().describe('The natural language query to search for students.'),
-  areaOfInterest: z.string().optional().describe('The area of interest to filter students by.'),
 });
 export type NaturalLanguageStudentSearchInput = z.infer<typeof NaturalLanguageStudentSearchInputSchema>;
 
@@ -29,12 +29,10 @@ const prompt = ai.definePrompt({
   name: 'naturalLanguageStudentSearchPrompt',
   input: {schema: NaturalLanguageStudentSearchInputSchema},
   output: {schema: NaturalLanguageStudentSearchOutputSchema},
-  prompt: `You are an AI assistant helping faculty members find students based on their skills, interests, or activities.
+  prompt: `You are an AI assistant helping faculty members find students based on their skills, interests, area of interest, or activities.
 
   The faculty member is searching for students using the following query: {{{query}}}
-  {{#if areaOfInterest}}
-  The faculty member is interested in students with area of interest: {{{areaOfInterest}}}
-  {{/if}}
+
   Return a list of student names that match the query. Only return student names. Do not include any other information.
   If no students match the query, return an empty array.
 

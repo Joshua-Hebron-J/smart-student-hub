@@ -1,3 +1,4 @@
+
 // src/app/(main)/faculty/page.tsx
 'use client';
 
@@ -31,7 +32,7 @@ function StudentSearch() {
     try {
       const response = await naturalLanguageStudentSearch({ 
         query,
-        areaOfInterest: user?.role === 'faculty' ? (user as any).department : undefined
+        // The AI can now use the areaOfInterest from the query itself
       });
       const foundStudents = MOCK_STUDENTS.filter(student => 
         response.studentNames.includes(student.name) && 
@@ -54,7 +55,7 @@ function StudentSearch() {
       <CardContent>
         <form onSubmit={handleSearch} className="flex items-center gap-2 mb-4">
           <Input 
-            placeholder="e.g., 'Find me a student skilled in Python and robotics'"
+            placeholder="e.g., 'Find students interested in Machine Learning'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -72,7 +73,7 @@ function StudentSearch() {
                 </Avatar>
                 <div>
                   <p className="font-semibold">{student.name}</p>
-                  <p className="text-sm text-muted-foreground">{student.major}</p>
+                  <p className="text-sm text-muted-foreground">{student.areaOfInterest}</p>
                 </div>
               </div>
               <Button variant="outline" size="sm" asChild>

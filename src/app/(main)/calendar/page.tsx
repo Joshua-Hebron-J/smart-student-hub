@@ -1,95 +1,105 @@
-
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Calendar } from '@/components/ui/calendar';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { addMonths, subMonths, format } from 'date-fns';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MOCK_ACADEMIC_EVENTS } from '@/lib/data';
-import type { AcademicEvent } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
-const colorClasses = {
-  green: 'bg-green-500',
-  orange: 'bg-orange-500',
-  red: 'bg-red-500',
-  blue: 'bg-blue-500',
-  purple: 'bg-purple-500',
-  pink: 'bg-pink-500',
-  yellow: 'bg-yellow-500',
-}
+import { ACADEMIC_EVENTS, EVENT_CATEGORIES } from '@/lib/calendar-data';
+import type { AcademicEventV2, EventCategoryKey } from '@/lib/types';
 
-export default function CalendarPage() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+import CalendarGridView from '@/components/calendar-grid-view';
+import EventDetailsModal from '@/components/event-details-modal';
+
+export default function AcademicCalendarPage() {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState<AcademicEventV2 | null>(null);
+  const [activeFilters, setActiveFilters] = useState<EventCategoryKey[]>(
+    Object.keys(EVENT_CATEGORIES) as EventCategoryKey[]
+  );
+
+  const handleFilterChange = (category: EventCategoryKey) => {
+    setActiveFilters(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
   
-  const eventsByDate = useMemo(() => {
-    return MOCK_ACADEMIC_EVENTS.reduce((acc, event) => {
-      const [year, month, day] = event.date.split('-').map(Number);
-      // Create date in UTC to avoid timezone issues with date strings.
-      const dateKey = new Date(Date.UTC(year, month - 1, day)).toDateString();
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(event);
-      return acc;
-    }, {} as Record<string, AcademicEvent[]>);
-  }, []);
+  const clearFilters = () => {
+    setActiveFilters([]);
+  };
 
-  const selectedDayEvents = date ? eventsByDate[date.toDateString()] || [] : [];
+  const filteredEvents = useMemo(() => {
+    return ACADEMIC_EVENTS.filter(event => activeFilters.includes(event.category));
+  }, [activeFilters]);
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>Academic Calendar</CardTitle>
-          <CardDescription>Key dates and events for the academic year.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border p-0"
-            components={{
-              DayContent: ({ date, ...props }) => {
-                const dayEvents = eventsByDate[date.toDateString()];
-                
-                return (
-                  <div className="relative h-full w-full flex items-center justify-center">
-                    {/* Default day number from react-day-picker */}
-                    {props.children}
-                    
-                    {dayEvents && (
-                      <div className="absolute bottom-1 flex gap-0.5">
-                        {dayEvents.slice(0, 3).map((event, i) => (
-                           <div key={i} className={`h-1.5 w-1.5 rounded-full ${colorClasses[event.color]}`} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              },
-            }}
-          />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Events for {date ? date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : 'Today'}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {selectedDayEvents.length > 0 ? (
-            <ul className="space-y-3">
-              {selectedDayEvents.map((event, index) => (
-                <li key={index} className="flex items-start gap-3">
-                   <div className={`mt-1.5 h-3 w-3 flex-shrink-0 rounded-full ${colorClasses[event.color]}`} />
-                   <span>{event.title}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground">No events scheduled for this day.</p>
-          )}
-        </CardContent>
-      </Card>
+    <div className="grid gap-6 lg:grid-cols-4">
+      <div className="lg:col-span-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>{format(currentMonth, 'MMMM yyyy')}</CardTitle>
+              <CardDescription>Your comprehensive academic schedule.</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" onClick={() => setCurrentMonth(new Date())}>
+                Today
+              </Button>
+              <Button variant="outline" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <CalendarGridView
+              currentMonth={currentMonth}
+              events={filteredEvents}
+              onEventClick={setSelectedEvent}
+            />
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="lg:col-span-1">
+        <Card>
+          <CardHeader>
+            <CardTitle>Event Filters</CardTitle>
+            <CardDescription>Select categories to display.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {Object.entries(EVENT_CATEGORIES).map(([key, { label, color }]) => (
+              <div key={key} className="flex items-center space-x-2">
+                <Checkbox
+                  id={key}
+                  checked={activeFilters.includes(key as EventCategoryKey)}
+                  onCheckedChange={() => handleFilterChange(key as EventCategoryKey)}
+                  style={{ borderColor: color, backgroundColor: activeFilters.includes(key as EventCategoryKey) ? color : 'transparent' }}
+                />
+                <Label htmlFor={key} className="flex-1">{label}</Label>
+                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: color }} />
+              </div>
+            ))}
+             <Button variant="ghost" size="sm" className="w-full justify-start text-red-500 hover:text-red-600" onClick={clearFilters} disabled={activeFilters.length === 0}>
+              <X className="mr-2 h-4 w-4"/> Clear All Filters
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      <EventDetailsModal
+        event={selectedEvent}
+        isOpen={!!selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
     </div>
   );
 }

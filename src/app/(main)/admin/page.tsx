@@ -1,10 +1,10 @@
-
 'use client';
 
-import { Users, Building, ClipboardList, Search } from 'lucide-react';
+import { Users, Building, ClipboardList, Search, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES } from '@/lib/data';
-import type { Student } from '@/lib/types';
+import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS } from '@/lib/data';
+import { EVENT_CATEGORIES } from '@/lib/calendar-data';
+import type { Student, AcademicEventV2 } from '@/lib/types';
 import { useState } from 'react';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { isFuture, isToday, parseISO, startOfToday, compareAsc } from 'date-fns';
 
 function AdminStudentSearch() {
   const [query, setQuery] = useState('');
@@ -87,6 +88,44 @@ function AdminStudentSearch() {
   )
 }
 
+function UpcomingEventsWidget() {
+  const today = startOfToday();
+  const upcomingEvents = ACADEMIC_EVENTS
+    .map(event => ({ ...event, date: parseISO(event.startDate) }))
+    .filter(event => isToday(event.date) || isFuture(event.date))
+    .sort((a, b) => compareAsc(a.date, b.date))
+    .slice(0, 5);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Upcoming Events</CardTitle>
+        <CardDescription>The next 5 events on the academic calendar.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {upcomingEvents.map(event => (
+            <div key={event.id} className="flex items-start gap-3">
+              <div className="flex flex-col items-center">
+                 <div 
+                  className="h-3 w-3 mt-1.5 rounded-full" 
+                  style={{ backgroundColor: EVENT_CATEGORIES[event.category].color }}
+                />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold">{event.title}</p>
+                <p className="text-sm text-muted-foreground">
+                  {event.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 
 export default function AdminDashboard() {
   const studentsCount = MOCK_STUDENTS.length;
@@ -137,8 +176,15 @@ export default function AdminDashboard() {
         </Card>
       </div>
       
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+      <div className="grid gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-3">
+             <AdminStudentSearch />
+        </div>
+        <div className="lg:col-span-2">
+            <UpcomingEventsWidget />
+        </div>
+      </div>
+       <Card>
             <CardHeader>
                 <CardTitle>Student Distribution by Department</CardTitle>
                 <CardDescription>A breakdown of students across different departments.</CardDescription>
@@ -155,8 +201,6 @@ export default function AdminDashboard() {
                 </ResponsiveContainer>
             </CardContent>
         </Card>
-        <AdminStudentSearch />
-      </div>
     </div>
   );
 }

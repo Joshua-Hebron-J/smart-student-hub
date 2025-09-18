@@ -1,7 +1,7 @@
 
 'use client';
 
-import { PlusCircle, CheckCircle, Clock, Award, BarChart, Percent } from 'lucide-react';
+import { PlusCircle, CheckCircle, Clock, Award, BarChart, Percent, FileBadge, Calendar, Activity as ActivityIcon, Dna, Phone, User, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,27 @@ import { useUser } from '@/hooks/use-app-context';
 import { MOCK_ACTIVITIES } from '@/lib/data';
 import type { Activity, Student } from '@/lib/types';
 import { useEffect, useState } from 'react';
+
+const InfoItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: React.ReactNode }) => (
+    <div className="flex items-start gap-3">
+        <Icon className="h-5 w-5 text-muted-foreground mt-1 flex-shrink-0" />
+        <div>
+            <p className="text-sm font-medium text-muted-foreground">{label}</p>
+            <p className="text-sm font-semibold">{value}</p>
+        </div>
+    </div>
+);
+
+const getAge = (dob: string) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
 
 export default function StudentDashboard() {
   const { user } = useUser();
@@ -38,12 +59,20 @@ export default function StudentDashboard() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-headline font-semibold">Welcome, {student.name}!</h1>
-        <Button asChild>
-          <Link href="/student/add-activity">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add New Activity
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+            <Button asChild variant="outline">
+                <Link href={`/students/${student.id}`}>
+                    <Briefcase className="mr-2 h-4 w-4"/>
+                    View My Portfolio
+                </Link>
+            </Button>
+            <Button asChild>
+                <Link href="/student/add-activity">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add New Activity
+                </Link>
+            </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -88,6 +117,39 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+          <Card className="md:col-span-1">
+              <CardHeader><CardTitle>My Bio</CardTitle></CardHeader>
+              <CardContent>
+                  <p className="text-sm text-muted-foreground">{student.bio}</p>
+              </CardContent>
+          </Card>
+          <Card className="md:col-span-1">
+              <CardHeader><CardTitle>Biographical Info</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                  <InfoItem icon={FileBadge} label="Register Number" value={student.registerNumber} />
+                  <InfoItem icon={Calendar} label="Date of Birth" value={new Date(student.dob).toLocaleDateString()} />
+                  <InfoItem icon={ActivityIcon} label="Age" value={`${getAge(student.dob)} years`} />
+                  <InfoItem icon={User} label="Passing Out Year" value={student.enrollmentYear + 4} />
+              </CardContent>
+          </Card>
+          <Card className="md:col-span-1">
+              <CardHeader><CardTitle>Medical Info</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                {student.medicalDetails ? (
+                    <>
+                        <InfoItem icon={Dna} label="Blood Group" value={student.medicalDetails.bloodGroup} />
+                        <InfoItem icon={ActivityIcon} label="Allergies" value={student.medicalDetails.allergies.join(', ')} />
+                        <InfoItem icon={Phone} label="Emergency Contact" value={`${student.medicalDetails.emergencyContact.name} (${student.medicalDetails.emergencyContact.phone})`} />
+                    </>
+                ) : (
+                    <p className="text-sm text-muted-foreground">No medical information provided.</p>
+                )}
+              </CardContent>
+          </Card>
+      </div>
+
 
       <Card>
         <CardHeader>

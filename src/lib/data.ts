@@ -44,6 +44,13 @@ export const MOCK_STUDENTS: Student[] = [
     skills: ['CAD', 'SolidWorks', '3D Printing', 'MATLAB'],
     interests: ['Formula SAE', 'Drone Racing', 'Sustainable Design'],
     bio: 'Mechanical engineering student with a focus on robotics and automation. Captain of the university\'s Formula SAE team.',
+    medicalDetails: {
+      condition: 'None',
+      notes: 'No significant medical history.',
+      bloodGroup: 'B+',
+      allergies: ['None'],
+      emergencyContact: { name: 'Sarah Williams', phone: '987-654-3210' }
+    }
   },
   {
     id: 'student-3',

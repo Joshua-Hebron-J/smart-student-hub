@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { Mail, Phone, GraduationCap, Award, Dna, Briefcase, Printer, FileBadge, Calendar, Activity as ActivityIcon, BarChart, Percent } from 'lucide-react';
 import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student, Activity } from '@/lib/types';
@@ -63,7 +64,9 @@ const InfoItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label
 );
 
 
-export default function StudentPortfolioPage({ params: { id } }: { params: { id: string } }) {
+export default function StudentPortfolioPage() {
+  const params = useParams();
+  const id = params.id as string;
   const [student, setStudent] = useState<Student | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
 

@@ -10,6 +10,10 @@ export const MOCK_STUDENTS: Student[] = [
     department: 'Computer Science',
     major: 'Artificial Intelligence',
     enrollmentYear: 2021,
+    registerNumber: 'CS2021001',
+    dob: '2003-05-10',
+    gpa: 8.8,
+    attendance: 92,
     activities: ['activity-1', 'activity-2'],
     skills: ['Python', 'Machine Learning', 'Data Analysis', 'React'],
     interests: ['AI Ethics', 'Robotics', 'Creative Writing'],
@@ -17,6 +21,8 @@ export const MOCK_STUDENTS: Student[] = [
     medicalDetails: {
       condition: 'Pollen Allergy',
       notes: 'Requires access to antihistamines during spring.',
+      bloodGroup: 'A+',
+      allergies: ['Pollen', 'Dust'],
       emergencyContact: { name: 'John Johnson', phone: '123-456-7890' }
     }
   },
@@ -29,6 +35,10 @@ export const MOCK_STUDENTS: Student[] = [
     department: 'Mechanical Engineering',
     major: 'Robotics',
     enrollmentYear: 2020,
+    registerNumber: 'ME2020015',
+    dob: '2002-11-22',
+    gpa: 8.2,
+    attendance: 85,
     activities: ['activity-3'],
     skills: ['CAD', 'SolidWorks', '3D Printing', 'MATLAB'],
     interests: ['Formula SAE', 'Drone Racing', 'Sustainable Design'],

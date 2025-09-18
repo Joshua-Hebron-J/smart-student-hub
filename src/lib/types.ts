@@ -22,6 +22,8 @@ export interface Activity {
 export interface MedicalRecord {
   condition: string;
   notes: string;
+  bloodGroup: string;
+  allergies: string[];
   emergencyContact: {
     name: string;
     phone: string;
@@ -33,6 +35,10 @@ export interface Student extends User {
   department: string;
   major: string;
   enrollmentYear: number;
+  registerNumber: string;
+  dob: string;
+  gpa: number;
+  attendance: number;
   activities: string[]; // array of activity IDs
   skills: string[];
   interests: string[];

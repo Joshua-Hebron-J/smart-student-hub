@@ -1,3 +1,4 @@
+
 import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEventV2 } from './types';
 import { ACADEMIC_EVENTS_BY_SEMESTER as CALENDAR_EVENTS_BY_SEMESTER } from './calendar-data';
 

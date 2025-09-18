@@ -83,7 +83,11 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-headline font-semibold">Administrator Dashboard</h1>
+      <div>
+        <h1 className="text-2xl font-headline font-semibold">Administrator Dashboard</h1>
+        <p className="text-muted-foreground italic text-sm mt-1">"Leadership is the capacity to translate vision into reality."</p>
+      </div>
+
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>

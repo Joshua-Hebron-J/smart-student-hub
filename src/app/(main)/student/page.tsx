@@ -58,7 +58,10 @@ export default function StudentDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-headline font-semibold">Welcome, {student.name}!</h1>
+        <div>
+          <h1 className="text-2xl font-headline font-semibold">Welcome, {student.name}!</h1>
+           <p className="text-muted-foreground italic text-sm mt-1">"Believe you can and you're halfway there."</p>
+        </div>
         <div className="flex items-center gap-2">
             <Button asChild variant="outline">
                 <Link href={`/students/${student.id}`}>

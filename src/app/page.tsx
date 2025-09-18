@@ -57,6 +57,9 @@ export default function LoginPage() {
             <p className="text-balance text-muted-foreground">
               Enter your credentials to access your dashboard
             </p>
+             <p className="text-sm text-muted-foreground italic mt-2">
+              "The future belongs to those who believe in the beauty of their dreams."
+            </p>
           </div>
           <form onSubmit={handleLogin} className="grid gap-4">
             <div className="grid gap-2">

@@ -162,7 +162,10 @@ export default function FacultyDashboard() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-headline font-semibold">Faculty Dashboard</h1>
+       <div>
+        <h1 className="text-2xl font-headline font-semibold">Faculty Dashboard</h1>
+        <p className="text-muted-foreground italic text-sm mt-1">"A good teacher can inspire hope, ignite the imagination, and instill a love of learning."</p>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
          <GpaChart students={departmentStudents} />

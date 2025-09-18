@@ -53,10 +53,17 @@ export interface Student extends User {
   medicalDetails?: MedicalRecord;
 }
 
+export interface Publication {
+  title: string;
+  journal: string;
+  year: number;
+}
+
 export interface Faculty extends User {
   role: 'faculty';
   department: string;
   title: string;
+  publications?: Publication[];
 }
 
 export interface Admin extends User {

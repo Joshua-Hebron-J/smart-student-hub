@@ -129,6 +129,11 @@ export const MOCK_FACULTY: Faculty[] = [
     avatarUrl: 'https://picsum.photos/seed/carol/100/100',
     department: 'Computer Science',
     title: 'Professor',
+    publications: [
+      { title: 'The Future of Ethical AI', journal: 'Journal of AI Research', year: 2023 },
+      { title: 'Advanced Reinforcement Learning Techniques', journal: 'IEEE Transactions on Neural Networks', year: 2022 },
+      { title: 'A Survey of Neuromorphic Computing', journal: 'Nature Communications', year: 2021 },
+    ],
   },
   {
     id: 'faculty-2',
@@ -138,6 +143,10 @@ export const MOCK_FACULTY: Faculty[] = [
     avatarUrl: 'https://picsum.photos/seed/david/100/100',
     department: 'Mechanical Engineering',
     title: 'Associate Professor',
+    publications: [
+      { title: 'Innovations in 3D-Printed Prosthetics', journal: 'Journal of Biomechanical Engineering', year: 2023 },
+      { title: 'Aerodynamic Efficiency in Urban Drone Delivery', journal: 'AIAA Journal', year: 2022 },
+    ],
   },
    {
     id: 'faculty-3',
@@ -165,6 +174,9 @@ export const MOCK_FACULTY: Faculty[] = [
     avatarUrl: 'https://picsum.photos/seed/grace/100/100',
     department: 'Mechanical Engineering',
     title: 'Professor',
+    publications: [
+        { title: 'Fatigue Analysis in Composite Materials', journal: 'International Journal of Fatigue', year: 2024 },
+    ],
   }
 ];
 

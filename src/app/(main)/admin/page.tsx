@@ -1,7 +1,7 @@
 'use client';
 
 import { Users, Building, ClipboardList, Search } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student } from '@/lib/types';
 import { useState } from 'react';

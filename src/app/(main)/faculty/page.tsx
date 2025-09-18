@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { Check, X, Search, User } from 'lucide-react';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -30,9 +31,12 @@ function StudentSearch() {
     try {
       const response = await naturalLanguageStudentSearch({ 
         query,
-        areaOfInterest: user?.role === 'faculty' ? user.department : undefined
+        areaOfInterest: user?.role === 'faculty' ? (user as any).department : undefined
       });
-      const foundStudents = MOCK_STUDENTS.filter(student => response.studentNames.includes(student.name));
+      const foundStudents = MOCK_STUDENTS.filter(student => 
+        response.studentNames.includes(student.name) && 
+        student.department === (user as any).department
+      );
       setResults(foundStudents);
     } catch (error) {
       console.error('AI Search Error:', error);
@@ -84,11 +88,64 @@ function StudentSearch() {
   );
 }
 
+function GpaChart({ students }: { students: Student[] }) {
+  const chartData = students.map(s => ({ name: s.name.split(' ')[0], gpa: s.gpa }));
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Student CGPA Overview</CardTitle>
+        <CardDescription>A look at the current CGPA of students in your department.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
+            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]}/>
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="gpa" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
+function AttendanceChart({ students }: { students: Student[] }) {
+  const chartData = students.map(s => ({ name: s.name.split(' ')[0], attendance: s.attendance }));
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Student Attendance</CardTitle>
+        <CardDescription>Current attendance percentage for students in your department.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
+            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[50, 100]} unit="%"/>
+            <Tooltip formatter={(value) => `${value}%`}/>
+            <Legend />
+            <Bar dataKey="attendance" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
+  const { user } = useUser();
+
+  // Filter students and activities based on the faculty's department
+  const departmentStudents = MOCK_STUDENTS.filter(s => s.department === (user as any).department);
+  const departmentStudentIds = departmentStudents.map(s => s.id);
+  
   const [pendingActivities, setPendingActivities] = useState<Activity[]>(
-    MOCK_ACTIVITIES.filter(a => a.status === 'pending')
+    MOCK_ACTIVITIES.filter(a => a.status === 'pending' && departmentStudentIds.includes(a.studentId))
   );
 
   const getStudentName = (studentId: string) => {
@@ -106,6 +163,11 @@ export default function FacultyDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-headline font-semibold">Faculty Dashboard</h1>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+         <GpaChart students={departmentStudents} />
+         <AttendanceChart students={departmentStudents} />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="lg:col-span-2">
@@ -139,6 +201,11 @@ export default function FacultyDashboard() {
                     </TableCell>
                   </TableRow>
                 ))}
+                 {pendingActivities.length === 0 && (
+                    <TableRow>
+                        <TableCell colSpan={4} className="h-24 text-center">No pending activities.</TableCell>
+                    </TableRow>
+                )}
               </TableBody>
             </Table>
           </CardContent>

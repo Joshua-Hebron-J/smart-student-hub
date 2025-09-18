@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Users, Building, ClipboardList, Search, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'lucide-react';
+import { Users, Building, ClipboardList, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student } from '@/lib/types';
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 function AdminStudentSearch() {
   const [query, setQuery] = useState('');

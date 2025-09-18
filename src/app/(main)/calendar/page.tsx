@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,23 +7,40 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const academicEvents = [
+  // Fall Semester
   { date: '2024-08-19', title: 'Fall Semester Begins', color: 'bg-green-500' },
   { date: '2024-09-02', title: 'Labor Day - No Classes', color: 'bg-red-500' },
+  { date: '2024-10-11', title: 'Professional Development Day - No Classes', color: 'bg-orange-500' },
   { date: '2024-10-14', title: 'Mid-term Exams Start', color: 'bg-blue-500' },
-  { date: '2024-11-28', title: 'Thanksgiving Break', color: 'bg-orange-500' },
+  { date: '2024-10-18', title: 'Mid-term Exams End', color: 'bg-blue-500' },
+  { date: '2024-11-27', title: 'Thanksgiving Break Begins', color: 'bg-orange-500' },
+  { date: '2024-12-02', title: 'Classes Resume', color: 'bg-green-500' },
   { date: '2024-12-09', title: 'Final Exams Start', color: 'bg-purple-500' },
   { date: '2024-12-20', title: 'Fall Semester Ends', color: 'bg-red-500' },
+
+  // Spring Semester
+  { date: '2025-01-13', title: 'Spring Semester Begins', color: 'bg-green-500' },
+  { date: '2025-01-20', title: 'Martin Luther King Jr. Day - No Classes', color: 'bg-red-500' },
+  { date: '2025-03-03', title: 'Mid-term Exams Start', color: 'bg-blue-500' },
+  { date: '2025-03-10', title: 'Spring Break Begins', color: 'bg-orange-500' },
+  { date: '2025-03-17', title: 'Classes Resume', color: 'bg-green-500' },
+  { date: '2025-04-18', title: 'University Fest', color: 'bg-pink-500' },
+  { date: '2025-04-28', title: 'Final Exams Start', color: 'bg-purple-500' },
+  { date: '2025-05-09', title: 'Spring Semester Ends', color: 'bg-red-500' },
+  { date: '2025-05-10', title: 'Commencement Ceremony', color: 'bg-yellow-500' },
 ];
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   
   const eventsByDate = academicEvents.reduce((acc, event) => {
-    const date = new Date(event.date).toDateString();
-    if (!acc[date]) {
-      acc[date] = [];
+    const eventDate = new Date(event.date);
+    // Adjust for timezone differences by using UTC dates
+    const dateKey = new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate()).toDateString();
+    if (!acc[dateKey]) {
+      acc[dateKey] = [];
     }
-    acc[date].push(event);
+    acc[dateKey].push(event);
     return acc;
   }, {} as Record<string, typeof academicEvents>);
 

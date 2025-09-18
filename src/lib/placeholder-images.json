@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "login-background",
+      "description": "Abstract image representing education and technology",
+      "imageUrl": "https://picsum.photos/seed/studenthub/1200/1800",
+      "imageHint": "education technology"
+    },
+    {
+      "id": "avatar-alice",
+      "description": "Avatar for Alice Johnson",
+      "imageUrl": "https://picsum.photos/seed/alice/100/100",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "avatar-bob",
+      "description": "Avatar for Bob Williams",
+      "imageUrl": "https://picsum.photos/seed/bob/100/100",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "avatar-carol",
+      "description": "Avatar for Dr. Carol Davis",
+      "imageUrl": "https://picsum.photos/seed/carol/100/100",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "avatar-david",
+      "description": "Avatar for Dr. David Smith",
+      "imageUrl": "https://picsum.photos/seed/david/100/100",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "avatar-admin",
+      "description": "Avatar for Admin User",
+      "imageUrl": "https://picsum.photos/seed/admin/100/100",
+      "imageHint": "abstract geometric"
+    }
+  ]
 }

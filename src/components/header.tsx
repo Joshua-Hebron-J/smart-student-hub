@@ -10,6 +10,7 @@ import {
   User as UserIcon,
   LogOut,
 } from 'lucide-react';
+import React from 'react';
 
 import {
   Breadcrumb,

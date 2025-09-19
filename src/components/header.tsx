@@ -61,7 +61,7 @@ const NavLink = ({ activeView, view, onClick, children, label }: { activeView?: 
         <TooltipTrigger asChild>
           <button 
             onClick={() => onClick?.(view)} 
-            className={`flex flex-col items-center justify-center h-16 w-20 text-muted-foreground transition-colors hover:text-foreground ${isActive ? "text-primary border-b-2 border-primary" : ""}`}
+            className={`flex flex-col items-center justify-center h-16 w-20 text-gray-400 transition-colors hover:text-white ${isActive ? "text-primary border-b-2 border-primary" : ""}`}
           >
             {children}
             <span className="text-xs mt-1">{label}</span>
@@ -82,7 +82,7 @@ const NotificationIcon = ({ type }: { type: Notification['type'] }) => {
     case 'announcement':
       return <Megaphone className="h-5 w-5 text-blue-500" />;
     default:
-      return <Bell className="h-5 w-5 text-muted-foreground" />;
+      return <Bell className="h-5 w-5 text-gray-400" />;
   }
 };
 
@@ -104,21 +104,21 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur-sm sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-800 bg-gray-900/50 px-4 backdrop-blur-sm sm:px-6">
       <Sheet>
         <SheetTrigger asChild>
-          <Button size="icon" variant="outline" className="md:hidden">
+          <Button size="icon" variant="outline" className="md:hidden bg-transparent border-gray-700 hover:bg-gray-800">
             <PanelLeft className="h-5 w-5" />
             <span className="sr-only">Toggle Menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-xs p-0">
+        <SheetContent side="left" className="sm:max-w-xs p-0 bg-gray-900 border-r-gray-800">
           <MainSidebar isMobile={true}/>
         </SheetContent>
       </Sheet>
       
       {user?.role === 'student' && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-background/95 backdrop-blur-sm border-t">
+        <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gray-900/80 backdrop-blur-sm border-t border-gray-800">
           <nav className="flex items-center justify-around">
             <NavLink activeView={currentView} view="dashboard" onClick={onViewChange} label="Dashboard"><LayoutDashboard size={20}/></NavLink>
             <NavLink activeView={currentView} view="timetable" onClick={onViewChange} label="Timetable"><Calendar size={20} /></NavLink>
@@ -139,7 +139,7 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
         
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                 <Button variant="ghost" size="icon" className="relative rounded-full h-10 w-10">
+                 <Button variant="ghost" size="icon" className="relative rounded-full h-10 w-10 hover:bg-gray-800">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
                         <span className="absolute top-2 right-2 flex h-3 w-3">
@@ -152,10 +152,10 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
                     <span className="sr-only">Toggle notifications</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 md:w-96 p-0">
-                <Card className="border-0">
-                    <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
-                        <CardTitle className="text-lg">Notifications</CardTitle>
+            <DropdownMenuContent align="end" className="w-80 md:w-96 p-0 border-gray-700 bg-gray-900/80 backdrop-blur-md">
+                <Card className="border-0 bg-transparent shadow-none">
+                    <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-gray-700">
+                        <CardTitle className="text-lg text-white">Notifications</CardTitle>
                         {unreadCount > 0 && (
                             <Button variant="link" size="sm" onClick={handleMarkAllAsRead}>Mark all as read</Button>
                         )}
@@ -165,14 +165,14 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
                             notifications.map(notif => (
                                 <div 
                                     key={notif.id} 
-                                    className={cn("flex items-start gap-3 p-4 border-b", !notif.read && "bg-primary/5")}
+                                    className={cn("flex items-start gap-3 p-4 border-b border-gray-800 cursor-pointer", !notif.read && "bg-primary/10")}
                                     onClick={() => handleMarkAsRead(notif.id)}
                                 >
                                     <NotificationIcon type={notif.type} />
                                     <div className="flex-1">
-                                        <p className="font-semibold">{notif.title}</p>
-                                        <p className="text-sm text-muted-foreground">{notif.description}</p>
-                                        <p className="text-xs text-muted-foreground mt-1">
+                                        <p className="font-semibold text-white">{notif.title}</p>
+                                        <p className="text-sm text-gray-400">{notif.description}</p>
+                                        <p className="text-xs text-gray-500 mt-1">
                                             {formatDistanceToNow(new Date(notif.timestamp), { addSuffix: true })}
                                         </p>
                                     </div>
@@ -182,11 +182,11 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
                                 </div>
                             ))
                         ) : (
-                             <p className="text-center text-muted-foreground p-8">No new notifications.</p>
+                             <p className="text-center text-gray-400 p-8">No new notifications.</p>
                         )}
                     </CardContent>
-                    <CardFooter className="p-2 border-t">
-                        <Button variant="ghost" className="w-full">View all notifications</Button>
+                    <CardFooter className="p-2 border-t border-gray-700">
+                        <Button variant="ghost" className="w-full text-white hover:bg-gray-800">View all notifications</Button>
                     </CardFooter>
                 </Card>
             </DropdownMenuContent>
@@ -205,20 +205,20 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
               />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 border-gray-700 bg-gray-900 text-white">
             <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.name}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                    <p className="text-xs leading-none text-gray-400">{user?.email}</p>
                 </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-gray-700"/>
+            <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
               <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuSeparator className="bg-gray-700"/>
+            <DropdownMenuItem onClick={handleLogout} className="focus:bg-red-900/50 focus:text-white">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>

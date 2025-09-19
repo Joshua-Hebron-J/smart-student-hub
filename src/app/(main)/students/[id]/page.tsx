@@ -1,8 +1,5 @@
-'use client';
-
-import { useEffect, useState, useRef } from 'react';
+import { Suspense } from 'react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
 import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target } from 'lucide-react';
 import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student, Activity } from '@/lib/types';
@@ -12,111 +9,49 @@ import { Button } from '@/components/ui/button';
 import { generateActivitySummary } from '@/ai/flows/generate-activity-summaries';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import PortfolioPrintButton from '@/components/portfolio-print-button';
+import { notFound } from 'next/navigation';
 
-function ActivitySummary({ activity, student }: { activity: Activity, student: Student }) {
-  const [summary, setSummary] = useState(activity.aiSummary);
-  const [isLoading, setIsLoading] = useState(!activity.aiSummary);
+async function ActivitySummary({ activity, student }: { activity: Activity, student: Student }) {
+  let summary = activity.aiSummary;
 
-  useEffect(() => {
-    if (!summary) {
-      const fetchSummary = async () => {
-        try {
-          const result = await generateActivitySummary({
-            activityName: activity.name,
-            activityDescription: activity.description,
-            studentSkills: student.skills,
-          });
-          setSummary(result.summary);
-          // In a real app, you'd save this back to the activity object
-        } catch (error) {
-          console.error("Failed to generate summary", error);
-          setSummary(activity.description); // Fallback to description
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchSummary();
+  if (!summary) {
+    try {
+      const result = await generateActivitySummary({
+        activityName: activity.name,
+        activityDescription: activity.description,
+        studentSkills: student.skills,
+      });
+      summary = result.summary;
+      // In a real app, you'd save this back to the activity object
+    } catch (error) {
+      console.error("Failed to generate summary", error);
+      summary = activity.description; // Fallback to description
     }
-  }, [activity, student, summary]);
-  
-  if (isLoading) {
-    return (
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-1/2" />
-      </div>
-    );
   }
 
   return <p className="text-sm text-muted-foreground">{summary}</p>;
 }
 
-export default function StudentPortfolioPage() {
-  const params = useParams();
-  const id = params.id as string;
-  const [student, setStudent] = useState<Student | null>(null);
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const portfolioRef = useRef<HTMLDivElement>(null);
-  
-  const [aiSummary, setAiSummary] = useState<string | null>(null);
-  const [isSummaryLoading, setIsSummaryLoading] = useState(true);
+async function AISummary({ student, activities }: { student: Student, activities: Activity[]}) {
+    // This could be a call to another Genkit flow in the future.
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+    const summary = `Based on a GPA of ${student.gpa} and participation in high-impact activities like ${activities[0]?.name || 'hackathons'}, ${student.name.split(' ')[0]} demonstrates strong academic performance and practical skills in areas such as ${student.skills.slice(0,2).join(' and ')}. A proactive learner with demonstrated leadership abilities.`;
+    return <p className="text-sm text-muted-foreground italic">{summary}</p>;
+}
 
-  useEffect(() => {
-    const foundStudent = MOCK_STUDENTS.find(s => s.id === id);
-    if (foundStudent) {
-      setStudent(foundStudent);
-      const studentActivities = MOCK_ACTIVITIES.filter(
-        act => act.studentId === foundStudent.id && act.status === 'approved'
-      );
-      setActivities(studentActivities);
-      
-      // Simulate AI summary generation
-      setTimeout(() => {
-        setAiSummary(`Based on a GPA of ${foundStudent.gpa} and participation in high-impact activities like ${studentActivities[0]?.name || 'hackathons'}, ${foundStudent.name.split(' ')[0]} demonstrates strong academic performance and practical skills in areas such as ${foundStudent.skills.slice(0,2).join(' and ')}. A proactive learner with demonstrated leadership abilities.`);
-        setIsSummaryLoading(false);
-      }, 1500)
-    }
-  }, [id]);
 
-  const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    if (printWindow && portfolioRef.current) {
-        const portfolioHtml = portfolioRef.current.innerHTML;
-        const tailwindCssUrl = "https://cdn.tailwindcss.com"; // For simplicity
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>${student?.name}'s Portfolio</title>
-                <script src="${tailwindCssUrl}"></script>
-                <style>
-                  body { font-family: Inter, sans-serif; -webkit-print-color-adjust: exact; }
-                  .print-container { padding: 2rem; background-color: white; }
-                  .section-card { border: 1px solid #e5e7eb; border-radius: 0.75rem; overflow: hidden; page-break-inside: avoid; }
-                  .section-header { background-color: #f9fafb; padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb;}
-                </style>
-            </head>
-            <body class="bg-gray-100">
-                <div class="print-container">
-                    ${portfolioHtml}
-                </div>
-                <script>
-                    setTimeout(() => { window.print(); window.close(); }, 500);
-                </script>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }
-  };
+export default async function StudentPortfolioPage({ params }: { params: { id: string } }) {
+  const id = params.id;
+  const student = MOCK_STUDENTS.find(s => s.id === id);
 
   if (!student) {
-    return (
-        <div className="flex items-center justify-center h-full">
-            <div className="h-16 w-16 animate-spin rounded-full border-4 border-dashed border-primary"></div>
-        </div>
-    )
+    notFound();
   }
+
+  const activities = MOCK_ACTIVITIES.filter(
+    act => act.studentId === student.id && act.status === 'approved'
+  );
   
   const totalPoints = activities.reduce((sum, act) => sum + act.credits, 0);
 
@@ -133,7 +68,14 @@ export default function StudentPortfolioPage() {
                  <h4 className="font-semibold">{activity.name}</h4>
                  <p className="text-sm text-muted-foreground">{new Date(activity.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
                </div>
-               <ActivitySummary activity={activity} student={student} />
+               <Suspense fallback={
+                  <div className="space-y-2 pt-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                }>
+                 <ActivitySummary activity={activity} student={student} />
+               </Suspense>
                <div className="flex flex-wrap gap-2 mt-3">
                   {activity.skills.map(skill => <Badge key={skill} variant="secondary">{skill}</Badge>)}
                </div>
@@ -146,12 +88,9 @@ export default function StudentPortfolioPage() {
   return (
     <>
       <div className="flex justify-end pb-4 print:hidden">
-        <Button onClick={handlePrint}>
-            <Printer className="mr-2 h-4 w-4" />
-            Export to PDF
-        </Button>
+        <PortfolioPrintButton studentName={student.name} />
       </div>
-      <div className="bg-background rounded-xl p-4 sm:p-6 lg:p-8 print:p-0" ref={portfolioRef}>
+      <div id="portfolio-content" className="bg-background rounded-xl p-4 sm:p-6 lg:p-8 print:p-0">
         <div className="max-w-5xl mx-auto space-y-12">
           
           {/* Header Section */}
@@ -184,15 +123,15 @@ export default function StudentPortfolioPage() {
                 <Card className="section-card">
                   <CardHeader className="section-header"><CardTitle className="text-xl">Professional Summary</CardTitle></CardHeader>
                   <CardContent className="pt-6">
-                    {isSummaryLoading ? (
+                    <Suspense fallback={
                         <div className="space-y-2">
                            <Skeleton className="h-4 w-full" />
                            <Skeleton className="h-4 w-full" />
                            <Skeleton className="h-4 w-2/3" />
                         </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">{aiSummary}</p>
-                    )}
+                    }>
+                        <AISummary student={student} activities={activities} />
+                    </Suspense>
                   </CardContent>
                 </Card>
 

@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { isFuture, isToday, parseISO, startOfToday, compareAsc, format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import Header from '@/components/header';
 
 function AdminStudentSearch() {
   const [query, setQuery] = useState('');
@@ -232,7 +233,7 @@ function ComplianceReportModal() {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader className="print:hidden">
+        <DialogHeader>
           <DialogTitle>NAAC/NIRF Compliance Report (Simulated)</DialogTitle>
           <DialogDescription>
             Generated on: {format(new Date(), 'PPP')}
@@ -291,7 +292,7 @@ function ComplianceReportModal() {
                 </section>
             </div>
         </div>
-         <DialogFooter className="print:hidden">
+         <DialogFooter>
           <Button onClick={handlePrint}>
             <Printer className="mr-2 h-4 w-4" />
             Download
@@ -316,8 +317,10 @@ export default function AdminDashboard() {
   const chartData = Object.entries(departmentData).map(([name, value]) => ({ name, students: value }));
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <>
+    <Header />
+    <div className="flex flex-col gap-6 mt-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-headline font-semibold">Admin Dashboard</h1>
           <p className="text-muted-foreground italic text-sm mt-1">"The best way to predict the future is to create it."</p>
@@ -381,7 +384,6 @@ export default function AdminDashboard() {
             </CardContent>
         </Card>
     </div>
+    </>
   );
 }
-
-    

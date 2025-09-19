@@ -11,6 +11,7 @@ import type { Activity, Faculty } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
 import { Separator } from '@/components/ui/separator';
+import Header from '@/components/header';
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
@@ -38,7 +39,9 @@ export default function FacultyDashboard() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <>
+    <Header/>
+    <div className="flex flex-col gap-6 mt-6">
        <div>
         <h1 className="text-2xl font-headline font-semibold">Faculty Dashboard</h1>
         <p className="text-muted-foreground italic text-sm mt-1">"A good teacher can inspire hope, ignite the imagination, and instill a love of learning."</p>
@@ -111,5 +114,6 @@ export default function FacultyDashboard() {
       </div>
 
     </div>
+    </>
   );
 }

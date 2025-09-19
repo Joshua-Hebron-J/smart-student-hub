@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 
 const MetricCard = ({ icon: Icon, title, value, trend, footer, color }: { icon: React.ElementType, title: string, value: string | number, trend?: string, footer: string, color: string }) => (
-    <Card className={cn("overflow-hidden text-white", color)}>
+    <Card className={cn("overflow-hidden text-white shadow-lg", color)}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{title}</CardTitle>
             <Icon className="h-5 w-5 text-current/80" />
@@ -68,10 +68,10 @@ export default function StudentDashboardHome() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div className="p-6 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white shadow-lg">
-        <h1 className="text-3xl font-bold">Welcome back, {student.name.split(' ')[0]}!</h1>
-        <p className="opacity-80">Here's your academic snapshot for today. Keep up the great work!</p>
+        <h1 className="text-2xl md:text-3xl font-bold">Welcome back, {student.name.split(' ')[0]}!</h1>
+        <p className="opacity-80 text-sm md:text-base">Here's your academic snapshot for today. Keep up the great work!</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -110,7 +110,7 @@ export default function StudentDashboardHome() {
         <div className="lg:col-span-2">
             <Card>
                 <CardHeader>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                             <CardTitle>My Activities</CardTitle>
                             <CardDescription>Your submitted co-curricular and extra-curricular activities.</CardDescription>
@@ -155,17 +155,17 @@ export default function StudentDashboardHome() {
                     {todaySchedule.length > 0 ? todaySchedule.map((item, index) => (
                         <div key={item.id}>
                             <div className="flex gap-4">
-                                <div className="flex flex-col items-center">
-                                    <div className="h-4 w-4 rounded-full bg-primary" />
-                                    <div className="flex-1 w-px bg-border" />
+                                <div className="flex flex-col items-center h-full">
+                                    <div className="h-3 w-3 mt-1 rounded-full bg-primary" />
+                                    <div className="flex-1 w-px bg-border my-2" />
                                 </div>
-                                <div className="flex-1 -mt-1">
+                                <div className="flex-1">
                                     <p className="font-semibold">{item.title}</p>
                                     <p className="text-sm text-muted-foreground">{item.startTime} - {item.endTime}</p>
                                     <p className="text-sm text-muted-foreground">{item.location}</p>
                                 </div>
                             </div>
-                            {index < todaySchedule.length - 1 && <Separator className="my-4" />}
+                            {index === todaySchedule.length - 1 && <div className="flex gap-4"><div className="w-3"></div><div className="flex-1 -mt-4"></div></div>}
                         </div>
                     )) : (
                         <div className="text-center py-10 text-muted-foreground">

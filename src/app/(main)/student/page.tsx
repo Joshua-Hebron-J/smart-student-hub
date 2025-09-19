@@ -6,8 +6,7 @@ import StudentTimetablePage from './timetable/page';
 import StudentPortfolioPage from '../students/[id]/page';
 import { useUser } from '@/hooks/use-app-context';
 import type { Student } from '@/lib/types';
-
-type View = 'dashboard' | 'timetable' | 'portfolio';
+import Header, { type View } from '@/components/header';
 
 export default function StudentPage() {
     const { user } = useUser();
@@ -19,7 +18,6 @@ export default function StudentPage() {
 
     const student = user as Student;
 
-    // This function will be passed to the header/navigation to change the view
     const handleViewChange = (view: View) => {
         setCurrentView(view);
     };
@@ -29,22 +27,20 @@ export default function StudentPage() {
         case 'dashboard':
             return <StudentDashboardHome />;
         case 'timetable':
-            // We can reuse the existing page component
             return <StudentTimetablePage />;
         case 'portfolio':
-             // The portfolio page needs the student's ID
             return <StudentPortfolioPage />;
         default:
             return <StudentDashboardHome />;
         }
     };
 
-    // The parent layout will contain the header. We need to modify the header
-    // to call handleViewChange instead of navigating with Link.
-    // For now, let's just render the view. The layout and header will be updated next.
     return (
-        <div className="flex flex-col gap-8">
-            {renderCurrentView()}
-        </div>
+        <>
+            <Header currentView={currentView} onViewChange={handleViewChange} />
+            <div className="flex flex-col gap-8 mt-6">
+                {renderCurrentView()}
+            </div>
+        </>
     );
 }

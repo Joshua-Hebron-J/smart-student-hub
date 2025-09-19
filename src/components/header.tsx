@@ -11,7 +11,7 @@ import {
   Calendar,
   Briefcase
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -26,8 +26,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUser } from '@/hooks/use-app-context';
 import Image from 'next/image';
 import MainSidebar from './main-sidebar';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import {
   Tooltip,
   TooltipContent,
@@ -36,22 +34,27 @@ import {
 } from '@/components/ui/tooltip'
 
 
-type View = 'dashboard' | 'timetable' | 'portfolio';
+export type View = 'dashboard' | 'timetable' | 'portfolio';
+
+interface HeaderProps {
+  currentView?: View;
+  onViewChange?: (view: View) => void;
+}
 
 
-const NavLink = ({ activeView, view, onClick, children, label }: { activeView: View, view: View, onClick: (view: View) => void, children: React.ReactNode, label: string }) => {
+const NavLink = ({ activeView, view, onClick, children, label }: { activeView?: View, view: View, onClick?: (view: View) => void, children: React.ReactNode, label: string }) => {
   const isActive = activeView === view;
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <button onClick={() => onClick(view)} className={cn(
-            "flex items-center justify-center h-10 w-10 rounded-lg text-muted-foreground transition-colors hover:text-foreground",
-            isActive && "bg-muted text-foreground"
-          )}>
+          <button 
+            onClick={() => onClick?.(view)} 
+            className={`flex flex-col items-center justify-center h-16 w-20 text-muted-foreground transition-colors hover:text-foreground ${isActive ? "text-primary border-b-2 border-primary" : ""}`}
+          >
             {children}
-            <span className="sr-only">{label}</span>
+            <span className="text-xs mt-1">{label}</span>
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom">{label}</TooltipContent>
@@ -60,23 +63,18 @@ const NavLink = ({ activeView, view, onClick, children, label }: { activeView: V
   )
 }
 
-export default function Header() {
+export default function Header({ currentView, onViewChange }: HeaderProps) {
   const { user, setUser } = useUser();
-  const [currentView, setCurrentView] = useState<View>('dashboard');
 
   const handleLogout = () => {
     setUser(null);
-  };
-  
-  const handleViewChange = (view: View) => {
-    setCurrentView(view);
   };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur-sm sm:px-6">
       <Sheet>
         <SheetTrigger asChild>
-          <Button size="icon" variant="outline" className="sm:hidden">
+          <Button size="icon" variant="outline" className="md:hidden">
             <PanelLeft className="h-5 w-5" />
             <span className="sr-only">Toggle Menu</span>
           </Button>
@@ -86,13 +84,14 @@ export default function Header() {
         </SheetContent>
       </Sheet>
       
-      {/* Central Navigation for Student */}
       {user?.role === 'student' && (
-        <nav className="hidden md:flex md:items-center md:gap-4 md:mx-auto">
-          <NavLink activeView={currentView} view="dashboard" onClick={handleViewChange} label="Dashboard"><LayoutDashboard/></NavLink>
-          <NavLink activeView={currentView} view="timetable" onClick={handleViewChange} label="Timetable"><Calendar /></NavLink>
-          <NavLink activeView={currentView} view="portfolio" onClick={handleViewChange} label="Portfolio"><Briefcase /></NavLink>
-        </nav>
+        <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-background/95 backdrop-blur-sm border-t">
+          <nav className="flex items-center justify-around">
+            <NavLink activeView={currentView} view="dashboard" onClick={onViewChange} label="Dashboard"><LayoutDashboard size={20}/></NavLink>
+            <NavLink activeView={currentView} view="timetable" onClick={onViewChange} label="Timetable"><Calendar size={20} /></NavLink>
+            <NavLink activeView={currentView} view="portfolio" onClick={onViewChange} label="Portfolio"><Briefcase size={20} /></NavLink>
+          </nav>
+        </div>
       )}
 
       <div className="relative ml-auto flex items-center gap-2">

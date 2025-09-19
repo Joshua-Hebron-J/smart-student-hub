@@ -1,4 +1,4 @@
-import Header from '@/components/header';
+import Header, { View } from '@/components/header';
 import MainSidebar from '@/components/main-sidebar';
 
 export default function MainLayout({
@@ -12,8 +12,9 @@ export default function MainLayout({
         <MainSidebar />
       </div>
       <div className="flex flex-col">
-        <Header />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
+        {/* The Header now needs props passed from child pages, so we remove it from the general layout */}
+        {/* <Header /> */}
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40 pb-20 md:pb-6">
           {children}
         </main>
       </div>

@@ -82,28 +82,10 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
   if (!user) return null;
 
-  const userNavLinks = navLinks[user.role] || [];
-  
-  // For students, some links are in the top header on desktop, so we hide them from the sidebar
-  const studentSidebarLinks = isMobile ? userNavLinks : [
-     {
-      href: '#', label: 'Guidance', icon: BookUser,
-      subLinks: [
-        { href: '/student/career-guidance', label: 'Career AI', icon: BotMessageSquare },
-        { href: '/student/resume', label: 'AI Resume', icon: FileText },
-        { href: '/student/attendance-buddy', label: 'Attendance Buddy', icon: Percent },
-      ]
-    },
-    { href: '/student/od-management', label: 'OD Management', icon: ClipboardList },
-  ];
-
-  // In mobile view for students, all links should be visible in the sidebar.
+  // Mobile sidebar should always show all links for the role
   const getLinksForRole = () => {
-    if (user.role === 'student' && !isMobile) {
-      return studentSidebarLinks;
-    }
-    return userNavLinks;
-  }
+    return navLinks[user.role] || [];
+  };
 
   const allLinks = [...getLinksForRole(), ...commonLinks];
 

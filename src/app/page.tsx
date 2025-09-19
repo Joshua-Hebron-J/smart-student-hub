@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, HelpCircle } from 'lucide-react';
+import { GraduationCap, ShieldCheck } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,12 +12,11 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
 import { MOCK_USERS } from '@/lib/data';
 import type { AppUser } from '@/lib/types';
-import { cn } from '@/lib/utils';
 
 const motivationalQuotes = [
   {
-    quote: "Success is not the key to happiness. Happiness is the key to success.",
-    author: "Albert Schweitzer"
+    quote: "The future belongs to those who believe in the beauty of their dreams.",
+    author: "Eleanor Roosevelt"
   },
   {
     quote: "The beautiful thing about learning is that no one can take it away from you.",
@@ -26,10 +25,6 @@ const motivationalQuotes = [
   {
     quote: "The expert in anything was once a beginner.",
     author: "Helen Hayes"
-  },
-  {
-    quote: "The future belongs to those who believe in the beauty of their dreams.",
-    author: "Eleanor Roosevelt"
   },
   {
     quote: "Education is the most powerful weapon which you can use to change the world.",
@@ -94,7 +89,7 @@ export default function LoginPage() {
       
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
         
-        <header className="text-center mb-10 max-w-2xl">
+        <header className="text-center mb-8 max-w-2xl">
             <div className="inline-flex items-center justify-center bg-primary/10 p-3 rounded-xl mb-4 border border-primary/20">
                 <GraduationCap className="h-8 w-8 text-primary" />
             </div>
@@ -107,9 +102,9 @@ export default function LoginPage() {
         </header>
 
         <main className="w-full max-w-sm space-y-6">
-          <div className="bg-card/60 glassmorphism rounded-xl p-8 shadow-2xl border">
+          <div className="bg-card/60 glassmorphism rounded-xl p-6 sm:p-8 shadow-2xl border">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-center text-foreground">Welcome Back</h2>
+              <h2 className="text-xl font-bold text-center text-foreground">Welcome Back</h2>
             </div>
             
             <form onSubmit={handleLogin} className="space-y-4">
@@ -155,7 +150,7 @@ export default function LoginPage() {
           </div>
           
            {quote.quote && (
-              <div className="bg-card/60 glassmorphism border rounded-xl p-4 text-center shadow-2xl">
+              <div className="bg-card/60 glassmorphism border rounded-xl p-4 text-center shadow-lg">
                 <p className="text-sm text-foreground/90 italic">"{quote.quote}"</p>
                 <p className="text-xs text-muted-foreground mt-2">- {quote.author}</p>
               </div>
@@ -163,7 +158,9 @@ export default function LoginPage() {
         </main>
 
          <footer className="absolute bottom-4 right-4 text-muted-foreground">
-           <HelpCircle className="h-6 w-6"/>
+           <a href="/support" aria-label="Support">
+            <ShieldCheck className="h-6 w-6"/>
+           </a>
         </footer>
       </div>
     </div>

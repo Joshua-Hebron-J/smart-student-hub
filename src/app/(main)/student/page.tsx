@@ -1,20 +1,46 @@
 'use client';
 
-import { useState } from 'react';
-import StudentDashboardHome from '@/components/student-dashboard-home';
+import React, { useState, useMemo } from 'react';
 import StudentTimetablePage from './timetable/page';
-import StudentPortfolioPage from '../students/[id]/page';
 import { useUser } from '@/hooks/use-app-context';
 import type { Student } from '@/lib/types';
 import Header, { type View } from '@/components/header';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Lazy load the dashboard component
+const StudentDashboardHome = React.lazy(() => import('@/components/student-dashboard-home'));
+
+const DashboardSkeleton = () => (
+  <div className="flex flex-col gap-6">
+    <Skeleton className="h-28 w-full rounded-xl" />
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Skeleton className="h-32 w-full rounded-lg" />
+      <Skeleton className="h-32 w-full rounded-lg" />
+      <Skeleton className="h-32 w-full rounded-lg" />
+      <Skeleton className="h-32 w-full rounded-lg" />
+    </div>
+     <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+            <Skeleton className="h-96 w-full rounded-lg" />
+        </div>
+        <div className="lg:col-span-1">
+            <Skeleton className="h-96 w-full rounded-lg" />
+        </div>
+      </div>
+  </div>
+);
+
 
 export default function StudentPage() {
     const { user } = useUser();
     const router = useRouter();
+    const [currentView, setCurrentView] = useState<View>('dashboard');
     
     if (!user || user.role !== 'student') {
-        return <div>Loading or not authorized...</div>;
+        // A loading or unauthorized state could be rendered here.
+        // For now, returning null to prevent rendering anything until user is confirmed.
+        return null;
     }
 
     const student = user as Student;
@@ -23,41 +49,34 @@ export default function StudentPage() {
         if (view === 'portfolio') {
             router.push(`/students/${student.id}`);
         } else {
-            // For dashboard and timetable, we'll need a different approach
-            // if we want to keep them as separate pages but feel like SPA.
-            // For now, we assume they are components on this page.
-            // A full switch to app router would be better.
-            router.push(`/student?view=${view}`);
+            setCurrentView(view);
         }
     };
     
-    // This is a simplified router based on a query param for non-portfolio views
-    // A more robust solution would use Next.js's App Router features more deeply.
-    const [currentView, setCurrentView] = useState<View>('dashboard');
-
     const renderCurrentView = () => {
         switch (currentView) {
         case 'dashboard':
-            return <StudentDashboardHome />;
+            return (
+                <React.Suspense fallback={<DashboardSkeleton />}>
+                    <StudentDashboardHome />
+                </React.Suspense>
+            );
         case 'timetable':
             return <StudentTimetablePage />;
         // Portfolio is now a separate page, so it's not rendered here.
-        // We redirect to it.
         default:
-            return <StudentDashboardHome />;
+             return (
+                <React.Suspense fallback={<DashboardSkeleton />}>
+                    <StudentDashboardHome />
+                </React.Suspense>
+            );
         }
     };
 
 
     return (
         <>
-            <Header currentView={currentView} onViewChange={(view) => {
-                if (view === 'portfolio') {
-                    router.push(`/students/${student.id}`);
-                } else {
-                    setCurrentView(view);
-                }
-            }} />
+            <Header currentView={currentView} onViewChange={handleViewChange} />
             <div className="flex flex-col gap-8 mt-6">
                 {renderCurrentView()}
             </div>

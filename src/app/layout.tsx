@@ -2,11 +2,24 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/app-context';
 import { Toaster } from '@/components/ui/toaster';
+import { Inter, Poppins } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'Smart Student Hub',
   description: 'A centralized platform for students, faculty, and administrators.',
 };
+
+const fontInter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const fontPoppins = Poppins({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-poppins',
+});
 
 export default function RootLayout({
   children,
@@ -15,12 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-body antialiased">
+      <body className={cn(fontInter.variable, fontPoppins.variable, 'font-body antialiased')}>
         <AppProvider>
           {children}
           <Toaster />

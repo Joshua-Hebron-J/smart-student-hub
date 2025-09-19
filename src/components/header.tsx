@@ -9,9 +9,14 @@ import {
   PlusCircle,
   LayoutDashboard,
   Calendar,
-  Briefcase
+  Briefcase,
+  CheckCircle2,
+  AlertCircle,
+  Megaphone,
 } from 'lucide-react';
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+
 
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +26,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUser } from '@/hooks/use-app-context';
@@ -32,6 +38,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { MOCK_NOTIFICATIONS } from '@/lib/notifications-data';
+import type { Notification } from '@/lib/types';
+import { cn } from '@/lib/utils';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';
 
 
 export type View = 'dashboard' | 'timetable' | 'portfolio';
@@ -63,12 +73,35 @@ const NavLink = ({ activeView, view, onClick, children, label }: { activeView?: 
   )
 }
 
+const NotificationIcon = ({ type }: { type: Notification['type'] }) => {
+  switch (type) {
+    case 'approval':
+      return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+    case 'deadline':
+      return <AlertCircle className="h-5 w-5 text-orange-500" />;
+    case 'announcement':
+      return <Megaphone className="h-5 w-5 text-blue-500" />;
+    default:
+      return <Bell className="h-5 w-5 text-muted-foreground" />;
+  }
+};
+
 export default function Header({ currentView, onViewChange }: HeaderProps) {
   const { user, setUser } = useUser();
+  const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
+  const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
 
   const handleLogout = () => {
     setUser(null);
   };
+  
+  const handleMarkAsRead = (notificationId: string) => {
+    setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, read: true } : n));
+  };
+  
+  const handleMarkAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({...n, read: true})));
+  }
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur-sm sm:px-6">
@@ -103,21 +136,62 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
                 </Link>
             </Button>
         )}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative rounded-full h-10 w-10">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-2 right-2 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                </span>
-                <span className="sr-only">Toggle notifications</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Notifications</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                 <Button variant="ghost" size="icon" className="relative rounded-full h-10 w-10">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                        <span className="absolute top-2 right-2 flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 items-center justify-center bg-primary text-xs text-primary-foreground">
+                                {unreadCount > 9 ? '9+' : unreadCount}
+                            </span>
+                        </span>
+                    )}
+                    <span className="sr-only">Toggle notifications</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80 md:w-96 p-0">
+                <Card className="border-0">
+                    <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+                        <CardTitle className="text-lg">Notifications</CardTitle>
+                        {unreadCount > 0 && (
+                            <Button variant="link" size="sm" onClick={handleMarkAllAsRead}>Mark all as read</Button>
+                        )}
+                    </CardHeader>
+                    <CardContent className="p-0 max-h-96 overflow-y-auto">
+                        {notifications.length > 0 ? (
+                            notifications.map(notif => (
+                                <div 
+                                    key={notif.id} 
+                                    className={cn("flex items-start gap-3 p-4 border-b", !notif.read && "bg-primary/5")}
+                                    onClick={() => handleMarkAsRead(notif.id)}
+                                >
+                                    <NotificationIcon type={notif.type} />
+                                    <div className="flex-1">
+                                        <p className="font-semibold">{notif.title}</p>
+                                        <p className="text-sm text-muted-foreground">{notif.description}</p>
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            {formatDistanceToNow(new Date(notif.timestamp), { addSuffix: true })}
+                                        </p>
+                                    </div>
+                                    {!notif.read && (
+                                        <div className="h-2 w-2 rounded-full bg-primary mt-1.5" />
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                             <p className="text-center text-muted-foreground p-8">No new notifications.</p>
+                        )}
+                    </CardContent>
+                    <CardFooter className="p-2 border-t">
+                        <Button variant="ghost" className="w-full">View all notifications</Button>
+                    </CardFooter>
+                </Card>
+            </DropdownMenuContent>
+        </DropdownMenu>
+
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

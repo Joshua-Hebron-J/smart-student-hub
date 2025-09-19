@@ -92,6 +92,15 @@ export interface ODApplication {
   status: 'pending' | 'approved' | 'rejected';
 }
 
+export interface Notification {
+  id: string;
+  type: 'approval' | 'deadline' | 'announcement';
+  title: string;
+  description: string;
+  timestamp: string; // ISO 8601 format
+  read: boolean;
+}
+
 
 // New Calendar Types
 export type EventCategoryKey = keyof typeof EVENT_CATEGORIES;

@@ -1,10 +1,10 @@
+
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import StudentTimetablePage from './timetable/page';
+import React from 'react';
 import { useUser } from '@/hooks/use-app-context';
 import type { Student } from '@/lib/types';
-import Header, { type View } from '@/components/header';
+import Header from '@/components/header';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -34,8 +34,6 @@ const DashboardSkeleton = () => (
 
 export default function StudentPage() {
     const { user } = useUser();
-    const router = useRouter();
-    const [currentView, setCurrentView] = useState<View>('dashboard');
     
     if (!user || user.role !== 'student') {
         // A loading or unauthorized state could be rendered here.
@@ -43,49 +41,13 @@ export default function StudentPage() {
         return null;
     }
 
-    const student = user as Student;
-
-    const handleViewChange = (view: View) => {
-        if (view === 'portfolio') {
-            router.push(`/students/${student.id}`);
-        } else {
-            setCurrentView(view);
-        }
-    };
-    
-    const renderCurrentView = () => {
-        switch (currentView) {
-        case 'dashboard':
-            return (
-                <React.Suspense fallback={<DashboardSkeleton />}>
-                    <StudentDashboardHome />
-                </React.Suspense>
-            );
-        case 'timetable':
-            return <StudentTimetablePage />;
-        // Portfolio is a separate page, so it's not rendered here.
-        case 'portfolio':
-             // This case is handled by router push, but as a fallback, show dashboard
-            return (
-                <React.Suspense fallback={<DashboardSkeleton />}>
-                    <StudentDashboardHome />
-                </React.Suspense>
-            );
-        default:
-             return (
-                <React.Suspense fallback={<DashboardSkeleton />}>
-                    <StudentDashboardHome />
-                </React.Suspense>
-            );
-        }
-    };
-
-
     return (
         <>
-            <Header currentView={currentView} onViewChange={handleViewChange} />
+            <Header />
             <div className="flex flex-col gap-8 mt-6">
-                {renderCurrentView()}
+                 <React.Suspense fallback={<DashboardSkeleton />}>
+                    <StudentDashboardHome />
+                </React.Suspense>
             </div>
         </>
     );

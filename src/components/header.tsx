@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -42,30 +43,30 @@ import { MOCK_NOTIFICATIONS } from '@/lib/notifications-data';
 import type { Notification } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';
+import { usePathname } from 'next/navigation';
 
 
 export type View = 'dashboard' | 'timetable' | 'portfolio';
 
 interface HeaderProps {
-  currentView?: View;
-  onViewChange?: (view: View) => void;
 }
 
 
-const NavLink = ({ activeView, view, onClick, children, label }: { activeView?: View, view: View, onClick?: (view: View) => void, children: React.ReactNode, label: string }) => {
-  const isActive = activeView === view;
+const NavLink = ({ href, children, label }: { href: string, children: React.ReactNode, label: string }) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <button 
-            onClick={() => onClick?.(view)} 
+          <Link 
+            href={href}
             className={`flex flex-col items-center justify-center h-16 w-20 text-gray-400 transition-colors hover:text-white ${isActive ? "text-primary border-b-2 border-primary" : ""}`}
           >
             {children}
             <span className="text-xs mt-1">{label}</span>
-          </button>
+          </Link>
         </TooltipTrigger>
         <TooltipContent side="bottom">{label}</TooltipContent>
       </Tooltip>
@@ -86,7 +87,7 @@ const NotificationIcon = ({ type }: { type: Notification['type'] }) => {
   }
 };
 
-export default function Header({ currentView, onViewChange }: HeaderProps) {
+export default function Header({}: HeaderProps) {
   const { user, setUser } = useUser();
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
   const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
@@ -120,9 +121,9 @@ export default function Header({ currentView, onViewChange }: HeaderProps) {
       {user?.role === 'student' && (
         <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gray-900/80 backdrop-blur-sm border-t border-gray-800">
           <nav className="flex items-center justify-around">
-            <NavLink activeView={currentView} view="dashboard" onClick={onViewChange} label="Dashboard"><LayoutDashboard size={20}/></NavLink>
-            <NavLink activeView={currentView} view="timetable" onClick={onViewChange} label="Timetable"><Calendar size={20} /></NavLink>
-            <NavLink activeView={currentView} view="portfolio" onClick={onViewChange} label="Portfolio"><Briefcase size={20} /></NavLink>
+            <NavLink href="/student" label="Dashboard"><LayoutDashboard size={20}/></NavLink>
+            <NavLink href="/student/timetable" label="Timetable"><Calendar size={20} /></NavLink>
+            <NavLink href={`/students/${user.id}`} label="Portfolio"><Briefcase size={20} /></NavLink>
           </nav>
         </div>
       )}

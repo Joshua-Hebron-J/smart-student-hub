@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -92,7 +93,23 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
   const renderLink = (link: NavLink, isSubLink = false) => {
     const href = link.isDynamic ? link.href.replace('[id]', user.id) : link.href;
-    const isActive = !link.subLinks && (pathname === href || (href !== '/' && pathname.startsWith(href) && link.isDynamic));
+    const isActive = !link.subLinks && (pathname === href || (href !== '/' && pathname.startsWith(href) && href !== '/student' && href !== '/faculty' && href !== '/admin' ));
+
+    if (link.isDynamic) {
+        const baseHref = href.substring(0, href.lastIndexOf('/'));
+        const isActive = pathname.startsWith(baseHref) && pathname.includes(user.id);
+
+         return (
+            <Link href={href} className={cn(
+                'group flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800',
+                isActive && 'bg-gray-800 text-primary',
+                isSubLink && 'ml-4'
+            )}>
+                 <link.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-gray-400 group-hover:text-primary")} />
+                <span className="truncate">{link.label}</span>
+            </Link>
+        )
+    }
 
     const linkContent = (
       <>
@@ -103,7 +120,7 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
     const linkClasses = cn(
       'group flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800',
-      isActive && 'bg-gray-800 text-primary',
+      (pathname === href) && 'bg-gray-800 text-primary',
       isSubLink && 'ml-4'
     );
     

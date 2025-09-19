@@ -69,7 +69,7 @@ export default function StudentDashboardHome() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="p-6 rounded-xl bg-gradient-to-r from-blue-500 to-teal-400 text-white shadow-lg">
+      <div className="p-6 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Welcome back, {student.name.split(' ')[0]}!</h1>
         <p className="opacity-80">Here's your academic snapshot for today. Keep up the great work!</p>
       </div>

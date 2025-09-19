@@ -97,7 +97,7 @@ export default function Header() {
 
       <div className="relative ml-auto flex items-center gap-2">
         {user?.role === 'student' && (
-            <Button asChild className="hidden sm:flex bg-gradient-to-r from-blue-500 to-teal-400 text-white hover:opacity-90">
+            <Button asChild className="hidden sm:flex bg-primary text-primary-foreground hover:bg-primary/90">
                 <Link href="/student/add-activity">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Add Activity

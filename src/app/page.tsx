@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, HelpCircle } from 'lucide-react';
+import { GraduationCap, HelpCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -80,39 +80,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-black">
-      <div 
-        className="absolute top-[-20%] left-[-20%] h-[50%] w-[70%] rounded-full bg-gradient-to-r from-blue-600 to-teal-400 opacity-15 blur-[100px] animate-blob"
-        style={{ animationDelay: '2s'}}
-      ></div>
-      <div 
-        className="absolute bottom-[-20%] right-[-20%] h-[50%] w-[70%] rounded-full bg-gradient-to-r from-teal-400 to-blue-600 opacity-15 blur-[100px] animate-blob"
-        style={{ animationDelay: '4s'}}
-      ></div>
+    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-background to-blue-50/50 dark:from-slate-900 dark:to-blue-950">
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div 
+          className="absolute top-[-20%] left-[-20%] h-[50%] w-[70%] rounded-full bg-gradient-to-r from-primary to-teal-400 blur-[120px] animate-blob"
+          style={{ animationDelay: '2s'}}
+        ></div>
+        <div 
+          className="absolute bottom-[-20%] right-[-20%] h-[50%] w-[70%] rounded-full bg-gradient-to-r from-teal-400 to-primary blur-[120px] animate-blob"
+          style={{ animationDelay: '4s'}}
+        ></div>
+      </div>
       
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
         
         <header className="text-center mb-10 max-w-2xl">
-            <div className="inline-flex items-center justify-center bg-gradient-to-br from-blue-500 to-teal-400 p-3 rounded-xl mb-4">
-                <BookOpen className="h-8 w-8 text-white" />
+            <div className="inline-flex items-center justify-center bg-primary/10 p-3 rounded-xl mb-4 border border-primary/20">
+                <GraduationCap className="h-8 w-8 text-primary" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold font-headline text-white">
+            <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">
                 Smart Student Hub
             </h1>
-            <p className="text-md text-white/70 mt-2">
+            <p className="text-md text-muted-foreground mt-2">
                 Your gateway to academic excellence
             </p>
         </header>
 
         <main className="w-full max-w-sm space-y-6">
-          <div className="bg-white/10 glassmorphism rounded-xl p-8 shadow-2xl border border-white/20">
+          <div className="bg-card/60 glassmorphism rounded-xl p-8 shadow-2xl border">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-center text-white">Welcome Back</h2>
+              <h2 className="text-2xl font-bold text-center text-foreground">Welcome Back</h2>
             </div>
             
             <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-1">
-                <Label htmlFor="email" className="font-semibold text-white/80">Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="font-medium text-foreground/80">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -120,11 +122,11 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-white/10 border-white/20 h-11 text-base placeholder:text-white/60 text-white"
+                  className="h-11 text-base"
                 />
               </div>
-              <div className="space-y-1">
-                 <Label htmlFor="password" className="font-semibold text-white/80">Password</Label>
+              <div className="space-y-2">
+                 <Label htmlFor="password" className="font-medium text-foreground/80">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -132,12 +134,12 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                   className="bg-white/10 border-white/20 h-11 text-base placeholder:text-white/60 text-white"
+                  className="h-11 text-base"
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full font-bold h-11 text-base bg-gradient-to-r from-blue-500 to-teal-400 text-white hover:opacity-90 transition-opacity duration-300"
+                className="w-full font-bold h-11 text-base bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity duration-300"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -147,20 +149,20 @@ export default function LoginPage() {
                 )}
               </Button>
               <div className="text-center pt-2">
-                 <a href="#" className="text-sm font-medium text-blue-400 hover:underline">Forgot password?</a>
+                 <a href="#" className="text-sm font-medium text-primary hover:underline">Forgot password?</a>
               </div>
             </form>
           </div>
           
            {quote.quote && (
-              <div className="bg-white/10 glassmorphism border border-white/20 rounded-xl p-4 text-center shadow-2xl">
-                <p className="text-sm text-white italic">"{quote.quote}"</p>
-                <p className="text-xs text-white/60 mt-2">- {quote.author}</p>
+              <div className="bg-card/60 glassmorphism border rounded-xl p-4 text-center shadow-2xl">
+                <p className="text-sm text-foreground/90 italic">"{quote.quote}"</p>
+                <p className="text-xs text-muted-foreground mt-2">- {quote.author}</p>
               </div>
             )}
         </main>
 
-         <footer className="absolute bottom-4 right-4 text-white/50">
+         <footer className="absolute bottom-4 right-4 text-muted-foreground">
            <HelpCircle className="h-6 w-6"/>
         </footer>
       </div>

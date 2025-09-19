@@ -20,7 +20,8 @@ import {
   CheckSquare,
   Clock,
   Percent,
-  Briefcase
+  Briefcase,
+  BrainCircuit,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -50,6 +51,7 @@ const navLinks: NavLinksConfig = {
       href: '#', label: 'Guidance', icon: BookUser,
       subLinks: [
         { href: '/student/career-guidance', label: 'Career AI', icon: BotMessageSquare },
+        { href: '/student/study-buddy', label: 'Study Buddy', icon: BrainCircuit },
         { href: '/student/resume', label: 'AI Resume', icon: FileText },
         { href: '/student/attendance-buddy', label: 'Attendance Buddy', icon: Percent },
       ]

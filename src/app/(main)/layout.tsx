@@ -7,7 +7,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] bg-gray-900 text-white">
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r border-gray-800 bg-gray-900/50 md:block">
         <MainSidebar />
       </div>

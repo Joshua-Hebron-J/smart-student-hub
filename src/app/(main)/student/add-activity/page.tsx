@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Wand2, Plus, X, ArrowLeft } from 'lucide-react';
+import { Wand2, Plus, X, ArrowLeft, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,10 +17,22 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { suggestSkillsForActivity } from '@/ai/flows/suggest-skills-for-activity';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+
 const activitySchema = z.object({
   name: z.string().min(3, 'Activity name must be at least 3 characters.'),
   description: z.string().min(20, 'Description must be at least 20 characters.'),
   date: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+  image: z
+    .any()
+    .refine((file) => file, 'Image is required.')
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      '.jpg, .jpeg, .png and .webp files are accepted.'
+    )
 });
 
 type ActivityFormValues = z.infer<typeof activitySchema>;
@@ -32,6 +45,7 @@ export default function AddActivityPage() {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<ActivityFormValues>({
     resolver: zodResolver(activitySchema),
@@ -41,6 +55,18 @@ export default function AddActivityPage() {
       date: new Date().toISOString().split('T')[0],
     },
   });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue('image', file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSuggestSkills = async () => {
     const description = form.getValues('description');
@@ -128,6 +154,42 @@ export default function AddActivityPage() {
                   </FormItem>
                 )}
               />
+
+               <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                       <FormLabel>Activity Proof/Image</FormLabel>
+                       <FormControl>
+                          <div
+                            className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-background/50 hover:bg-muted/50"
+                          >
+                             <Input 
+                              id="dropzone-file" 
+                              type="file" 
+                              className="absolute w-full h-full opacity-0 cursor-pointer"
+                              accept={ACCEPTED_IMAGE_TYPES.join(',')}
+                              onChange={handleImageChange}
+                             />
+                             {imagePreview ? (
+                                <Image src={imagePreview} alt="Selected preview" fill style={{objectFit: 'contain'}} className="rounded-lg p-2" />
+                             ) : (
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+                                  <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
+                                  <p className="mb-2 text-sm text-muted-foreground">
+                                    <span className="font-semibold">Click to upload</span> or drag and drop
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">JPG, PNG, or WEBP (MAX. 5MB)</p>
+                                </div>
+                             )}
+                          </div>
+                       </FormControl>
+                       <FormMessage />
+                    </FormItem>
+                  )}
+               />
+
               <FormField
                 control={form.control}
                 name="description"

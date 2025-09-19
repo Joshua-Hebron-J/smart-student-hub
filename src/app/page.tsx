@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -130,7 +131,7 @@ export default function LoginPage() {
         </main>
         
         {/* Footer */}
-        <footer className="absolute bottom-6 text-center text-white/40 text-xs">
+        <footer className="absolute bottom-6 text-center text-white/40 text-xs w-full px-4">
            <p>© 2024 Smart Student Hub. Empowering education through technology.</p>
         </footer>
       </div>

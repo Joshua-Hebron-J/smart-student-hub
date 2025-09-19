@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -62,13 +63,13 @@ const NavLink = ({ href, children, label }: { href: string, children: React.Reac
         <TooltipTrigger asChild>
           <Link 
             href={href}
-            className={`flex flex-col items-center justify-center h-16 w-20 text-gray-400 transition-colors hover:text-white ${isActive ? "text-primary border-b-2 border-primary" : ""}`}
+            className={`flex flex-col items-center justify-center h-16 w-20 text-gray-400 transition-colors hover:text-white ${isActive ? "text-primary border-t-2 border-primary" : "border-t-2 border-transparent"}`}
           >
             {children}
             <span className="text-xs mt-1">{label}</span>
           </Link>
         </TooltipTrigger>
-        <TooltipContent side="bottom">{label}</TooltipContent>
+        <TooltipContent side="top">{label}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )

@@ -63,7 +63,14 @@ export default function StudentPage() {
             );
         case 'timetable':
             return <StudentTimetablePage />;
-        // Portfolio is now a separate page, so it's not rendered here.
+        // Portfolio is a separate page, so it's not rendered here.
+        case 'portfolio':
+             // This case is handled by router push, but as a fallback, show dashboard
+            return (
+                <React.Suspense fallback={<DashboardSkeleton />}>
+                    <StudentDashboardHome />
+                </React.Suspense>
+            );
         default:
              return (
                 <React.Suspense fallback={<DashboardSkeleton />}>

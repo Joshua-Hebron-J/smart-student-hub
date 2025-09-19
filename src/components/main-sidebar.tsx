@@ -31,6 +31,7 @@ type NavLink = {
   label: string;
   icon: React.ElementType;
   subLinks?: NavLink[];
+  isDynamic?: boolean;
 };
 
 type NavLinksConfig = {
@@ -43,7 +44,7 @@ const navLinks: NavLinksConfig = {
   student: [
     { href: '/student', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/student/timetable', label: 'Timetable', icon: Clock },
-    { href: '/student/portfolio', label: 'Portfolio', icon: Briefcase },
+    { href: '/students/[id]', label: 'Portfolio', icon: Briefcase, isDynamic: true },
     {
       href: '#', label: 'Guidance', icon: BookUser,
       subLinks: [
@@ -90,7 +91,8 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
 
   const renderLink = (link: NavLink, isSubLink = false) => {
-    const isActive = !link.subLinks && (pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href)));
+    const href = link.isDynamic ? link.href.replace('[id]', user.id) : link.href;
+    const isActive = !link.subLinks && (pathname === href || (href !== '/' && pathname.startsWith(href) && link.isDynamic));
 
     const linkContent = (
       <>
@@ -106,7 +108,7 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
     );
     
     return (
-      <Link href={link.href} className={linkClasses}>
+      <Link href={href} className={linkClasses}>
         {linkContent}
       </Link>
     );

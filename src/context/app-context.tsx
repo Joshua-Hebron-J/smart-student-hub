@@ -2,7 +2,7 @@
 
 import { createContext, useState, useEffect, useMemo, ReactNode } from 'react';
 import type { AppUser } from '@/lib/types';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, notFound } from 'next/navigation';
 
 interface AppContextType {
   user: AppUser | null;
@@ -19,29 +19,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
+    let userIsSet = false;
     try {
       const storedUser = localStorage.getItem('smart-student-hub-user');
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         setUserState(parsedUser);
+        userIsSet = true;
         // If user is on login page, redirect them to their dashboard
         if (pathname === '/') {
           router.replace(`/${parsedUser.role}`);
-        }
-      } else {
-        // If no user and not on login page, redirect to login
-        if (pathname !== '/') {
-          router.replace('/');
         }
       }
     } catch (error) {
       console.error("Failed to parse user from localStorage", error);
       localStorage.removeItem('smart-student-hub-user');
-      if (pathname !== '/') {
-        router.replace('/');
-      }
     } finally {
       setIsLoading(false);
+      // If no user and not on login page, redirect to login
+      if (!userIsSet && pathname !== '/') {
+        router.replace('/');
+      }
     }
   }, []); // Run only once on mount
 
@@ -65,9 +63,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
   }
   
-  // If no user and not on login page, don't render children to prevent flashes of authenticated content
-  if (!user && pathname !== '/') {
-    return null;
+  // If we are still loading, or if we have no user and are not on the login page, we should not render children yet.
+  // This prevents content flashes and ensures redirects happen cleanly.
+  if (!isLoading && !user && pathname !== '/') {
+      return null;
   }
 
   return (

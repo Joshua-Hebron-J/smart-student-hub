@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target } from 'lucide-react';
+import { notFound } from 'next/navigation';
+
 import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Student, Activity } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +12,7 @@ import { generateActivitySummary } from '@/ai/flows/generate-activity-summaries'
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import PortfolioPrintButton from '@/components/portfolio-print-button';
-import { notFound } from 'next/navigation';
+
 
 async function ActivitySummary({ activity, student }: { activity: Activity, student: Student }) {
   let summary = activity.aiSummary;

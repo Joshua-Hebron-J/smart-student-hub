@@ -3,9 +3,6 @@
 
 import React from 'react';
 import { useUser } from '@/hooks/use-app-context';
-import type { Student } from '@/lib/types';
-import Header from '@/components/header';
-import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Lazy load the dashboard component
@@ -42,13 +39,10 @@ export default function StudentPage() {
     }
 
     return (
-        <>
-            <Header />
-            <div className="flex flex-col gap-8 mt-6">
-                 <React.Suspense fallback={<DashboardSkeleton />}>
-                    <StudentDashboardHome />
-                </React.Suspense>
-            </div>
-        </>
+        <div className="flex flex-col gap-6">
+            <React.Suspense fallback={<DashboardSkeleton />}>
+            <StudentDashboardHome />
+            </React.Suspense>
+        </div>
     );
 }

@@ -135,7 +135,7 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
   
   const renderAccordionLink = (link: NavLink) => (
      <AccordionItem value={link.label} className="border-b-0">
-      <AccordionTrigger className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800 hover:no-underline [&[data-state=open]>svg]:rotate-90">
+      <AccordionTrigger className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800 hover:no-underline [&[data-state=open]>svg]:rotate-180">
          <link.icon className="h-5 w-5 text-gray-400" />
         <span className="truncate">{link.label}</span>
       </AccordionTrigger>

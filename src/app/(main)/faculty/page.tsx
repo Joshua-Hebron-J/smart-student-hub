@@ -11,7 +11,6 @@ import type { Activity, Faculty } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
 import { Separator } from '@/components/ui/separator';
-import Header from '@/components/header';
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
@@ -39,9 +38,7 @@ export default function FacultyDashboard() {
   };
 
   return (
-    <>
-    <Header/>
-    <div className="flex flex-col gap-6 mt-6">
+    <div className="flex flex-col gap-6">
        <div>
         <h1 className="text-2xl font-headline font-semibold">Faculty Dashboard</h1>
         <p className="text-muted-foreground italic text-sm mt-1">"A good teacher can inspire hope, ignite the imagination, and instill a love of learning."</p>
@@ -97,10 +94,9 @@ export default function FacultyDashboard() {
                 {facultyUser.publications && facultyUser.publications.length > 0 ? (
                     <ul className="space-y-4">
                         {facultyUser.publications.map((pub, index) => (
-                            <li key={index}>
+                            <li key={index} className="border-b border-border pb-4 last:border-b-0 last:pb-0">
                                 <p className="font-semibold">{pub.title}</p>
                                 <p className="text-sm text-muted-foreground">{pub.journal}, {pub.year}</p>
-                                {index < facultyUser.publications!.length - 1 && <Separator className="mt-4"/>}
                             </li>
                         ))}
                     </ul>
@@ -114,6 +110,5 @@ export default function FacultyDashboard() {
       </div>
 
     </div>
-    </>
   );
 }

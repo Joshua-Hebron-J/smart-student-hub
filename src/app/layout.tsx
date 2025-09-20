@@ -8,6 +8,13 @@ import { cn } from '@/lib/utils';
 export const metadata: Metadata = {
   title: 'Smart Student Hub',
   description: 'A centralized platform for students, faculty, and administrators.',
+  manifest: '/manifest.json',
+  themeColor: '#030712',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Student Hub',
+  },
 };
 
 const fontInter = Inter({

@@ -51,7 +51,6 @@ const navLinks: NavLinksConfig = {
       href: '#', label: 'Guidance', icon: BookUser,
       subLinks: [
         { href: '/student/career-guidance', label: 'Career AI', icon: BotMessageSquare },
-        { href: '/student/study-buddy', label: 'Study Buddy', icon: BrainCircuit },
         { href: '/student/resume', label: 'AI Resume', icon: FileText },
         { href: '/student/attendance-buddy', label: 'Attendance Buddy', icon: Percent },
       ]
@@ -157,7 +156,7 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
 
   return (
-    <div className="flex h-full max-h-screen flex-col">
+    <div className="flex h-full max-h-screen flex-col bg-gray-900/50">
        <div className="flex h-16 items-center border-b border-gray-800 px-4 lg:px-6 shrink-0">
         <Link href="/" className="flex items-center gap-2 font-headline font-semibold text-white">
           <GraduationCap className="h-6 w-6 text-primary" />

@@ -1,6 +1,7 @@
+
 'use client';
 
-import { Award, BarChart, Calendar, Activity as ActivityIcon, Percent, TrendingUp } from 'lucide-react';
+import { Award, BarChart, Calendar, Activity as ActivityIcon, Percent, TrendingUp, User, GraduationCap, Heart, BookUser } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import { startOfToday, isFuture, parseISO } from 'date-fns';
@@ -30,6 +31,50 @@ const MetricCard = ({ icon: Icon, title, value, trend, footer, color }: { icon: 
                 {trend}
             </div>
         )}
+    </Card>
+);
+
+const ProfileSnapshot = ({ student }: { student: Student }) => (
+    <Card>
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2"><User /> Profile Snapshot</CardTitle>
+            <CardDescription>A quick overview of your profile.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div>
+                <h4 className="font-semibold text-sm flex items-center gap-2 mb-2"><GraduationCap className="h-4 w-4" /> Academic Profile</h4>
+                <p className="text-sm text-muted-foreground">
+                    {student.major}
+                </p>
+                <p className="text-xs text-muted-foreground">{student.department}</p>
+            </div>
+            <div>
+                <h4 className="font-semibold text-sm flex items-center gap-2 mb-2"><BookUser className="h-4 w-4" /> Area of Interest</h4>
+                <Badge variant="secondary">{student.areaOfInterest}</Badge>
+            </div>
+             {student.medicalDetails && (
+                <div>
+                     <Separator className="my-3"/>
+                    <h4 className="font-semibold text-sm flex items-center gap-2 mb-2"><Heart className="h-4 w-4" /> Medical Quick-Look</h4>
+                    <div className="flex items-center gap-4">
+                        <div>
+                            <p className="text-xs text-muted-foreground">Blood Group</p>
+                            <p className="font-bold text-sm">{student.medicalDetails.bloodGroup}</p>
+                        </div>
+                         <div>
+                            <p className="text-xs text-muted-foreground">Allergies</p>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                                {student.medicalDetails.allergies.length > 0 ? student.medicalDetails.allergies.map(allergy => <Badge key={allergy} variant="destructive" className="text-xs">{allergy}</Badge>) : <p className="text-sm">-</p>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+             <Separator className="my-3"/>
+            <Button asChild className="w-full">
+                <Link href={`/students/${student.id}`}>View Full Portfolio</Link>
+            </Button>
+        </CardContent>
     </Card>
 );
 
@@ -146,7 +191,8 @@ export default function StudentDashboardHome() {
                 </CardContent>
             </Card>
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 flex flex-col gap-8">
+            <ProfileSnapshot student={student} />
             <Card>
                 <CardHeader>
                     <CardTitle>Today's Schedule</CardTitle>
@@ -180,3 +226,5 @@ export default function StudentDashboardHome() {
     </div>
   );
 }
+
+    

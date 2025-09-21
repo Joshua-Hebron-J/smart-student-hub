@@ -1,10 +1,10 @@
 
 'use client';
 
-import { Award, BarChart, Calendar, Activity as ActivityIcon, Percent, TrendingUp, User, GraduationCap, Heart, BookUser } from 'lucide-react';
+import { Award, BarChart, Calendar as CalendarIcon, Activity as ActivityIcon, Percent, TrendingUp, User, GraduationCap, Heart, BookUser, Cake } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
-import { startOfToday, isFuture, parseISO } from 'date-fns';
+import { startOfToday, isFuture, parseISO, format } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,6 +34,15 @@ const MetricCard = ({ icon: Icon, title, value, trend, footer, color }: { icon: 
     </Card>
 );
 
+const InfoRow = ({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: React.ReactNode }) => (
+  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+    <Icon className="h-4 w-4" />
+    <span>{label}:</span>
+    <span className="font-semibold text-foreground">{value}</span>
+  </div>
+);
+
+
 const ProfileSnapshot = ({ student }: { student: Student }) => (
     <Card>
         <CardHeader>
@@ -41,13 +50,20 @@ const ProfileSnapshot = ({ student }: { student: Student }) => (
             <CardDescription>A quick overview of your profile.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-            <div>
+            <div className="space-y-2">
                 <h4 className="font-semibold text-sm flex items-center gap-2 mb-2"><GraduationCap className="h-4 w-4" /> Academic Profile</h4>
                 <p className="text-sm text-muted-foreground">
                     {student.major}
                 </p>
                 <p className="text-xs text-muted-foreground">{student.department}</p>
+                
+                <div className="pt-2 space-y-2">
+                   <InfoRow icon={Cake} label="DOB" value={format(new Date(student.dob), 'PPP')} />
+                   <InfoRow icon={CalendarIcon} label="Joined" value={student.enrollmentYear} />
+                   <InfoRow icon={GraduationCap} label="Passing" value={student.enrollmentYear + 4} />
+                </div>
             </div>
+             <Separator className="my-3"/>
             <div>
                 <h4 className="font-semibold text-sm flex items-center gap-2 mb-2"><BookUser className="h-4 w-4" /> Area of Interest</h4>
                 <Badge variant="secondary">{student.areaOfInterest}</Badge>
@@ -143,7 +159,7 @@ export default function StudentDashboardHome() {
             color="bg-gradient-to-br from-purple-500 to-violet-500"
         />
         <MetricCard 
-            icon={Calendar} 
+            icon={CalendarIcon} 
             title="Upcoming Deadlines" 
             value={upcomingDeadlinesCount} 
             footer="In this semester"
@@ -226,5 +242,7 @@ export default function StudentDashboardHome() {
     </div>
   );
 }
+
+    
 
     

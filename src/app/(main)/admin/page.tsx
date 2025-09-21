@@ -209,6 +209,10 @@ function ComplianceReportModal() {
             </head>
             <body>
                 <div class="print-container">
+                    <div class="mb-8 text-center">
+                        <h1 class="text-2xl font-bold">NAAC/NIRF Compliance Report</h1>
+                        <p class="text-sm text-gray-500">Generated on: ${format(new Date(), 'PPP')}</p>
+                    </div>
                     ${reportHtml}
                 </div>
                 <script>

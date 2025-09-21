@@ -231,5 +231,3 @@ export default async function StudentPortfolioPage({ params }: { params: { id: s
     </>
   );
 }
-
-    

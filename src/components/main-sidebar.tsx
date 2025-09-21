@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -27,6 +26,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/use-app-context';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 type NavLink = {
   href: string;
@@ -77,9 +77,10 @@ const commonLinks: NavLink[] = [
 
 interface MainSidebarProps {
   isMobile?: boolean;
+  isCollapsed?: boolean;
 }
 
-export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
+export default function MainSidebar({ isMobile = false, isCollapsed = false }: MainSidebarProps) {
   const { user } = useUser();
   const pathname = usePathname();
 
@@ -96,57 +97,55 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
     const href = link.isDynamic ? link.href.replace('[id]', user.id) : link.href;
     const isActive = !link.subLinks && (pathname === href || (href !== '/' && pathname.startsWith(href) && href !== '/student' && href !== '/faculty' && href !== '/admin' ));
 
-    if (link.isDynamic) {
-        const baseHref = href.substring(0, href.lastIndexOf('/'));
-        const isActive = pathname.startsWith(baseHref) && pathname.includes(user.id);
+     const linkContent = (
+        <Link href={href} className={cn(
+            'group flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800',
+            isActive && 'bg-gray-800 text-primary',
+            isSubLink && 'ml-4',
+            isCollapsed && 'justify-center'
+        )}>
+            <link.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-gray-400 group-hover:text-primary")} />
+            <span className={cn("truncate", isCollapsed && 'hidden')}>{link.label}</span>
+        </Link>
+    );
 
-         return (
-            <Link href={href} className={cn(
-                'group flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800',
-                isActive && 'bg-gray-800 text-primary',
-                isSubLink && 'ml-4'
-            )}>
-                 <link.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-gray-400 group-hover:text-primary")} />
-                <span className="truncate">{link.label}</span>
-            </Link>
+    if (isCollapsed) {
+        return (
+            <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                        {linkContent}
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="bg-gray-800 text-white border-gray-700">
+                        <p>{link.label}</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         )
     }
 
-    const linkContent = (
-      <>
-        <link.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-gray-400 group-hover:text-primary")} />
-        <span className="truncate">{link.label}</span>
-      </>
-    );
-
-    const linkClasses = cn(
-      'group flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800',
-      (pathname === href) && 'bg-gray-800 text-primary',
-      isSubLink && 'ml-4'
-    );
-    
-    return (
-      <Link href={href} className={linkClasses}>
-        {linkContent}
-      </Link>
-    );
+    return linkContent;
   };
   
   const renderAccordionLink = (link: NavLink) => (
      <AccordionItem value={link.label} className="border-b-0">
-      <AccordionTrigger className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800 hover:no-underline [&[data-state=open]>svg]:rotate-180">
-         <link.icon className="h-5 w-5 text-gray-400" />
-        <span className="truncate">{link.label}</span>
+      <AccordionTrigger className={cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-200 font-medium transition-all hover:bg-gray-800 hover:no-underline [&[data-state=open]>svg]:rotate-180",
+        isCollapsed && "justify-center"
+      )}>
+         <link.icon className="h-5 w-5 text-gray-400 shrink-0" />
+        <span className={cn("truncate", isCollapsed && 'hidden')}>{link.label}</span>
       </AccordionTrigger>
-      <AccordionContent className="pl-4 pb-0 pt-1">
+      <AccordionContent className={cn("pb-0 pt-1", isCollapsed ? 'pl-0' : 'pl-4')}>
         <nav className="grid gap-1">
           {link.subLinks?.map((subLink) => (
              <Link key={subLink.href} href={subLink.href} className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-gray-400 transition-all hover:text-primary',
-              pathname.startsWith(subLink.href) && 'text-primary bg-gray-800'
+              pathname.startsWith(subLink.href) && 'text-primary bg-gray-800',
+              isCollapsed && 'justify-center'
             )}>
-              <subLink.icon className="h-4 w-4" />
-              {subLink.label}
+              <subLink.icon className="h-4 w-4 shrink-0" />
+              <span className={cn(isCollapsed && 'hidden')}>{subLink.label}</span>
             </Link>
           ))}
         </nav>
@@ -157,17 +156,20 @@ export default function MainSidebar({ isMobile = false }: MainSidebarProps) {
 
   return (
     <div className="flex h-full max-h-screen flex-col bg-gray-900/50">
-       <div className="flex h-16 items-center border-b border-gray-800 px-4 lg:px-6 shrink-0">
+       <div className={cn(
+            "flex h-16 items-center border-b border-gray-800 px-4 lg:px-6 shrink-0",
+            isCollapsed && "justify-center"
+        )}>
         <Link href="/" className="flex items-center gap-2 font-headline font-semibold text-white">
-          <GraduationCap className="h-6 w-6 text-primary" />
-          <span>Smart Student Hub</span>
+          <GraduationCap className={cn("h-6 w-6 text-primary", isCollapsed && "h-8 w-8")} />
+          <span className={cn(isCollapsed && 'hidden')}>Smart Student Hub</span>
         </Link>
       </div>
       <div className="flex-1 overflow-y-auto">
           <Accordion type="multiple" className="w-full" defaultValue={['Guidance']}>
-            <nav className="grid items-start p-2 text-sm font-medium lg:p-4">
+            <nav className={cn("grid items-start text-sm font-medium", isCollapsed ? 'p-2' : 'p-2 lg:p-4')}>
               {allLinks.map((link) =>
-                link.subLinks ? (
+                link.subLinks && !isCollapsed ? (
                   <div key={link.label}>
                     {renderAccordionLink(link)}
                   </div>

@@ -78,7 +78,11 @@ const NotificationIcon = ({ type }: { type: Notification['type'] }) => {
   }
 };
 
-export default function Header() {
+interface HeaderProps {
+  onToggleSidebar: () => void;
+}
+
+export default function Header({ onToggleSidebar }: HeaderProps) {
   const { user, setUser, notifications, markAsRead, markAllAsRead } = useUser();
   const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
 
@@ -88,17 +92,23 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-800 bg-gray-900/50 px-4 backdrop-blur-sm sm:px-6">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button size="icon" variant="outline" className="md:hidden bg-transparent border-gray-700 hover:bg-gray-800">
-            <PanelLeft className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-xs p-0 bg-gray-900 border-r-gray-800">
-          <MainSidebar isMobile={true}/>
-        </SheetContent>
-      </Sheet>
+      <div className="flex items-center gap-2">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button size="icon" variant="outline" className="md:hidden bg-transparent border-gray-700 hover:bg-gray-800">
+              <PanelLeft className="h-5 w-5" />
+              <span className="sr-only">Toggle Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="sm:max-w-xs p-0 bg-gray-900 border-r-gray-800">
+            <MainSidebar isMobile={true}/>
+          </SheetContent>
+        </Sheet>
+        <Button size="icon" variant="outline" className="hidden md:flex bg-transparent border-gray-700 hover:bg-gray-800" onClick={onToggleSidebar}>
+          <PanelLeft className="h-5 w-5" />
+          <span className="sr-only">Toggle Sidebar</span>
+        </Button>
+      </div>
       
       {user?.role === 'student' && (
         <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gray-900/80 backdrop-blur-sm border-t border-gray-800">

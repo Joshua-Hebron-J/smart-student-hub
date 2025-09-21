@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import Link from 'next/link';
@@ -16,7 +14,7 @@ import {
   AlertCircle,
   Megaphone,
 } from 'lucide-react';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 
@@ -28,7 +26,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUser } from '@/hooks/use-app-context';
@@ -40,17 +37,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { MOCK_NOTIFICATIONS } from '@/lib/data';
 import type { Notification } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';
 import { usePathname } from 'next/navigation';
-
-
-export type View = 'dashboard' | 'timetable' | 'portfolio';
-
-interface HeaderProps {
-}
 
 
 const NavLink = ({ href, children, label }: { href: string, children: React.ReactNode, label: string }) => {
@@ -88,22 +78,13 @@ const NotificationIcon = ({ type }: { type: Notification['type'] }) => {
   }
 };
 
-export default function Header({}: HeaderProps) {
-  const { user, setUser } = useUser();
-  const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
+export default function Header() {
+  const { user, setUser, notifications, markAsRead, markAllAsRead } = useUser();
   const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
 
   const handleLogout = () => {
     setUser(null);
   };
-  
-  const handleMarkAsRead = (notificationId: string) => {
-    setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, read: true } : n));
-  };
-  
-  const handleMarkAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({...n, read: true})));
-  }
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-800 bg-gray-900/50 px-4 backdrop-blur-sm sm:px-6">
@@ -159,7 +140,7 @@ export default function Header({}: HeaderProps) {
                     <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-gray-700">
                         <CardTitle className="text-lg text-white">Notifications</CardTitle>
                         {unreadCount > 0 && (
-                            <Button variant="link" size="sm" onClick={handleMarkAllAsRead}>Mark all as read</Button>
+                            <Button variant="link" size="sm" onClick={markAllAsRead}>Mark all as read</Button>
                         )}
                     </CardHeader>
                     <CardContent className="p-0 max-h-96 overflow-y-auto">
@@ -168,7 +149,7 @@ export default function Header({}: HeaderProps) {
                                 <div 
                                     key={notif.id} 
                                     className={cn("flex items-start gap-3 p-4 border-b border-gray-800 cursor-pointer", !notif.read && "bg-primary/10")}
-                                    onClick={() => handleMarkAsRead(notif.id)}
+                                    onClick={() => markAsRead(notif.id)}
                                 >
                                     <NotificationIcon type={notif.type} />
                                     <div className="flex-1">

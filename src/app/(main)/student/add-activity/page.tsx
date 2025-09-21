@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Wand2, Plus, X, ArrowLeft, Upload } from 'lucide-react';
+import { Plus, X, ArrowLeft, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { suggestSkillsForActivity } from '@/ai/flows/suggest-skills-for-activity';
+import { useUser } from '@/hooks/use-app-context';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -45,6 +46,7 @@ export default function AddActivityPage() {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { addNotification } = useUser();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<ActivityFormValues>({
@@ -120,7 +122,15 @@ export default function AddActivityPage() {
   };
   
   const onFinalSubmit = () => {
+    const activityName = form.getValues('name');
     console.log('Final Submission:', { ...form.getValues(), skills });
+    
+    addNotification({
+        type: 'announcement',
+        title: 'Activity Submitted',
+        description: `Your activity "${activityName}" is pending approval.`
+    });
+
     toast({
       title: 'Activity Submitted!',
       description: 'Your activity is now pending for faculty approval.',

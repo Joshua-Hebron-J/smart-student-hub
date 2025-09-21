@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,10 +11,9 @@ import type { ODApplication } from '@/lib/types';
 import { useUser } from '@/hooks/use-app-context';
 
 export default function ODApprovalPage() {
-  const { user } = useUser();
+  const { user, addNotification } = useUser();
   const { toast } = useToast();
   
-  // In a real app, filter students by faculty's department
   const departmentStudentIds = MOCK_STUDENTS
     .filter(s => s.department === (user as any).department)
     .map(s => s.id);
@@ -29,7 +27,17 @@ export default function ODApprovalPage() {
   };
 
   const handleApproval = (applicationId: string, status: 'approved' | 'rejected') => {
+    const app = pendingApplications.find(a => a.id === applicationId);
+    if(!app) return;
+
     setPendingApplications(prev => prev.filter(a => a.id !== applicationId));
+    
+    addNotification({
+        type: 'approval',
+        title: `OD Request ${status}`,
+        description: `You have ${status} the OD request for ${getStudentName(app.studentId)}.`
+    });
+
     toast({
         title: `OD Request ${status}`,
         description: 'The student has been notified of the decision.'

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -10,14 +9,12 @@ import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
 import type { Activity, Faculty } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
-import { Separator } from '@/components/ui/separator';
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
-  const { user } = useUser();
+  const { user, addNotification } = useUser();
   const facultyUser = user as Faculty;
 
-  // Filter students and activities based on the faculty's department
   const departmentStudents = MOCK_STUDENTS.filter(s => s.department === facultyUser.department);
   const departmentStudentIds = departmentStudents.map(s => s.id);
 
@@ -30,7 +27,19 @@ export default function FacultyDashboard() {
   };
 
   const handleApproval = (activityId: string, status: 'approved' | 'rejected') => {
+    const activity = pendingActivities.find(a => a.id === activityId);
+    if (!activity) return;
+
     setPendingActivities(prev => prev.filter(a => a.id !== activityId));
+    
+    // In a real app, you would also notify the specific student.
+    // For this prototype, we add a general notification to the current user (faculty).
+    addNotification({
+        type: 'approval',
+        title: `Activity ${status}`,
+        description: `You have ${status} "${activity.name}" for ${getStudentName(activity.studentId)}.`
+    });
+
     toast({
         title: `Activity ${status}`,
         description: `The activity has been successfully ${status}.`

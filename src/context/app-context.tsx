@@ -1,13 +1,18 @@
 'use client';
 
 import { createContext, useState, useEffect, useMemo, ReactNode } from 'react';
-import type { AppUser } from '@/lib/types';
-import { useRouter, usePathname, notFound } from 'next/navigation';
+import type { AppUser, Notification } from '@/lib/types';
+import { useRouter, usePathname } from 'next/navigation';
+import { MOCK_NOTIFICATIONS } from '@/lib/data';
 
 interface AppContextType {
   user: AppUser | null;
   setUser: (user: AppUser | null) => void;
   isLoading: boolean;
+  notifications: Notification[];
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
+  markAsRead: (id: string) => void;
+  markAllAsRead: () => void;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -15,6 +20,7 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,8 +31,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         setUserState(parsedUser);
+        setNotifications(MOCK_NOTIFICATIONS); // Load initial notifications for demo
         userIsSet = true;
-        // If user is on login page, redirect them to their dashboard
         if (pathname === '/') {
           router.replace(`/${parsedUser.role}`);
         }
@@ -36,12 +42,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('smart-student-hub-user');
     } finally {
       setIsLoading(false);
-      // If no user and not on login page, redirect to login
       if (!userIsSet && pathname !== '/') {
         router.replace('/');
       }
     }
-  }, []); // Run only once on mount
+  }, []);
 
   const setUser = (user: AppUser | null) => {
     setUserState(user);
@@ -49,11 +54,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('smart-student-hub-user', JSON.stringify(user));
     } else {
       localStorage.removeItem('smart-student-hub-user');
+      setNotifications([]);
       router.replace('/');
     }
   };
 
-  const contextValue = useMemo(() => ({ user, setUser, isLoading }), [user, isLoading]);
+  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
+    const newNotification: Notification = {
+      ...notification,
+      id: `notif-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      read: false,
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+  
+  const markAsRead = (id: string) => {
+     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  }
+  
+  const markAllAsRead = () => {
+     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  }
+
+
+  const contextValue = useMemo(() => ({ 
+      user, 
+      setUser, 
+      isLoading, 
+      notifications, 
+      addNotification,
+      markAsRead,
+      markAllAsRead 
+    }), [user, isLoading, notifications]);
 
   if (isLoading) {
     return (
@@ -63,8 +96,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
   }
   
-  // If we are still loading, or if we have no user and are not on the login page, we should not render children yet.
-  // This prevents content flashes and ensures redirects happen cleanly.
   if (!isLoading && !user && pathname !== '/') {
       return null;
   }

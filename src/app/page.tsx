@@ -1,10 +1,8 @@
-
-
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, ShieldCheck } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +19,7 @@ const motivationalQuote = {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser } = useUser();
+  const { setUser, addNotification } = useUser();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,6 +34,13 @@ export default function LoginPage() {
 
       if (user && password) {
         setUser(user as AppUser);
+        
+        addNotification({
+          type: 'announcement',
+          title: 'Login Successful',
+          description: `Welcome back, ${user.name.split(' ')[0]}!`
+        });
+
         toast({
           title: 'Login Successful',
           description: `Welcome back, ${user.name}! Redirecting...`,
@@ -54,7 +59,6 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white">
-      {/* Subtle decorative blur elements */}
       <div 
         className="absolute top-[-10%] right-[-10%] h-[40%] w-[60%] rounded-full bg-blue-500/20 blur-[120px] animate-blob opacity-15"
         style={{ animationDelay: '2s'}}
@@ -66,7 +70,6 @@ export default function LoginPage() {
       
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
         
-        {/* Header Section */}
         <header className="text-center mb-10">
             <div className="inline-flex items-center justify-center bg-white/10 p-3 rounded-xl mb-4 border border-white/20">
                 <GraduationCap className="h-8 w-8 text-blue-300" />
@@ -79,7 +82,6 @@ export default function LoginPage() {
             </p>
         </header>
 
-        {/* Login Form Card (Glassmorphism) */}
         <main className="w-full max-w-md">
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
             <div className="mb-6 text-center">
@@ -130,7 +132,6 @@ export default function LoginPage() {
           </div>
         </main>
         
-        {/* Footer */}
         <footer className="absolute bottom-6 text-center text-white/40 text-xs w-full px-4">
            <p>© 2024 Smart Student Hub. Empowering education through technology.</p>
         </footer>

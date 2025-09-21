@@ -3,8 +3,7 @@
 
 import { Users, Building, ClipboardList, Search, Calendar, FileBarChart, Printer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, ACTIVITY_CATEGORIES } from '@/lib/data';
-import { EVENT_CATEGORIES as CALENDAR_EVENT_CATEGORIES } from '@/lib/calendar-data';
+import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, ACTIVITY_CATEGORIES, EVENT_CATEGORIES } from '@/lib/data';
 import type { Student, AcademicEventV2, Activity } from '@/lib/types';
 import { useState, useMemo, useRef } from 'react';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
@@ -113,7 +112,7 @@ function UpcomingEventsWidget() {
               <div className="flex flex-col items-center">
                  <div 
                   className="h-3 w-3 mt-1.5 rounded-full" 
-                  style={{ backgroundColor: CALENDAR_EVENT_CATEGORIES[event.category].color }}
+                  style={{ backgroundColor: EVENT_CATEGORIES[event.category].color }}
                 />
               </div>
               <div className="flex-1">

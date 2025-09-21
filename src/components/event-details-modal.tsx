@@ -1,3 +1,4 @@
+
 'use client';
 
 import { format, parseISO } from 'date-fns';
@@ -13,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { AcademicEventV2 } from '@/lib/types';
-import { EVENT_CATEGORIES } from '@/lib/calendar-data';
+import { EVENT_CATEGORIES } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
 interface EventDetailsModalProps {

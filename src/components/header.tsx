@@ -40,7 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { MOCK_NOTIFICATIONS } from '@/lib/notifications-data';
+import { MOCK_NOTIFICATIONS } from '@/lib/data';
 import type { Notification } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';

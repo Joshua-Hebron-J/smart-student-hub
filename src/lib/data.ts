@@ -1,6 +1,5 @@
 
-import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEventV2 } from './types';
-import { ACADEMIC_EVENTS_BY_SEMESTER as CALENDAR_EVENTS_BY_SEMESTER } from './calendar-data';
+import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEventV2, Notification, EventCategoryKey, AcademicEventsBySemester } from './types';
 
 export const MOCK_STUDENTS: Student[] = [
   {
@@ -287,36 +286,36 @@ export const MOCK_ACTIVITIES: Activity[] = [
 
 export const MOCK_STUDENT_TIMETABLE: TimetableEntry[] = [
   // Monday
-  { id: 'tt-m1', title: 'Calculus II', day: 'Monday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue' },
-  { id: 'tt-m2', title: 'Intro to Python', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Lab 3', color: 'green' },
+  { id: 'tt-m1', title: 'Calculus II', day: 'Monday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue', description: 'Prof. Einstein' },
+  { id: 'tt-m2', title: 'Intro to Python', day: 'Monday', startTime: '09:00', endTime: '11:00', location: 'Lab 3', color: 'green', description: 'Prof. Turing' },
   { id: 'tt-m3', title: 'Lunch Break', day: 'Monday', startTime: '12:00', endTime: '13:00', location: 'Cafeteria', color: 'orange' },
-  { id: 'tt-m4', title: 'Physics I', day: 'Monday', startTime: '14:00', endTime: '15:30', location: 'Sci-201', color: 'purple' },
+  { id: 'tt-m4', title: 'Physics I', day: 'Monday', startTime: '14:00', endTime: '15:30', location: 'Sci-201', color: 'purple', description: 'Prof. Newton' },
   { id: 'tt-m5', title: 'Robotics Club', day: 'Monday', startTime: '17:00', endTime: '18:30', location: 'Mech Hall', color: 'red' },
 
   // Tuesday
-  { id: 'tt-t1', title: 'Data Structures', day: 'Tuesday', startTime: '10:00', endTime: '12:00', location: 'CS-101', color: 'blue' },
-  { id: 'tt-t2', title: 'English Composition', day: 'Tuesday', startTime: '12:00', endTime: '13:00', location: 'Arts-50', color: 'pink' },
-  { id: 'tt-t3', title: 'AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple' },
+  { id: 'tt-t1', title: 'Data Structures', day: 'Tuesday', startTime: '10:00', endTime: '12:00', location: 'CS-101', color: 'blue', description: 'Prof. Knuth' },
+  { id: 'tt-t2', title: 'English Composition', day: 'Tuesday', startTime: '12:00', endTime: '13:00', location: 'Arts-50', color: 'pink', description: 'Prof. Austen' },
+  { id: 'tt-t3', title: 'AI & Ethics', day: 'Tuesday', startTime: '13:00', endTime: '15:00', location: 'Room 405', color: 'purple', description: 'Prof. Asimov' },
   { id: 'tt-t4', title: 'Library Study Session', day: 'Tuesday', startTime: '15:00', endTime: '17:00', location: 'Library', color: 'red' },
   { id: 'tt-t5', title: 'Gym Time', day: 'Tuesday', startTime: '18:00', endTime: '19:00', location: 'Campus Gym', color: 'orange' },
 
   // Wednesday
-  { id: 'tt-w1', title: 'Calculus II', day: 'Wednesday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue' },
-  { id: 'tt-w2', title: 'Intro to Python Lab', day: 'Wednesday', startTime: '10:00', endTime: '12:00', location: 'Lab 5', color: 'green' },
+  { id: 'tt-w1', title: 'Calculus II', day: 'Wednesday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue', description: 'Prof. Einstein' },
+  { id: 'tt-w2', title: 'Intro to Python Lab', day: 'Wednesday', startTime: '10:00', endTime: '12:00', location: 'Lab 5', color: 'green', description: 'Prof. Turing' },
   { id: 'tt-w3', title: 'Lunch', day: 'Wednesday', startTime: '12:00', endTime: '13:00', location: 'Cafeteria', color: 'orange' },
-  { id: 'tt-w4', title: 'Physics I Lab', day: 'Wednesday', startTime: '14:00', endTime: '16:00', location: 'Physics Lab B', color: 'purple' },
+  { id: 'tt-w4', title: 'Physics I Lab', day: 'Wednesday', startTime: '14:00', endTime: '16:00', location: 'Physics Lab B', color: 'purple', description: 'Prof. Newton' },
   { id: 'tt-w5', title: 'Study Group for DS', day: 'Wednesday', startTime: '16:00', endTime: '18:00', location: 'Library', color: 'red' },
 
   // Thursday
-  { id: 'tt-th1', title: 'Data Structures', day: 'Thursday', startTime: '10:00', endTime: '12:00', location: 'CS-101', color: 'blue' },
-  { id: 'tt-th2', title: 'Thermodynamics', day: 'Thursday', startTime: '14:00', endTime: '16:00', location: 'Room 210', color: 'orange' },
+  { id: 'tt-th1', title: 'Data Structures', day: 'Thursday', startTime: '10:00', endTime: '12:00', location: 'CS-101', color: 'blue', description: 'Prof. Knuth' },
+  { id: 'tt-th2', title: 'Thermodynamics', day: 'Thursday', startTime: '14:00', endTime: '16:00', location: 'Room 210', color: 'orange', description: 'Prof. Carnot' },
   { id: 'tt-th3', title: 'Presentation Skills Workshop', day: 'Thursday', startTime: '16:00', endTime: '17:30', location: 'Auditorium', color: 'pink' },
   { id: 'tt-th4', title: 'Part-time Job', day: 'Thursday', startTime: '18:00', endTime: '21:00', location: 'Campus Cafe', color: 'green' },
   { id: 'tt-th5', title: 'Meet with Advisor', day: 'Thursday', startTime: '12:30', endTime: '13:00', location: 'Office 22B', color: 'purple' },
   
   // Friday
-  { id: 'tt-f1', title: 'Calculus II', day: 'Friday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue' },
-  { id: 'tt-f2', title: 'Creative Writing', day: 'Friday', startTime: '11:00', endTime: '13:00', location: 'Room 115', color: 'pink' },
+  { id: 'tt-f1', title: 'Calculus II', day: 'Friday', startTime: '08:00', endTime: '09:00', location: 'Hall A', color: 'blue', description: 'Prof. Einstein' },
+  { id: 'tt-f2', title: 'Creative Writing', day: 'Friday', startTime: '11:00', endTime: '13:00', location: 'Room 115', color: 'pink', description: 'Prof. Woolf' },
   { id: 'tt-f3', title: 'Team Project Meeting', day: 'Friday', startTime: '14:00', endTime: '16:00', location: 'Project Room 3', color: 'green' },
   { id: 'tt-f4', title: 'Weekly Quiz - Physics', day: 'Friday', startTime: '16:00', endTime: '17:00', location: 'Sci-201', color: 'purple' },
   { id: 'tt-f5', title: 'Movie Night', day: 'Friday', startTime: '19:00', endTime: '21:00', location: 'Common Room', color: 'red' }
@@ -340,6 +339,280 @@ export const MOCK_OD_APPLICATIONS: ODApplication[] = [
     { id: 'od-4', studentId: 'student-4', date: '2024-09-12', reason: 'DefCon Hacking Conference', status: 'pending' },
 ];
 
-export const ACADEMIC_EVENTS_BY_SEMESTER = CALENDAR_EVENTS_BY_SEMESTER;
-// The ACADEMIC_EVENTS constant is now derived from the semester-based data for backward compatibility if needed.
-export const ACADEMIC_EVENTS: AcademicEventV2[] = Object.values(CALENDAR_EVENTS_BY_SEMESTER).flat();
+
+export const EVENT_CATEGORIES: Record<EventCategoryKey, { label: string; color: string; }> = {
+  Exam: { label: 'Exams', color: '#D32F2F' }, // Red
+  Holiday: { label: 'Holidays', color: '#388E3C' }, // Green
+  UniversityEvent: { label: 'University Events', color: '#1976D2' }, // Blue
+  DepartmentEvent: { label: 'Department Events', color: '#7B1FA2' }, // Purple
+  Deadline: { label: 'Deadlines', color: '#F57C00' }, // Orange
+  Personal: { label: 'Personal Events', color: '#5D4037' }, // Brown
+};
+
+export const ACADEMIC_EVENTS_BY_SEMESTER: AcademicEventsBySemester = {
+  // --- FALL SEMESTER (ODD) ---
+  'Odd Semester 2025': [
+    {
+      id: 'evt011',
+      title: 'Fall Semester Begins',
+      category: 'UniversityEvent',
+      startDate: '2025-08-18T09:00:00',
+      endDate: '2025-08-18T09:00:00',
+      description: 'First day of classes for the Fall 2025 semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt001',
+      title: 'Internal Assessment I',
+      category: 'Exam',
+      startDate: '2025-09-15T09:00:00',
+      endDate: '2025-09-19T17:00:00',
+      description: 'First internal assessment for all departments. The detailed per-subject schedule is available on the notice board.',
+      scope: 'University',
+    },
+    {
+      id: 'evt002',
+      title: 'Hackathon Registration Deadline',
+      category: 'Deadline',
+      startDate: '2025-09-25T23:59:00',
+      endDate: '2025-09-25T23:59:00',
+      description: 'Final day to register for the "Innovate India" hackathon. See the attached flyer for more details.',
+      scope: 'Department',
+    },
+    {
+      id: 'evt003',
+      title: 'Submit DSA Assignment',
+      category: 'Personal',
+      startDate: '2025-09-25T22:00:00',
+      endDate: '2025-09-25T22:00:00',
+      description: 'Submit the assignment on AVL Trees.',
+      scope: 'Personal',
+    },
+    {
+      id: 'evt004',
+      title: 'Tech Fest Planning Meeting',
+      category: 'UniversityEvent',
+      startDate: '2025-09-26T15:00:00',
+      endDate: '2025-09-26T16:00:00',
+      description: 'Core committee meeting in the main auditorium.',
+      scope: 'University',
+    },
+    {
+      id: 'evt005',
+      title: 'Gandhi Jayanti',
+      category: 'Holiday',
+      startDate: '2025-10-02T00:00:00',
+      endDate: '2025-10-02T23:59:59',
+      description: 'National holiday on account of Gandhi Jayanti.',
+      scope: 'University',
+    },
+    {
+      id: 'evt006',
+      title: 'Internal Assessment II',
+      category: 'Exam',
+      startDate: '2025-10-20T09:00:00',
+      endDate: '2025-10-28T17:00:00',
+      description: 'Second internal assessment for the Fall semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt007',
+      title: 'Diwali Break',
+      category: 'Holiday',
+      startDate: '2025-11-01T00:00:00',
+      endDate: '2025-11-05T23:59:59',
+      description: 'Holiday break for Diwali festival.',
+      scope: 'University',
+    },
+    {
+      id: 'evt008',
+      title: 'Project Phase 1 Submission',
+      category: 'Deadline',
+      startDate: '2025-11-15T23:59:00',
+      endDate: '2025-11-15T23:59:00',
+      description: 'Deadline for submitting the first phase of the final year project.',
+      scope: 'Department',
+    },
+     {
+      id: 'evt012',
+      title: 'End Semester Lab Exams',
+      category: 'Exam',
+      startDate: '2025-11-24T09:00:00',
+      endDate: '2025-11-28T17:00:00',
+      description: 'Practical laboratory examinations for the Fall semester.',
+      scope: 'Department',
+    },
+    {
+      id: 'evt013',
+      title: 'End Semester Theory Exams',
+      category: 'Exam',
+      startDate: '2025-12-01T09:00:00',
+      endDate: '2025-12-15T17:00:00',
+      description: 'Final theory examinations for the Fall semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt009',
+      title: 'Alumni Meet 2025',
+      category: 'UniversityEvent',
+      startDate: '2025-12-20T10:00:00',
+      endDate: '2025-12-20T18:00:00',
+      description: 'Annual alumni meet.',
+      scope: 'University',
+    },
+    {
+      id: 'evt010',
+      title: 'Christmas Day',
+      category: 'Holiday',
+      startDate: '2025-12-25T00:00:00',
+      endDate: '2025-12-25T23:59:59',
+      description: 'National holiday for Christmas.',
+      scope: 'University',
+    },
+    {
+      id: 'evt014',
+      title: 'Winter Break',
+      category: 'Holiday',
+      startDate: '2025-12-16T00:00:00',
+      endDate: '2026-01-18T23:59:59',
+      description: 'Winter vacation for students.',
+      scope: 'University',
+    },
+  ],
+  // --- SPRING SEMESTER (EVEN) ---
+  'Even Semester 2026': [
+    {
+      id: 'evt015',
+      title: 'Spring Semester Begins',
+      category: 'UniversityEvent',
+      startDate: '2026-01-19T09:00:00',
+      endDate: '2026-01-19T09:00:00',
+      description: 'First day of classes for the Spring 2026 semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt016',
+      title: 'Republic Day',
+      category: 'Holiday',
+      startDate: '2026-01-26T00:00:00',
+      endDate: '2026-01-26T23:59:59',
+      description: 'National holiday for Republic Day.',
+      scope: 'University',
+    },
+    {
+      id: 'evt017',
+      title: 'Internal Assessment I (Spring)',
+      category: 'Exam',
+      startDate: '2026-02-16T09:00:00',
+      endDate: '2026-02-20T17:00:00',
+      description: 'First internal assessment for the Spring semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt018',
+      title: 'Holi',
+      category: 'Holiday',
+      startDate: '2026-03-06T00:00:00',
+      endDate: '2026-03-06T23:59:59',
+      description: 'Holiday for the festival of Holi.',
+      scope: 'University',
+    },
+    {
+      id: 'evt019',
+      title: 'Momentum 2026 - University Fest',
+      category: 'UniversityEvent',
+      startDate: '2026-03-12T10:00:00',
+      endDate: '2026-03-14T22:00:00',
+      description: 'The annual cultural and technical festival of the university.',
+      scope: 'University',
+    },
+    {
+      id: 'evt020',
+      title: 'Spring Break',
+      category: 'Holiday',
+      startDate: '2026-03-15T00:00:00',
+      endDate: '2026-03-22T23:59:59',
+      description: 'Mid-semester break for students.',
+      scope: 'University',
+    },
+    {
+      id: 'evt021',
+      title: 'Internal Assessment II (Spring)',
+      category: 'Exam',
+      startDate: '2026-04-13T09:00:00',
+      endDate: '2026-04-17T17:00:00',
+      description: 'Second internal assessment for the Spring semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt022',
+      title: 'End Semester Lab Exams (Spring)',
+      category: 'Exam',
+      startDate: '2026-05-04T09:00:00',
+      endDate: '2026-05-08T17:00:00',
+      description: 'Practical laboratory examinations for the Spring semester.',
+      scope: 'Department',
+    },
+    {
+      id: 'evt023',
+      title: 'End Semester Theory Exams (Spring)',
+      category: 'Exam',
+      startDate: '2026-05-11T09:00:00',
+      endDate: '2026-05-25T17:00:00',
+      description: 'Final theory examinations for the Spring semester.',
+      scope: 'University',
+    },
+    {
+      id: 'evt024',
+      title: 'Summer Break Begins',
+      category: 'Holiday',
+      startDate: '2026-05-26T00:00:00',
+      endDate: '2026-08-17T23:59:59',
+      description: 'Summer vacation for students.',
+      scope: 'University',
+    },
+  ],
+};
+
+export const MOCK_NOTIFICATIONS: Notification[] = [
+  {
+    id: 'notif-1',
+    type: 'approval',
+    title: 'Activity Approved',
+    description: 'Your submission for "AI Hackathon 2023" has been approved by Dr. Davis.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
+    read: false,
+  },
+  {
+    id: 'notif-2',
+    type: 'deadline',
+    title: 'Upcoming Deadline',
+    description: 'Project Phase 1 Submission is due in 3 days.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+    read: false,
+  },
+  {
+    id: 'notif-3',
+    type: 'announcement',
+    title: 'University Fest "Momentum 2026"',
+    description: 'The annual cultural and technical fest is scheduled for next month. Get ready!',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+    read: false,
+  },
+    {
+    id: 'notif-4',
+    type: 'approval',
+    title: 'OD Request Approved',
+    description: 'Your OD request for the "National AI Conference" has been approved.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), // 3 days ago
+    read: true,
+  },
+  {
+    id: 'notif-5',
+    type: 'deadline',
+    title: 'Fee Payment Due',
+    description: 'The deadline for semester fee payment is tomorrow.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString(), // 4 days ago
+    read: true,
+  }
+];

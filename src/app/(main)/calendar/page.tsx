@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -10,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { ACADEMIC_EVENTS_BY_SEMESTER, EVENT_CATEGORIES } from '@/lib/calendar-data';
+import { ACADEMIC_EVENTS_BY_SEMESTER, EVENT_CATEGORIES } from '@/lib/data';
 import type { AcademicEventV2, EventCategoryKey, SemesterKey } from '@/lib/types';
 
 import CalendarGridView from '@/components/calendar-grid-view';

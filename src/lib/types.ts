@@ -1,4 +1,4 @@
-import type { EVENT_CATEGORIES, ACADEMIC_EVENTS_BY_SEMESTER } from "./calendar-data";
+
 
 export type UserRole = 'student' | 'faculty' | 'admin';
 
@@ -103,8 +103,7 @@ export interface Notification {
 
 
 // New Calendar Types
-export type EventCategoryKey = keyof typeof EVENT_CATEGORIES;
-export type SemesterKey = keyof typeof ACADEMIC_EVENTS_BY_SEMESTER;
+export type EventCategoryKey = 'Exam' | 'Holiday' | 'UniversityEvent' | 'DepartmentEvent' | 'Deadline' | 'Personal';
 
 export interface AcademicEventV2 {
   id: string;

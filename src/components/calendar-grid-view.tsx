@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo } from 'react';
@@ -15,7 +16,7 @@ import {
 } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { EVENT_CATEGORIES } from '@/lib/calendar-data';
+import { EVENT_CATEGORIES } from '@/lib/data';
 import type { AcademicEventV2 } from '@/lib/types';
 
 interface CalendarGridViewProps {

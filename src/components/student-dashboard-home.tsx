@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Award, BarChart, Calendar, Activity as ActivityIcon, Percent, TrendingUp } from 'lucide-react';

@@ -1,3 +1,4 @@
+
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target } from 'lucide-react';

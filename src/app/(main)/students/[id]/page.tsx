@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
-import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target } from 'lucide-react';
+import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target, User, HeartPulse } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 import { MOCK_STUDENTS } from '@/lib/data';
@@ -125,6 +125,13 @@ export default async function StudentPortfolioPage({ params }: { params: { id: s
             {/* Left Sidebar */}
             <aside className="md:col-span-1 space-y-8">
                 <Card className="section-card">
+                  <CardHeader className="section-header"><CardTitle className="text-xl flex items-center gap-2"><User /> Bio</CardTitle></CardHeader>
+                  <CardContent className="pt-6">
+                    <p className="text-sm text-muted-foreground">{student.bio}</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="section-card">
                   <CardHeader className="section-header"><CardTitle className="text-xl">Professional Summary</CardTitle></CardHeader>
                   <CardContent className="pt-6">
                     <Suspense fallback={
@@ -165,6 +172,33 @@ export default async function StudentPortfolioPage({ params }: { params: { id: s
                       </div>
                   </CardContent>
                 </Card>
+
+                {student.medicalDetails && (
+                  <Card className="section-card">
+                    <CardHeader className="section-header"><CardTitle className="text-xl flex items-center gap-2"><HeartPulse /> Medical Information</CardTitle></CardHeader>
+                    <CardContent className="pt-6 text-sm space-y-3">
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">Blood Group:</span>
+                            <span className="font-semibold">{student.medicalDetails.bloodGroup}</span>
+                        </div>
+                         <div className="flex justify-between">
+                            <span className="text-muted-foreground">Condition:</span>
+                            <span className="font-semibold">{student.medicalDetails.condition}</span>
+                        </div>
+                        <div>
+                            <span className="text-muted-foreground">Allergies:</span>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                                {student.medicalDetails.allergies.map(allergy => <Badge key={allergy} variant="destructive">{allergy}</Badge>)}
+                            </div>
+                        </div>
+                        <Separator className="my-4"/>
+                         <div>
+                            <p className="font-semibold">Emergency Contact</p>
+                            <p className="text-muted-foreground">{student.medicalDetails.emergencyContact.name} - {student.medicalDetails.emergencyContact.phone}</p>
+                         </div>
+                    </CardContent>
+                  </Card>
+                )}
             </aside>
             
             {/* Main Content */}

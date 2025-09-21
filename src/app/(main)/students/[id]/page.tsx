@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
-import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target, User, HeartPulse } from 'lucide-react';
+import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target, User, HeartPulse, Cake } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { format } from 'date-fns';
 
 import { MOCK_STUDENTS } from '@/lib/data';
 import type { Student, Activity } from '@/lib/types';
@@ -111,9 +112,10 @@ export default async function StudentPortfolioPage({ params }: { params: { id: s
               <h1 className="text-4xl font-headline font-bold">{student.name}</h1>
               <p className="text-xl text-muted-foreground font-medium">{student.major}</p>
               <Separator className="my-4"/>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                   <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary"/> {student.email}</div>
-                  <div className="flex items-center gap-2"><GraduationCap className="h-4 w-4 text-primary"/> {student.enrollmentYear + 4} Graduate</div>
+                  <div className="flex items-center gap-2"><Cake className="h-4 w-4 text-primary"/> {format(new Date(student.dob), 'PPP')}</div>
+                  <div className="flex items-center gap-2"><GraduationCap className="h-4 w-4 text-primary"/> Passing in {student.enrollmentYear + 4}</div>
                   <div className="flex items-center gap-2"><BarChart className="h-4 w-4 text-primary"/> GPA: {student.gpa.toFixed(2)}</div>
                   <div className="flex items-center gap-2"><Star className="h-4 w-4 text-primary"/> Total Points: {totalPoints}</div>
               </div>
@@ -229,3 +231,5 @@ export default async function StudentPortfolioPage({ params }: { params: { id: s
     </>
   );
 }
+
+    

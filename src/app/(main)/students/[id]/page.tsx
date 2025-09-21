@@ -1,7 +1,10 @@
+
+'use client'
+
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target, User, HeartPulse, Cake } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { format } from 'date-fns';
 
 import { MOCK_STUDENTS } from '@/lib/data';
@@ -45,9 +48,10 @@ async function AISummary({ student, activities }: { student: Student, activities
 }
 
 
-export default async function StudentPortfolioPage({ params }: { params: { id: string } }) {
+export default function StudentPortfolioPage() {
   const { activities: allActivities } = useUser();
-  const id = params.id;
+  const params = useParams();
+  const id = params.id as string;
   const student = MOCK_STUDENTS.find(s => s.id === id);
 
   if (!student) {

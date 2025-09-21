@@ -1,49 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Check, X, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
-import type { Activity, Faculty } from '@/lib/types';
+import { MOCK_STUDENTS } from '@/lib/data';
+import type { Activity, Faculty, Student } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-app-context';
 
 export default function FacultyDashboard() {
   const { toast } = useToast();
-  const { user, addNotification } = useUser();
+  const { user, activities, updateActivityStatus, addNotification } = useUser();
   const facultyUser = user as Faculty;
 
-  const departmentStudents = MOCK_STUDENTS.filter(s => s.department === facultyUser.department);
-  const departmentStudentIds = departmentStudents.map(s => s.id);
+  const departmentStudentIds = useMemo(() => MOCK_STUDENTS
+    .filter(s => s.department === facultyUser.department)
+    .map(s => s.id), [facultyUser.department]);
 
-  const [pendingActivities, setPendingActivities] = useState<Activity[]>(
-    MOCK_ACTIVITIES.filter(a => a.status === 'pending' && departmentStudentIds.includes(a.studentId))
+  const pendingActivities = useMemo(() => activities
+    .filter(a => a.status === 'pending' && departmentStudentIds.includes(a.studentId)), 
+    [activities, departmentStudentIds]
   );
-
+  
   const getStudentName = (studentId: string) => {
     return MOCK_STUDENTS.find(s => s.id === studentId)?.name || 'Unknown';
   };
 
   const handleApproval = (activityId: string, status: 'approved' | 'rejected') => {
-    const activity = pendingActivities.find(a => a.id === activityId);
-    if (!activity) return;
-
-    setPendingActivities(prev => prev.filter(a => a.id !== activityId));
+    const updatedActivity = updateActivityStatus(activityId, status);
     
-    // In a real app, you would also notify the specific student.
-    // For this prototype, we add a general notification to the current user (faculty).
-    addNotification({
-        type: 'approval',
-        title: `Activity ${status}`,
-        description: `You have ${status} "${activity.name}" for ${getStudentName(activity.studentId)}.`
-    });
+    if (updatedActivity) {
+        addNotification({
+            type: 'approval',
+            title: `Activity ${status}`,
+            description: `Your activity "${updatedActivity.name}" was ${status}.`,
+        }, updatedActivity.studentId);
 
-    toast({
-        title: `Activity ${status}`,
-        description: `The activity has been successfully ${status}.`
-    });
+        toast({
+            title: `Activity ${status}`,
+            description: `The student has been notified.`
+        });
+    }
   };
 
   return (

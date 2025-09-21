@@ -1,25 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-import { MOCK_OD_APPLICATIONS, MOCK_STUDENTS } from '@/lib/data';
-import type { ODApplication } from '@/lib/types';
+import { MOCK_STUDENTS } from '@/lib/data';
+import type { ODApplication, Faculty } from '@/lib/types';
 import { useUser } from '@/hooks/use-app-context';
 
 export default function ODApprovalPage() {
-  const { user, addNotification } = useUser();
+  const { user, addNotification, odApplications, updateODStatus } = useUser();
   const { toast } = useToast();
   
-  const departmentStudentIds = MOCK_STUDENTS
-    .filter(s => s.department === (user as any).department)
-    .map(s => s.id);
+  const facultyUser = user as Faculty;
 
-  const [pendingApplications, setPendingApplications] = useState<ODApplication[]>(
-    MOCK_OD_APPLICATIONS.filter(a => a.status === 'pending' && departmentStudentIds.includes(a.studentId))
+  const departmentStudentIds = useMemo(() => MOCK_STUDENTS
+    .filter(s => s.department === facultyUser.department)
+    .map(s => s.id), [facultyUser.department]);
+
+  const pendingApplications = useMemo(() => odApplications
+    .filter(a => a.status === 'pending' && departmentStudentIds.includes(a.studentId)), 
+    [odApplications, departmentStudentIds]
   );
 
   const getStudentName = (studentId: string) => {
@@ -27,21 +30,20 @@ export default function ODApprovalPage() {
   };
 
   const handleApproval = (applicationId: string, status: 'approved' | 'rejected') => {
-    const app = pendingApplications.find(a => a.id === applicationId);
-    if(!app) return;
-
-    setPendingApplications(prev => prev.filter(a => a.id !== applicationId));
+    const updatedApp = updateODStatus(applicationId, status);
     
-    addNotification({
-        type: 'approval',
-        title: `OD Request ${status}`,
-        description: `You have ${status} the OD request for ${getStudentName(app.studentId)}.`
-    });
+    if(updatedApp) {
+        addNotification({
+            type: 'approval',
+            title: `OD Request ${status}`,
+            description: `Your OD request for "${updatedApp.reason}" was ${status}.`
+        }, updatedApp.studentId);
 
-    toast({
-        title: `OD Request ${status}`,
-        description: 'The student has been notified of the decision.'
-    });
+        toast({
+            title: `OD Request ${status}`,
+            description: 'The student has been notified of the decision.'
+        });
+    }
   };
 
   return (

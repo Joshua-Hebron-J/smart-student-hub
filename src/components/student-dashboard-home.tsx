@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Award, BarChart, Calendar, Activity as ActivityIcon, Percent, TrendingUp } from 'lucide-react';
@@ -10,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useUser } from '@/hooks/use-app-context';
-import { MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, MOCK_STUDENT_TIMETABLE } from '@/lib/data';
+import { ACADEMIC_EVENTS_BY_SEMESTER, MOCK_STUDENT_TIMETABLE } from '@/lib/data';
 import type { Activity, Student } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
@@ -35,18 +34,18 @@ const MetricCard = ({ icon: Icon, title, value, trend, footer, color }: { icon: 
 );
 
 export default function StudentDashboardHome() {
-  const { user } = useUser();
-  const [filter, setFilter] = useState<'all' | 'approved' | 'pending'>('all');
+  const { user, activities: allActivities } = useUser();
+  const [filter, setFilter] = useState<'all' | 'approved' | 'pending' | 'rejected'>('all');
   
   const student = user as Student;
 
   const activities = useMemo(() => {
-    const studentActivities = MOCK_ACTIVITIES.filter(act => act.studentId === student.id);
+    const studentActivities = allActivities.filter(act => act.studentId === student.id);
     if (filter === 'all') return studentActivities;
     return studentActivities.filter(a => a.status === filter);
-  }, [student.id, filter]);
+  }, [student.id, filter, allActivities]);
   
-  const totalCredits = MOCK_ACTIVITIES
+  const totalCredits = allActivities
     .filter(a => a.studentId === student.id && a.status === 'approved')
     .reduce((sum, act) => sum + act.credits, 0);
 
@@ -120,6 +119,7 @@ export default function StudentDashboardHome() {
                             <Button variant={filter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('all')}>All</Button>
                             <Button variant={filter === 'approved' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('approved')}>Approved</Button>
                             <Button variant={filter === 'pending' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('pending')}>Pending</Button>
+                            <Button variant={filter === 'rejected' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('rejected')}>Rejected</Button>
                         </div>
                     </div>
                 </CardHeader>

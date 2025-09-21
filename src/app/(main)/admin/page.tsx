@@ -1,9 +1,8 @@
-
 'use client';
 
 import { Users, Building, ClipboardList, Search, Calendar, FileBarChart, Printer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { MOCK_STUDENTS, MOCK_FACULTY, MOCK_ACTIVITIES, ACADEMIC_EVENTS_BY_SEMESTER, ACTIVITY_CATEGORIES, EVENT_CATEGORIES } from '@/lib/data';
+import { MOCK_STUDENTS, MOCK_FACULTY, ACADEMIC_EVENTS_BY_SEMESTER, ACTIVITY_CATEGORIES, EVENT_CATEGORIES } from '@/lib/data';
 import type { Student, AcademicEventV2, Activity } from '@/lib/types';
 import { useState, useMemo, useRef } from 'react';
 import { naturalLanguageStudentSearch } from '@/ai/flows/ai-natural-language-student-search';
@@ -14,6 +13,7 @@ import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { isFuture, isToday, parseISO, startOfToday, compareAsc, format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { useUser } from '@/hooks/use-app-context';
 
 function AdminStudentSearch() {
   const [query, setQuery] = useState('');
@@ -131,7 +131,8 @@ function UpcomingEventsWidget() {
 
 function ComplianceReportModal() {
   const reportRef = useRef<HTMLDivElement>(null);
-  const approvedActivities = MOCK_ACTIVITIES.filter(a => a.status === 'approved');
+  const { activities: allActivities } = useUser();
+  const approvedActivities = allActivities.filter(a => a.status === 'approved');
 
   const reportData = useMemo(() => {
     // Overall Metrics
@@ -303,9 +304,10 @@ function ComplianceReportModal() {
 
 
 export default function AdminDashboard() {
+  const { activities } = useUser();
   const studentsCount = MOCK_STUDENTS.length;
   const facultyCount = MOCK_FACULTY.length;
-  const activitiesCount = MOCK_ACTIVITIES.length;
+  const activitiesCount = activities.length;
   
   const departmentData = MOCK_STUDENTS.reduce((acc, student) => {
     acc[student.department] = (acc[student.department] || 0) + 1;

@@ -1,4 +1,3 @@
-
 import type { Student, Faculty, Admin, Activity, TimetableEntry, ODApplication, AppUser, AcademicEventV2, Notification, EventCategoryKey, AcademicEventsBySemester } from './types';
 
 export const MOCK_STUDENTS: Student[] = [
@@ -281,6 +280,17 @@ export const MOCK_ACTIVITIES: Activity[] = [
     category: 'Research',
     credits: 25,
   },
+   {
+    id: 'activity-8',
+    studentId: 'student-2',
+    name: 'Paper on 3D Printed Prosthetics',
+    description: 'Co-authored a research paper on using novel materials for 3D printed prosthetics.',
+    date: '2024-09-01',
+    status: 'pending',
+    skills: ['Research', '3D Printing', 'Materials Science'],
+    category: 'Research',
+    credits: 25,
+  },
 ];
 
 
@@ -337,6 +347,7 @@ export const MOCK_OD_APPLICATIONS: ODApplication[] = [
     { id: 'od-2', studentId: 'student-2', date: '2024-09-01', reason: 'Formula SAE Regional Meet', status: 'pending' },
     { id: 'od-3', studentId: 'student-1', date: '2024-09-05', reason: 'Inter-University Debate Competition', status: 'rejected' },
     { id: 'od-4', studentId: 'student-4', date: '2024-09-12', reason: 'DefCon Hacking Conference', status: 'pending' },
+    { id: 'od-5', studentId: 'student-2', date: '2024-09-20', reason: 'ASME Conference Presentation', status: 'pending' },
 ];
 
 
@@ -577,6 +588,7 @@ export const ACADEMIC_EVENTS_BY_SEMESTER: AcademicEventsBySemester = {
 export const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: 'notif-1',
+    userId: 'student-1',
     type: 'approval',
     title: 'Activity Approved',
     description: 'Your submission for "AI Hackathon 2023" has been approved by Dr. Davis.',
@@ -585,6 +597,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
   },
   {
     id: 'notif-2',
+    userId: 'all',
     type: 'deadline',
     title: 'Upcoming Deadline',
     description: 'Project Phase 1 Submission is due in 3 days.',
@@ -593,6 +606,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
   },
   {
     id: 'notif-3',
+    userId: 'all',
     type: 'announcement',
     title: 'University Fest "Momentum 2026"',
     description: 'The annual cultural and technical fest is scheduled for next month. Get ready!',
@@ -601,6 +615,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
   },
     {
     id: 'notif-4',
+    userId: 'student-1',
     type: 'approval',
     title: 'OD Request Approved',
     description: 'Your OD request for the "National AI Conference" has been approved.',
@@ -609,6 +624,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
   },
   {
     id: 'notif-5',
+    userId: 'all',
     type: 'deadline',
     title: 'Fee Payment Due',
     description: 'The deadline for semester fee payment is tomorrow.',

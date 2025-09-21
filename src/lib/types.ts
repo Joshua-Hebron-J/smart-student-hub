@@ -99,6 +99,7 @@ export interface Notification {
   description: string;
   timestamp: string; // ISO 8601 format
   read: boolean;
+  userId: string; // ID of the user this notification is for, or 'all'
 }
 
 

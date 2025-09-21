@@ -1,10 +1,9 @@
-
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { Mail, GraduationCap, Award, Briefcase, Printer, FileText, BarChart, Star, BookOpen, Layers, Target } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
-import { MOCK_STUDENTS, MOCK_ACTIVITIES } from '@/lib/data';
+import { MOCK_STUDENTS } from '@/lib/data';
 import type { Student, Activity } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +12,7 @@ import { generateActivitySummary } from '@/ai/flows/generate-activity-summaries'
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import PortfolioPrintButton from '@/components/portfolio-print-button';
+import { useUser } from '@/hooks/use-app-context';
 
 
 async function ActivitySummary({ activity, student }: { activity: Activity, student: Student }) {
@@ -45,6 +45,7 @@ async function AISummary({ student, activities }: { student: Student, activities
 
 
 export default async function StudentPortfolioPage({ params }: { params: { id: string } }) {
+  const { activities: allActivities } = useUser();
   const id = params.id;
   const student = MOCK_STUDENTS.find(s => s.id === id);
 
@@ -52,7 +53,7 @@ export default async function StudentPortfolioPage({ params }: { params: { id: s
     notFound();
   }
 
-  const activities = MOCK_ACTIVITIES.filter(
+  const activities = allActivities.filter(
     act => act.studentId === student.id && act.status === 'approved'
   );
   
